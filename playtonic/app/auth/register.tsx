@@ -138,16 +138,6 @@ export default function RegisterScreen({
           <Text style={styles.primaryText}>Go Back</Text>
         )}
       </TouchableOpacity>
-
-      {onGoToLogin && (
-        <TouchableOpacity
-          style={styles.linkBtn}
-          onPress={onGoToLogin}
-          disabled={loading}
-        >
-          <Text style={styles.linkText}>Already have an account? Sign in</Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 }
@@ -172,7 +162,7 @@ const styles = StyleSheet.create({
   },
 
   secondary: {
-    backgroundColor: "#444",
+    backgroundColor: "rgb(62, 78, 110)",
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
@@ -186,7 +176,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
-    backgroundColor: "#111",
+    backgroundColor: "rgb(45, 33, 218)",
     margin: 7,
   },
   primaryText: { color: "white", fontSize: 16, fontWeight: "600" },
