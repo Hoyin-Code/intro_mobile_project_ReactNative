@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(45, 33, 218)",
   },
   secondary: {
-    backgroundColor: "rgb(62, 78, 110)45, 33, 218)",
+    backgroundColor: "rgb(62, 78, 110)",
   },
   buttonText: { color: "white", fontSize: 16, fontWeight: "600" },
 });

@@ -78,6 +78,7 @@ const RootLayout = () => {
               onPress={async () => {
                 setMenuOpen(false);
                 await signOut(auth);
+                console.log("After logout:", auth.currentUser);
                 router.replace("/auth/login");
               }}
             >
