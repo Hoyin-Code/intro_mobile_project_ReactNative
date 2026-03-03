@@ -83,6 +83,7 @@ export default function LoginScreen() {
               secureTextEntry={hidden}
               textContentType="password"
               style={styles.input}
+              autoCapitalize="none"
             />
             <TouchableOpacity
               style={styles.hidden}
