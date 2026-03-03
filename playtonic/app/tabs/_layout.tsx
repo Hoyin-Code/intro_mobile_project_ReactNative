@@ -1,23 +1,35 @@
 import { auth } from "@/firebase";
+import { UserContext } from "@/src/models/appUserContext";
+import { useImagePicker } from "@/src/hooks/useImagePicker";
 import { Ionicons } from "@expo/vector-icons";
-import { Background } from "@react-navigation/elements";
-import { router, Stack, Tabs, useNavigation } from "expo-router";
+import { router, Tabs } from "expo-router";
 import { signOut } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
+  Alert,
+  Image,
   Modal,
   Pressable,
-  SafeAreaView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
-import { Image } from "react-native";
-import { Menu } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { uploadProfileImage } from "@/src/services/userService";
 
 const RootLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const profile = useContext(UserContext);
+
+  const { imageUri, openImageOptions } = useImagePicker(async (uri) => {
+    if (!profile?.id) {
+      Alert.alert("Error", "No user profile loaded.");
+      return;
+    }
+    console.log(uri);
+    await uploadProfileImage(profile.id, uri);
+  });
 
   return (
     <>
@@ -62,23 +74,43 @@ const RootLayout = () => {
 
         <SafeAreaView style={styles.menuPage}>
           <View style={styles.menuHeader}>
-            <Text style={styles.menuTitle}>Menu</Text>
-
             <TouchableOpacity
               onPress={() => setMenuOpen(false)}
               style={styles.closeBtn}
             >
-              <Ionicons name="close" size={26} color="#111" />
+              <Ionicons name="close" size={25} color="#111" />
             </TouchableOpacity>
           </View>
-
+          <View style={styles.section}>
+            <Text style={styles.userInfo}>{profile?.displayName}</Text>
+            <TouchableOpacity
+              style={[styles.avatarContainer, { marginLeft: "auto" }]}
+              onPress={openImageOptions}
+            >
+              {imageUri || profile?.imageUrl ? (
+                <Image
+                  source={{ uri: (imageUri ?? profile?.imageUrl) as string }}
+                  style={styles.avatar}
+                />
+              ) : (
+                <View style={styles.placeholder}>
+                  <Text style={styles.initials}>
+                    {profile?.displayName
+                      ?.split(" ")
+                      .slice(0, 2)
+                      .map((w) => w[0]?.toUpperCase())
+                      .join("") ?? "?"}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
           <View style={styles.menuContent}>
             <TouchableOpacity
               style={[styles.menuItem, styles.dangerItem]}
               onPress={async () => {
                 setMenuOpen(false);
                 await signOut(auth);
-                console.log("After logout:", auth.currentUser);
                 router.replace("/auth/login");
               }}
             >
@@ -91,7 +123,23 @@ const RootLayout = () => {
     </>
   );
 };
+
 const styles = StyleSheet.create({
+  section: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    width: "90%",
+    margin: "auto",
+    backgroundColor: "#ebe4e4",
+    borderRadius: 15,
+  },
+  userInfo: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#111",
+    flexShrink: 1,
+  },
   background: {
     opacity: 0.1,
   },
@@ -147,5 +195,34 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#111",
   },
+  avatarContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    overflow: "hidden",
+    backgroundColor: "#ddd",
+    flexShrink: 0,
+  },
+  avatar: {
+    width: "100%",
+    height: "100%",
+  },
+  placeholder: {
+    flex: 1,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#777",
+  },
+  initials: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#555",
+  },
 });
+
 export default RootLayout;

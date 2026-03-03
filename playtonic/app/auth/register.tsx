@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useImagePicker } from "@/src/hooks/useImagePicker";
 
 import {
   Alert,
@@ -9,37 +10,27 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
-import { registerUser } from "@/src/services/auth.services";
+import { RegisterInput, registerUser } from "@/src/services/auth.services";
 
-type RegisterPayload = {
-  email: string;
-  displayName: string;
-  password: string;
-  confirmPassword: string;
-};
-
-export default function RegisterScreen({
-  onRegister,
-  onGoToLogin,
-}: {
-  onRegister: (email: string, password: string) => Promise<void>;
-  onGoToLogin?: () => void;
-}) {
-  const [form, setForm] = useState<RegisterPayload>({
+export default function RegisterScreen() {
+  const [form, setForm] = useState<RegisterInput>({
     email: "",
     displayName: "",
     password: "",
-    confirmPassword: "",
+    imageUri: null,
   });
-  const [hidden, setHidden] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [hiddenNew, setHiddenNew] = useState(true);
+  const [hiddenConfirm, setHiddenConfirm] = useState(true);
 
-  const setField = (key: keyof RegisterPayload, value: string) =>
+  const [loading, setLoading] = useState(false);
+  const { imageUri, openImageOptions } = useImagePicker();
+  const setField = (key: keyof RegisterInput, value: string) =>
     setForm((p) => ({ ...p, [key]: value }));
 
-  const validate = (): string | null => {
+  const validateForm = (): string | null => {
     const email = form.email.trim();
     if (!email.includes("@")) return "Enter a valid email address.";
     if (form.password.length < 6)
@@ -50,12 +41,13 @@ export default function RegisterScreen({
   };
 
   const handleRegister = async () => {
-    const err = validate();
+    const err = validateForm();
     if (err) return Alert.alert("Invalid input", err);
 
     try {
       setLoading(true);
-      await registerUser(form);
+      await registerUser({ ...form, imageUri });
+      router.replace("/tabs");
     } catch (e: any) {
       Alert.alert("Register failed", e?.message ?? "Unknown error");
     } finally {
@@ -66,6 +58,19 @@ export default function RegisterScreen({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create account</Text>
+      <TouchableOpacity
+        style={styles.avatarContainer}
+        onPress={openImageOptions}
+      >
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.avatar} />
+        ) : (
+          <View style={styles.placeholder}>
+            <Ionicons name="camera" size={28} color="#999" />
+            <Text style={styles.placeholderText}>Add Photo</Text>
+          </View>
+        )}
+      </TouchableOpacity>
       <TextInput
         value={form.displayName}
         onChangeText={(v) => setField("displayName", v)}
@@ -87,16 +92,21 @@ export default function RegisterScreen({
           value={form.password}
           onChangeText={(v) => setField("password", v)}
           placeholder="Password"
-          secureTextEntry={hidden}
+          secureTextEntry={hiddenNew}
           textContentType="newPassword"
           style={styles.input}
           autoCorrect={false}
+          autoCapitalize="none"
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setHidden(!hidden)}
+          onPress={() => setHiddenNew(!hiddenNew)}
         >
-          <Ionicons name={hidden ? "eye-off" : "eye"} size={22} color="#555" />
+          <Ionicons
+            name={hiddenNew ? "eye-off" : "eye"}
+            size={22}
+            color="#555"
+          />
         </TouchableOpacity>
       </View>
       <View>
@@ -105,15 +115,20 @@ export default function RegisterScreen({
           onChangeText={(v) => setField("confirmPassword", v)}
           placeholder="Confirm password"
           autoCorrect={false}
-          secureTextEntry={hidden}
+          secureTextEntry={hiddenConfirm}
           textContentType="password"
           style={styles.input}
+          autoCapitalize="none"
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setHidden(!hidden)}
+          onPress={() => setHiddenConfirm(!hiddenConfirm)}
         >
-          <Ionicons name={hidden ? "eye-off" : "eye"} size={22} color="#555" />
+          <Ionicons
+            name={hiddenConfirm ? "eye-off" : "eye"}
+            size={22}
+            color="#555"
+          />
         </TouchableOpacity>{" "}
       </View>
       <TouchableOpacity
@@ -183,4 +198,28 @@ const styles = StyleSheet.create({
 
   linkBtn: { marginTop: 16, alignItems: "center" },
   linkText: { fontSize: 14, textDecorationLine: "underline" },
+  avatarContainer: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    overflow: "hidden",
+    marginBottom: 100,
+    backgroundColor: "#555",
+    margin: "auto",
+  },
+  avatar: {
+    width: "100%",
+    height: "100%",
+  },
+  placeholder: {
+    flex: 1,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#777",
+  },
 });
