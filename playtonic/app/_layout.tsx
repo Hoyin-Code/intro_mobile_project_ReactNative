@@ -1,30 +1,71 @@
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { UserContext, AppUserContext } from "@/src/models/appUserContext";
 import { Stack } from "expo-router";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { useState, useEffect } from "react";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useState, useEffect, useRef } from "react";
 
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<AppUserContext | null>(null);
+  const profileUnsubRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setLoading(false);
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      // Reset user
+      profileUnsubRef.current?.();
+      profileUnsubRef.current = null;
+
+      if (!firebaseUser) {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      setUser(firebaseUser);
+
+      const docRef = doc(db(), "users", firebaseUser.uid);
+      profileUnsubRef.current = onSnapshot(docRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          setProfile(null);
+        } else {
+          const d = snapshot.data();
+          setProfile({
+            id: snapshot.id,
+            displayName: String(d.displayName ?? ""),
+            email: String(d.email ?? ""),
+            isActive: Boolean(d.isActive ?? true),
+            imageUrl: d.photoUrl ?? null,
+          });
+        }
+        setLoading(false);
+      });
     });
-    return unsub;
+
+    return () => {
+      unsubscribeAuth();
+      profileUnsubRef.current?.();
+    };
   }, []);
 
   if (loading) return null;
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        animation: "slide_from_right",
-      }}
-    >
-      {user ? <Stack.Screen name="tabs" /> : <Stack.Screen name="auth/login" />}
-    </Stack>
+    <UserContext.Provider value={profile}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "slide_from_right",
+        }}
+      >
+        {user ? (
+          <Stack.Screen name="tabs" />
+        ) : (
+          <Stack.Screen name="auth/login" />
+        )}
+      </Stack>
+    </UserContext.Provider>
   );
 }
