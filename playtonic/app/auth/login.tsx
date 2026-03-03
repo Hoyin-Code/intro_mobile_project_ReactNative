@@ -1,5 +1,5 @@
 // src/screens/LoginScreen.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Alert,
   StyleSheet,
@@ -9,30 +9,23 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import { Route } from "expo-router/build/Route";
 import { router } from "expo-router";
-import { replace } from "expo-router/build/global-state/routing";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { json } from "node:stream/consumers";
-import { parseQueryParams } from "expo-router/build/fork/getStateFromPath-forks";
+import * as SecureStore from "expo-secure-store";
 import { Image } from "react-native";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
-  const storeUserEmail = async () => {
-    await AsyncStorage.setItem("currentEmail", JSON.stringify(email));
-  };
-  const storeUserPass = async () => {
-    await AsyncStorage.setItem("currentPass", JSON.stringify(password));
-  };
+  useEffect(() => {
+    SecureStore.getItemAsync("email").then((v) => v && setEmail(v));
+    SecureStore.getItemAsync("password").then((v) => v && setPassword(v));
+  }, []);
 
   const validate = () => {
     const e = email.trim();
@@ -48,10 +41,8 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      //store login credentials in async storage
-      storeUserEmail();
-      storeUserPass();
-
+      await SecureStore.setItemAsync("email", email.trim());
+      await SecureStore.setItemAsync("password", password);
       router.replace("/tabs");
     } catch (e: any) {
       Alert.alert("Login failed", e?.message ?? "Unknown error");
@@ -83,15 +74,28 @@ export default function LoginScreen() {
           textContentType="emailAddress"
           style={styles.input}
         />
-
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          secureTextEntry
-          textContentType="password"
-          style={styles.input}
-        />
+        <>
+          <View>
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry={hidden}
+              textContentType="password"
+              style={styles.input}
+            />
+            <TouchableOpacity
+              style={styles.hidden}
+              onPress={() => setHidden(!hidden)}
+            >
+              <Ionicons
+                name={hidden ? "eye-off" : "eye"}
+                size={22}
+                color="#555"
+              />
+            </TouchableOpacity>
+          </View>
+        </>
 
         <TouchableOpacity
           style={styles.button}
@@ -107,7 +111,7 @@ export default function LoginScreen() {
 
         <TouchableOpacity
           style={[styles.button, styles.secondary]}
-          onPress={() => router.push("/auth/register")}
+          onPress={() => router.replace("/auth/register")}
           disabled={loading}
         >
           <Text style={styles.buttonText}>Create account</Text>
@@ -128,6 +132,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 12,
     fontSize: 16,
+  },
+  hidden: {
+    position: "absolute",
+    right: 15,
+    margin: 10,
   },
   button: {
     borderRadius: 10,
