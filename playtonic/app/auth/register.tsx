@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
   button: {
     position: "absolute",
     right: 15,
+    margin: 10,
   },
 
   secondary: {
