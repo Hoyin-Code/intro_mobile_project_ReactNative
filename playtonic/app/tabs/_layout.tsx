@@ -62,6 +62,14 @@ const RootLayout = () => {
         <Tabs.Screen name="index" options={{ title: "Home" }} />
         <Tabs.Screen name="book" options={{ title: "Book" }} />
         <Tabs.Screen name="games" options={{ title: "Games" }} />
+        <Tabs.Screen
+          name="userinfo/reservations"
+          options={{ href: null, title: "Reservations" }}
+        />
+        <Tabs.Screen
+          name="userinfo/myMatches"
+          options={{ href: null, title: "mymatches" }}
+        />
       </Tabs>
 
       <Modal
@@ -103,6 +111,30 @@ const RootLayout = () => {
                   </Text>
                 </View>
               )}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.menuContent}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={async () => {
+                router.push("/tabs/userinfo/myMatches");
+                setMenuOpen(false);
+              }}
+            >
+              <Ionicons name="tennisball-outline" size={20}></Ionicons>
+              <Text>My Matches</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.menuContent}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={async () => {
+                router.push("/tabs/userinfo/reservations");
+                setMenuOpen(false);
+              }}
+            >
+              <Ionicons name="book-outline" size={20}></Ionicons>
+              <Text>Reservations</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.menuContent}>
