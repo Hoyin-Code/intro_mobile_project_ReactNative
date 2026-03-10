@@ -6,6 +6,7 @@ import {
 import {
   cancelReservation,
   getReservationsByUser,
+  markCompletedReservations,
 } from "@/src/services/reservationService";
 import { getCourtById, getVenueById } from "@/src/services/venueService";
 import { Ionicons } from "@expo/vector-icons";
@@ -51,21 +52,25 @@ function formatDate(ts: number) {
 
 function getEffectiveStatus(r: FSReservation): ReservationStatus {
   if (r.status === "cancelled") return "cancelled";
+  if (r.status === "completed") return "completed";
   const now = new Date();
+  const [eh, em] = r.endTime.split(":").map(Number);
+  const endDate = new Date(r.date);
+  endDate.setHours(eh, em, 0, 0);
+  if (endDate < now) return "completed";
   const todayTs = new Date();
   todayTs.setHours(0, 0, 0, 0);
   if (r.date !== todayTs.getTime()) return r.status;
   const nowMins = now.getHours() * 60 + now.getMinutes();
-  const [startHours, sm] = r.startTime.split(":").map(Number);
-  const [eh, em] = r.endTime.split(":").map(Number);
-  if (nowMins >= startHours * 60 + sm && nowMins < eh * 60 + em)
-    return "ongoing";
+  const [sh, sm] = r.startTime.split(":").map(Number);
+  if (nowMins >= sh * 60 + sm) return "ongoing";
   return r.status;
 }
 
 const STATUS_LABEL: Record<ReservationStatus, string> = {
   upcoming: "Upcoming",
   ongoing: "Ongoing",
+  completed: "Completed",
   cancelled: "Cancelled",
 };
 
@@ -78,12 +83,14 @@ export default function Reservations() {
 
   const load = useCallback(async () => {
     if (!user) return;
+    await markCompletedReservations(user.id);
     const raw = await getReservationsByUser(user.id);
 
     const statusOrder: Record<ReservationStatus, number> = {
       ongoing: 0,
       upcoming: 1,
       cancelled: 2,
+      completed: 3,
     };
     raw.sort((a, b) => {
       const sa = statusOrder[getEffectiveStatus(a)];
@@ -185,13 +192,15 @@ export default function Reservations() {
       }
       renderItem={({ item }) => {
         const effectiveStatus = getEffectiveStatus(item);
-        const cancelled = effectiveStatus === "cancelled";
+        const cancelled = effectiveStatus === "cancelled" || effectiveStatus === "completed";
         const badgeStyle =
           effectiveStatus === "ongoing"
             ? styles.badgeOngoing
             : effectiveStatus === "upcoming"
               ? styles.badgeUpcoming
-              : styles.badgeCancelled;
+              : effectiveStatus === "completed"
+                ? styles.badgeCompleted
+                : styles.badgeCancelled;
         return (
           <View style={[styles.card, cancelled && styles.cardCancelled]}>
             <View style={styles.cardHeader}>
@@ -278,6 +287,7 @@ const styles = StyleSheet.create({
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
   badgeOngoing: { backgroundColor: "#e6f4ea" },
   badgeUpcoming: { backgroundColor: "#e8f0fe" },
+  badgeCompleted: { backgroundColor: "#ede7f6" },
   badgeCancelled: { backgroundColor: "#f5f5f5" },
   badgeText: { fontSize: 12, fontWeight: "600", color: "#444" },
   divider: {

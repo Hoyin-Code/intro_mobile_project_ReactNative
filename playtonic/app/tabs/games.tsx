@@ -9,7 +9,7 @@ const Games = () => {
         alignItems: "center",
       }}
     >
-      <Text></Text>
+      <Text>Games Works!</Text>
     </View>
   );
 };

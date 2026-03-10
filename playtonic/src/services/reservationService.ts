@@ -22,6 +22,7 @@ export async function createReservation(
     createdAt: Date.now(),
   };
   const ref = await addDoc(reservationsCol(), newDoc);
+
   return { id: ref.id, ...newDoc };
 }
 
@@ -63,4 +64,25 @@ export async function updateReservationStatus(
 
 export async function cancelReservation(id: string): Promise<void> {
   await updateReservationStatus(id, "cancelled");
+}
+
+export async function markCompletedReservations(userId: string): Promise<void> {
+  const q = query(
+    reservationsCol(),
+    where("bookedBy", "==", userId),
+    where("status", "in", ["upcoming", "ongoing"]),
+  );
+  const snapshot = await getDocs(q);
+  const now = new Date();
+  const updates = snapshot.docs
+    .map((d) => ({ ...(d.data() as FSReservation), id: d.id }))
+    .filter((r) => {
+      const [h, m] = r.endTime.split(":").map(Number);
+      const endDate = new Date(r.date);
+      endDate.setHours(h, m, 0, 0);
+      return endDate < now;
+    });
+  await Promise.all(
+    updates.map((r) => updateReservationStatus(r.id, "completed")),
+  );
 }
