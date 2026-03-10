@@ -1,61 +1,79 @@
-import { Club } from "@/src/models/club";
+import { FSVenue } from "@/src/models/venue.model";
+import { getVenues } from "@/src/services/venueService";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  Image,
-  ScrollView,
-  FlatList,
 } from "react-native";
-import ClubCard from "../clubs/clubCard";
+import ClubCard from "../components/clubCard";
 
-const clubs: Club[] = [
-  {
-    id: "1",
-    name: "Badminton Club A",
-    location: "Antwerp",
-    image: require("../../assets/images/badminton_veld.jpg"),
-  },
-  {
-    id: "2",
-    name: "Badminton Club B",
-    location: "Brussels",
-    image: require("../../assets/images/badminton_veld.jpg"),
-  },
-  {
-    id: "3",
-    name: "Badminton Club C",
-    location: "Ghent",
-    image: require("../../assets/images/badminton_veld.jpg"),
-  },
-];
+const ACCENT = "rgb(111, 161, 226)";
 
 const Index = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.homeContent}>Today is a great day to play</Text>
+  const [venues, setVenues] = useState<FSVenue[]>([]);
+  const [loading, setLoading] = useState(true);
 
-      <FlatList
-        initialNumToRender={6}
-        data={clubs}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ClubCard club={item} />}
-      />
+  useEffect(() => {
+    getVenues()
+      .then(setVenues)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <View style={styles.screen}>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Today is a great day to play</Text>
+        <Text style={styles.title}>Choose your Venue</Text>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator color={ACCENT} style={{ marginTop: 40 }} />
+      ) : (
+        <FlatList
+          initialNumToRender={6}
+          data={venues}
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => <ClubCard venue={item} />}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    paddingHorizontal: 15,
-    paddingVertical: 20,
+    backgroundColor: "#f5f5f5",
   },
-  homeContent: {
-    fontSize: 18,
-    fontWeight: "700",
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 16,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  greeting: {
+    fontSize: 13,
+    color: "#888",
+    fontWeight: "500",
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "800",
     color: "#111",
-    marginBottom: 20,
+  },
+  list: {
+    paddingHorizontal: 15,
+    paddingVertical: 16,
   },
 });
 

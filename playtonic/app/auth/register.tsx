@@ -147,11 +147,7 @@ export default function RegisterScreen() {
         onPress={() => router.push("/auth/login")}
         disabled={loading}
       >
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={styles.primaryText}>Go Back</Text>
-        )}
+        <Text style={styles.primaryText}>Go Back</Text>
       </TouchableOpacity>
     </View>
   );
