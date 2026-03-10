@@ -1,4 +1,4 @@
-export type ReservationStatus = "ongoing" | "cancelled";
+export type ReservationStatus = "upcoming" | "ongoing" | "cancelled";
 
 export interface FSReservation {
   id: string;

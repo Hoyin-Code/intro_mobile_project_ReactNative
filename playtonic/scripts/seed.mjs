@@ -54,7 +54,7 @@ const VENUES = [
   {
     name: "Smash Arena",
     address: "12 Sports Ave, Manila",
-    imageUrl: null,
+    imageUrl: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=80",
     openTime: "07:00",
     closeTime: "22:00",
     slotDurationMinutes: 60,
@@ -64,7 +64,7 @@ const VENUES = [
   {
     name: "Rally Hub",
     address: "88 Racket St, Quezon City",
-    imageUrl: null,
+    imageUrl: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&q=80",
     openTime: "08:00",
     closeTime: "21:00",
     slotDurationMinutes: 90,
@@ -74,7 +74,7 @@ const VENUES = [
   {
     name: "Baseline Club",
     address: "5 Volley Rd, Makati",
-    imageUrl: null,
+    imageUrl: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&q=80",
     openTime: "06:00",
     closeTime: "23:00",
     slotDurationMinutes: 60,

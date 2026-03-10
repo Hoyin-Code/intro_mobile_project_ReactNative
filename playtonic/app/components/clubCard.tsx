@@ -1,8 +1,10 @@
 import { Club } from "@/src/models/club";
+import { FSVenue } from "@/src/models/venue.model";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function ClubCard({ club }: { club: Club }) {
+export default function ClubCard({ venue: venue }: { venue: FSVenue }) {
   const router = useRouter();
 
   return (
@@ -10,15 +12,19 @@ export default function ClubCard({ club }: { club: Club }) {
       style={styles.container}
       onPress={() =>
         router.push({
-          pathname: "/clubs/[id]",
-          params: { id: club.id },
+          pathname: "/venue/[venueId]/info",
+          params: { venueId: venue.id },
         })
       }
     >
-      <Image source={club.image} style={styles.image} />
+      <Image source={{ uri: venue.imageUrl as string }} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.name}>{club.name}</Text>
-        <Text style={styles.location}>{club.location}</Text>
+        <Text style={styles.name}>{venue.name}</Text>
+        <Text style={styles.location}>{venue.address}</Text>
+        <Text>
+          <Ionicons name="time-outline" size={15} />
+          {venue.openTime} - {venue.closeTime}
+        </Text>
       </View>
     </Pressable>
   );
