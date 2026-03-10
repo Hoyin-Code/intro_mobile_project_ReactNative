@@ -9,7 +9,6 @@ import {
   Alert,
   Image,
   Modal,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -59,9 +58,34 @@ const RootLayout = () => {
           ),
         }}
       >
-        <Tabs.Screen name="index" options={{ title: "Home" }} />
-        <Tabs.Screen name="book" options={{ title: "Book" }} />
-        <Tabs.Screen name="games" options={{ title: "Games" }} />
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="games"
+          options={{
+            title: "Games",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="tennisball-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="chats"
+          options={{
+            title: "Chats",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="chatbubble-outline" size={size} color={color} />
+            ),
+          }}
+        />
+
         <Tabs.Screen
           name="userinfo/reservations"
           options={{ href: null, title: "Reservations" }}
@@ -73,28 +97,21 @@ const RootLayout = () => {
       </Tabs>
 
       <Modal
-        style={styles.background}
         visible={menuOpen}
         animationType="slide"
         onRequestClose={() => setMenuOpen(false)}
       >
-        <Pressable style={styles.backdrop} onPress={() => setMenuOpen(false)} />
-
         <SafeAreaView style={styles.menuPage}>
+          {/* Header */}
           <View style={styles.menuHeader}>
-            <TouchableOpacity
-              onPress={() => setMenuOpen(false)}
-              style={styles.closeBtn}
-            >
-              <Ionicons name="close" size={25} color="#111" />
+            <TouchableOpacity onPress={() => setMenuOpen(false)} style={styles.closeBtn}>
+              <Ionicons name="close" size={22} color="#111" />
             </TouchableOpacity>
           </View>
-          <View style={styles.section}>
-            <Text style={styles.userInfo}>{profile?.displayName}</Text>
-            <TouchableOpacity
-              style={[styles.avatarContainer, { marginLeft: "auto" }]}
-              onPress={openImageOptions}
-            >
+
+          {/* Profile */}
+          <View style={styles.profileRow}>
+            <TouchableOpacity style={styles.avatarContainer} onPress={openImageOptions}>
               {imageUri || profile?.imageUrl ? (
                 <Image
                   source={{ uri: (imageUri ?? profile?.imageUrl) as string }}
@@ -111,43 +128,56 @@ const RootLayout = () => {
                   </Text>
                 </View>
               )}
+              <View style={styles.cameraBadge}>
+                <Ionicons name="camera" size={11} color="#fff" />
+              </View>
             </TouchableOpacity>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>{profile?.displayName}</Text>
+              <Text style={styles.profileSub}>Tap photo to change</Text>
+            </View>
           </View>
-          <View style={styles.menuContent}>
+
+          {/* Menu items */}
+          <View style={styles.menuGroup}>
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={async () => {
-                router.push("/tabs/userinfo/myMatches");
-                setMenuOpen(false);
-              }}
+              onPress={() => { router.push("/tabs/userinfo/myMatches"); setMenuOpen(false); }}
             >
-              <Ionicons name="tennisball-outline" size={20}></Ionicons>
-              <Text>My Matches</Text>
+              <View style={styles.menuIcon}>
+                <Ionicons name="tennisball-outline" size={20} color="#555" />
+              </View>
+              <Text style={styles.menuItemText}>My Matches</Text>
+              <Ionicons name="chevron-forward" size={16} color="#ccc" style={{ marginLeft: "auto" }} />
             </TouchableOpacity>
-          </View>
-          <View style={styles.menuContent}>
+
+            <View style={styles.divider} />
+
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={async () => {
-                router.push("/tabs/userinfo/reservations");
-                setMenuOpen(false);
-              }}
+              onPress={() => { router.push("/tabs/userinfo/reservations"); setMenuOpen(false); }}
             >
-              <Ionicons name="book-outline" size={20}></Ionicons>
-              <Text>Reservations</Text>
+              <View style={styles.menuIcon}>
+                <Ionicons name="calendar-outline" size={20} color="#555" />
+              </View>
+              <Text style={styles.menuItemText}>My Reservations</Text>
+              <Ionicons name="chevron-forward" size={16} color="#ccc" style={{ marginLeft: "auto" }} />
             </TouchableOpacity>
           </View>
-          <View style={styles.menuContent}>
+
+          <View style={[styles.menuGroup, { marginTop: 12 }]}>
             <TouchableOpacity
-              style={[styles.menuItem, styles.dangerItem]}
+              style={styles.menuItem}
               onPress={async () => {
                 setMenuOpen(false);
                 await signOut(auth);
                 router.replace("/auth/login");
               }}
             >
-              <Ionicons name="log-out-outline" size={20} color="#111" />
-              <Text style={styles.menuItemText}>Logout</Text>
+              <View style={[styles.menuIcon, styles.menuIconDanger]}>
+                <Ionicons name="log-out-outline" size={20} color="#e53935" />
+              </View>
+              <Text style={styles.menuItemDanger}>Log out</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -157,98 +187,115 @@ const RootLayout = () => {
 };
 
 const styles = StyleSheet.create({
-  section: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    width: "90%",
-    margin: "auto",
-    backgroundColor: "#ebe4e4",
-    borderRadius: 15,
-  },
-  userInfo: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#111",
-    flexShrink: 1,
-  },
-  background: {
-    opacity: 0.1,
-  },
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-  },
   menuPage: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+    flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 20,
   },
   menuHeader: {
     height: 56,
-    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#ddd",
-  },
-  menuTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#111",
+    borderBottomColor: "#eee",
   },
   closeBtn: {
     padding: 6,
+    borderRadius: 20,
+    backgroundColor: "#f2f2f2",
   },
-  menuContent: {
-    padding: 16,
-    gap: 12,
-  },
-  menuItem: {
+  profileRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#eee",
-    backgroundColor: "#fafafa",
-  },
-  dangerItem: {
-    backgroundColor: "#fff5f5",
-  },
-  menuItemText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111",
+    gap: 16,
+    paddingVertical: 28,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#eee",
+    marginBottom: 20,
   },
   avatarContainer: {
     width: 64,
     height: 64,
-    borderRadius: 32,
-    overflow: "hidden",
-    backgroundColor: "#ddd",
     flexShrink: 0,
   },
   avatar: {
-    width: "100%",
-    height: "100%",
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
   placeholder: {
-    flex: 1,
-    backgroundColor: "#f0f0f0",
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "#e8e8e8",
     justifyContent: "center",
     alignItems: "center",
   },
-  placeholderText: {
-    marginTop: 6,
-    fontSize: 12,
-    color: "#777",
+  cameraBadge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "rgb(111, 161, 226)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#111",
+  },
+  profileSub: {
+    fontSize: 13,
+    color: "#999",
+    marginTop: 2,
+  },
+  menuGroup: {
+    backgroundColor: "#f7f7f7",
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 4,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    gap: 14,
+  },
+  menuIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: "#ebebeb",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuIconDanger: {
+    backgroundColor: "#fdecea",
+  },
+  menuItemText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#111",
+  },
+  menuItemDanger: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#e53935",
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#e0e0e0",
+    marginLeft: 68,
   },
   initials: {
     fontSize: 22,
