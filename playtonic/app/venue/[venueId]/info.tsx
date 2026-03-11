@@ -10,23 +10,56 @@ import {
   Text,
   View,
 } from "react-native";
+import { Facility } from "@/src/models/facility.model";
 
 const ACCENT = "rgb(111, 161, 226)";
 
 export default function VenueInfo() {
   const { venue, courts, loading: venueLoading } = useContext(VenueContext);
+  const facilities: Facility[] = [
+    { id: "1", name: "Food", icon: "fast-food" },
+    { id: "2", name: "Drinks", icon: "beer" },
+    { id: "3", name: "Wi-Fi", icon: "wifi" },
+    { id: "4", name: "Dressing room", icon: "person" },
+    { id: "5", name: "Parking lot", icon: "car" },
+    { id: "6", name: "Accessible", icon: "accessibility" },
+    { id: "7", name: "Rental", icon: "basket" },
+    { id: "8", name: "Terrace", icon: "cafe" },
+    { id: "9", name: "Night Courts", icon: "moon" },
+  ];
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {venueLoading && (
-        <ActivityIndicator color={ACCENT} style={styles.loader} />
-      )}
-
-      <Text style={styles.sectionTitle}>Clubinformation</Text>
       {venueLoading ? (
         <ActivityIndicator color={ACCENT} style={styles.loader} />
       ) : (
         <>
+          <Text style={styles.sectionTitle}>Club facilities</Text>
+          <FlatList
+            data={facilities}
+            keyExtractor={(c) => c.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hList}
+            renderItem={({ item }) => (
+              <View
+                style={[
+                  styles.chip,
+                  { flexDirection: "row", alignItems: "center" },
+                ]}
+              >
+                <Ionicons
+                  name={item.icon}
+                  size={16}
+                  color={"#656565"}
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={styles.chipText}>{item.name}</Text>
+              </View>
+            )}
+          />
+          <Text style={styles.sectionTitle}>Courts</Text>
+
           <FlatList
             data={courts}
             keyExtractor={(c) => c.id}
@@ -42,8 +75,8 @@ export default function VenueInfo() {
               >
                 <Ionicons
                   name="tennisball-sharp"
-                  size={20}
-                  color="green"
+                  size={16}
+                  color={"#656565"}
                   style={{ marginRight: 5 }}
                 />
                 <Text style={styles.chipText}>{item.name}</Text>
@@ -97,7 +130,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     backgroundColor: "#fff",
   },
-  chipText: { fontSize: 14, fontWeight: "600", color: "#333" },
+  chipText: { fontSize: 14, fontWeight: "600", color: "#656565" },
   map: {
     width: "100%",
     height: 250,
