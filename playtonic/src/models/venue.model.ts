@@ -8,6 +8,7 @@ export interface FSVenue {
   slotDurationMinutes: number;
   isActive: boolean;
 }
+// TODO: make courts nested in fsVenue not seperate collection
 export interface FSCourt {
   id: string;
   venueId: string;

@@ -26,7 +26,7 @@ export const MONTH_NAMES = [
   "Nov",
   "Dec",
 ];
-
+// TODO: add current time to grey out the passed time slots
 export function getDates(count = 50): Date[] {
   return Array.from({ length: count }, (_, i) => {
     const d = new Date();
@@ -68,7 +68,7 @@ export function useVenueBooking() {
 
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [booking, setBooking] = useState(false);
-
+  
   const loadSlots = useCallback(
     async (court: FSCourt, date: Date, v: FSVenue) => {
       setSlotsLoading(true);
@@ -109,8 +109,8 @@ export function useVenueBooking() {
       "Are you sure you want to make this booking?",
       `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
       [
-        { text: "Confirm", onPress: onBook },
         { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: onBook },
       ],
     );
   };
