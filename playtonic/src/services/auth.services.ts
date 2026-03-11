@@ -37,6 +37,7 @@ export async function registerUser(
   if (password.length < 6)
     throw new Error("Password must be at least 6 characters.");
 //TODO: make displayname required or change to first or last name
+//TODO: fix register logic 
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   const displayName = (input.displayName ?? "").trim();
 

@@ -12,6 +12,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { randomUUID } from "crypto";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -105,47 +106,36 @@ async function seed() {
   // venueCourtMap: { [venueName]: { venueId, courts: { [courtName]: courtId } } }
   const venueCourtMap = {};
 
-  for (const { courts, ...venueData } of VENUES) {
+  for (const { courts: courtNames, ...venueData } of VENUES) {
     let venueId;
+    let existingCourts = null;
+
     const existing = await getDocs(
       query(collection(db, "venues"), where("name", "==", venueData.name)),
     );
 
     if (!existing.empty) {
       venueId = existing.docs[0].id;
+      existingCourts = existing.docs[0].data().courts ?? null;
       console.log(`  skip  venue "${venueData.name}" (exists)  id=${venueId}`);
     } else {
-      const ref = await addDoc(collection(db, "venues"), venueData);
+      const courts = courtNames.map((name) => ({
+        id: randomUUID(),
+        name,
+        isActive: true,
+      }));
+      const ref = await addDoc(collection(db, "venues"), { ...venueData, courts });
       venueId = ref.id;
+      existingCourts = courts;
       console.log(`  venue "${venueData.name}"  id=${venueId}`);
+      for (const c of courts) console.log(`    court "${c.name}"  id=${c.id}`);
     }
 
     venueCourtMap[venueData.name] = { venueId, courts: {} };
-
-    // fetch or create courts
-    const existingCourts = await getDocs(
-      query(collection(db, "courts"), where("venueId", "==", venueId)),
-    );
-    const existingByName = {};
-    for (const d of existingCourts.docs) {
-      existingByName[d.data().name] = d.id;
-    }
-
-    for (const courtName of courts) {
-      let courtId;
-      if (existingByName[courtName]) {
-        courtId = existingByName[courtName];
-        console.log(`    skip  court "${courtName}" (exists)  id=${courtId}`);
-      } else {
-        const ref = await addDoc(collection(db, "courts"), {
-          venueId,
-          name: courtName,
-          isActive: true,
-        });
-        courtId = ref.id;
-        console.log(`    court "${courtName}"  id=${courtId}`);
-      }
-      venueCourtMap[venueData.name].courts[courtName] = courtId;
+    for (const c of existingCourts) {
+      venueCourtMap[venueData.name].courts[c.name] = c.id;
+      if (existing.empty) {} // already logged above
+      else console.log(`    skip  court "${c.name}" (exists)  id=${c.id}`);
     }
   }
 

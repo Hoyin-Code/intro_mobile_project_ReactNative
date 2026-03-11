@@ -15,6 +15,7 @@ const ACCENT = "rgb(111, 161, 226)";
 
 export default function VenueInfo() {
   const { venue, courts, loading: venueLoading } = useContext(VenueContext);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {venueLoading && (

@@ -1,3 +1,9 @@
+export interface FSCourt {
+  id: string;
+  name: string;
+  isActive: boolean;
+}
+
 export interface FSVenue {
   id: string;
   name: string;
@@ -7,10 +13,5 @@ export interface FSVenue {
   closeTime: string;
   slotDurationMinutes: number;
   isActive: boolean;
-}
-export interface FSCourt {
-  id: string;
-  venueId: string;
-  name: string;
-  isActive: boolean;
+  courts: FSCourt[];
 }
