@@ -103,7 +103,7 @@ export default function Reservations() {
       raw.map(async (r) => {
         const [venue, court] = await Promise.all([
           getVenueById(r.venueId),
-          getCourtById(r.courtId),
+          getCourtById(r.venueId, r.courtId),
         ]);
         return {
           ...r,
