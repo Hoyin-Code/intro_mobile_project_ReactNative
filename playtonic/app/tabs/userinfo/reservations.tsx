@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -80,6 +81,7 @@ export default function Reservations() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [showPast, setShowPast] = useState(false);
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -177,11 +179,29 @@ export default function Reservations() {
 
   return (
     <FlatList
-      data={reservations}
+      data={reservations.filter((r) => {
+        const s = getEffectiveStatus(r);
+        return showPast || (s !== "completed" && s !== "cancelled");
+      })}
       keyExtractor={(r) => r.id}
       contentContainerStyle={styles.list}
       ListHeaderComponent={
-        <Text style={styles.screenTitle}>My Reservations</Text>
+        <>
+          <Text style={styles.screenTitle}>My Reservations</Text>
+          <TouchableOpacity
+            style={styles.pastBtn}
+            onPress={() => setShowPast((v) => !v)}
+          >
+            <Text style={styles.pastBtnText}>
+              {showPast ? "Hide inactive" : "Show All"}
+            </Text>
+          </TouchableOpacity>
+        </>
+      }
+      ListEmptyComponent={
+        !showPast ? (
+          <Text style={styles.emptyFiltered}>No upcoming or ongoing reservations.</Text>
+        ) : null
       }
       refreshControl={
         <RefreshControl
@@ -321,4 +341,15 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111",
   },
+  pastBtn: {
+    marginTop: 10,
+    alignSelf: "flex-start",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: ACCENT,
+  },
+  pastBtnText: { color: ACCENT, fontWeight: "600", fontSize: 13 },
+  emptyFiltered: { color: "#999", fontStyle: "italic", marginTop: 16, textAlign: "center" },
 });

@@ -8,7 +8,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 export default function VenueInfo() {
   const venue = useContext(VenueContext);
-
+  // TODO: add map with google api and add coordinates to venue model
   return (
     <View
       style={{

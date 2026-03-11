@@ -5,6 +5,7 @@ import {
   useVenueBooking,
 } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
+import { fileURLToPath } from "node:url";
 import React from "react";
 import {
   ActivityIndicator,
@@ -37,7 +38,7 @@ export default function Reserve() {
     onBook,
     confirm,
   } = useVenueBooking();
-
+  // Todo: make general css file
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {venueLoading && (
@@ -124,22 +125,29 @@ export default function Reserve() {
         <View style={styles.slotGrid}>
           {slots.map((slot) => {
             const taken = takenSlots.has(slot.startTime);
+            const isPast = (() => {
+              if (!selectedDate) return false;
+              const now = new Date();
+              if (selectedDate.toDateString() !== now.toDateString()) return false;
+              const [h, m] = slot.startTime.split(":").map(Number);
+              return h * 60 + m <= now.getHours() * 60 + now.getMinutes();
+            })();
             const isSelected = selectedSlot?.startTime === slot.startTime;
             return (
               <TouchableOpacity
                 key={slot.startTime}
-                disabled={taken}
+                disabled={taken || isPast}
                 onPress={() => setSelectedSlot(slot)}
                 style={[
                   styles.slot,
-                  taken && styles.slotTaken,
+                  (taken || isPast) && styles.slotTaken,
                   isSelected && styles.slotSelected,
                 ]}
               >
                 <Text
                   style={[
                     styles.slotText,
-                    taken && styles.slotTextTaken,
+                    (taken || isPast) && styles.slotTextTaken,
                     isSelected && styles.slotTextSelected,
                   ]}
                 >
@@ -148,7 +156,7 @@ export default function Reserve() {
                 <Text
                   style={[
                     styles.slotSub,
-                    taken && styles.slotTextTaken,
+                    (taken || isPast) && styles.slotTextTaken,
                     isSelected && styles.slotTextSelected,
                   ]}
                 >
@@ -202,7 +210,7 @@ export default function Reserve() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
-  sectionTitle: {
+    sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#111",
