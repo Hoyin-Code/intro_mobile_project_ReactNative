@@ -9,6 +9,8 @@ export interface FSVenue {
   name: string;
   address: string;
   imageUrl: string | null;
+  latitude: number;
+  longitude: number;
   openTime: string;
   closeTime: string;
   slotDurationMinutes: number;
