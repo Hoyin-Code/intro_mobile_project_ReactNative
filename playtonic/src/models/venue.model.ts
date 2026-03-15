@@ -1,3 +1,5 @@
+import { Facility } from "./facility.model";
+
 export interface FSCourt {
   id: string;
   name: string;
@@ -16,4 +18,5 @@ export interface FSVenue {
   slotDurationMinutes: number;
   isActive: boolean;
   courts: FSCourt[];
+  facilities: Facility[];
 }
