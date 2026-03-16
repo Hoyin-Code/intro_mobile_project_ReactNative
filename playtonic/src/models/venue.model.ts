@@ -1,4 +1,4 @@
-import { Facility } from "./facility.model";
+import { Ionicons } from "@expo/vector-icons";
 
 export interface FSCourt {
   id: string;
@@ -20,3 +20,9 @@ export interface FSVenue {
   courts: FSCourt[];
   facilities: Facility[];
 }
+
+export type Facility = {
+  id: string;
+  name: string;
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+};

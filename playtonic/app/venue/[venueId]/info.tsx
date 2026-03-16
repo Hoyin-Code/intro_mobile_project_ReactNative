@@ -1,6 +1,6 @@
 import { VenueContext } from "@/src/models/venueContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import {
   ActivityIndicator,
@@ -10,26 +10,20 @@ import {
   Text,
   View,
 } from "react-native";
-import { Facility } from "@/src/models/facility.model";
-
+import { Facility } from "@/src/models/venue.model";
 const ACCENT = "rgb(111, 161, 226)";
 
 export default function VenueInfo() {
   const { venue, courts, loading: venueLoading } = useContext(VenueContext);
-  const facilities: Facility[] = [
-    { id: "1", name: "Food", icon: "fast-food" },
-    { id: "2", name: "Drinks", icon: "beer" },
-    { id: "3", name: "Wi-Fi", icon: "wifi" },
-    { id: "4", name: "Dressing room", icon: "person" },
-    { id: "5", name: "Parking lot", icon: "car" },
-    { id: "6", name: "Accessible", icon: "accessibility" },
-    { id: "7", name: "Rental", icon: "basket" },
-    { id: "8", name: "Terrace", icon: "cafe" },
-    { id: "9", name: "Night Courts", icon: "moon" },
-  ];
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const facilities: Facility[] = venue?.facilities ?? [];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      scrollEnabled={scrollEnabled}
+    >
       {venueLoading ? (
         <ActivityIndicator color={ACCENT} style={styles.loader} />
       ) : (
@@ -84,26 +78,35 @@ export default function VenueInfo() {
             )}
           />
           <Text style={styles.sectionTitle}>Location</Text>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: /*courts[0]?.lat || */ 52.0,
-              longitude: /*courts[0]?.lng || */ 5.0,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
+          <View
+            onTouchStart={() => setScrollEnabled(false)}
+            onTouchEnd={() => setScrollEnabled(true)}
+            onTouchCancel={() => setScrollEnabled(true)}
           >
-            {courts.map((court) => (
-              <Marker
-                key={court.id}
-                coordinate={{
-                  latitude: /* court.lat*/ 52.0,
-                  longitude: /* court.lng*/ 5.0,
-                }}
-                title={court.name}
-              />
-            ))}
-          </MapView>
+            <MapView
+              style={styles.map}
+              scrollEnabled={false}
+              scrollDuringRotateOrZoomEnabled={false}
+              initialRegion={{
+                latitude: venue?.latitude ?? 51.2194,
+                longitude: venue?.longitude ?? 4.4025,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+            >
+              {venue && (
+                <Marker
+                  coordinate={{
+                    latitude: venue.latitude,
+                    longitude: venue.longitude,
+                  }}
+                  title={venue.name}
+                  description={venue.address}
+                  pinColor={ACCENT}
+                />
+              )}
+            </MapView>
+          </View>
         </>
       )}
     </ScrollView>

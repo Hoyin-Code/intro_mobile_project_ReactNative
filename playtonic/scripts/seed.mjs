@@ -51,36 +51,59 @@ function dayTs(offsetDays = 0) {
 }
 
 // ---------- seed data ----------
+
+// Matches the Ionicons icons used in app/venue/[venueId]/info.tsx
+const ALL_FACILITIES = [
+  { id: "1", name: "Food",          icon: "fast-food"    },
+  { id: "2", name: "Drinks",        icon: "beer"         },
+  { id: "3", name: "Wi-Fi",         icon: "wifi"         },
+  { id: "4", name: "Dressing room", icon: "person"       },
+  { id: "5", name: "Parking lot",   icon: "car"          },
+  { id: "6", name: "Accessible",    icon: "accessibility" },
+  { id: "7", name: "Rental",        icon: "basket"       },
+  { id: "8", name: "Terrace",       icon: "cafe"         },
+  { id: "9", name: "Night Courts",  icon: "moon"         },
+];
+
 const VENUES = [
   {
-    name: "Smash Arena",
-    address: "12 Sports Ave, Manila",
+    name: "Sporthal Schijnpoort",
+    address: "Schijnpoortweg 119, 2170 Antwerpen",
     imageUrl: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=80",
+    latitude: 51.2302,
+    longitude: 4.4190,
     openTime: "07:00",
     closeTime: "22:00",
     slotDurationMinutes: 60,
     isActive: true,
     courts: ["Court A", "Court B", "Court C"],
+    facilities: ["1", "2", "3", "4", "5", "7"],
   },
   {
-    name: "Rally Hub",
-    address: "88 Racket St, Quezon City",
+    name: "Topsporthal Berchem",
+    address: "Boomsesteenweg 220, 2020 Antwerpen",
     imageUrl: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&q=80",
+    latitude: 51.1989,
+    longitude: 4.4156,
     openTime: "08:00",
     closeTime: "21:00",
     slotDurationMinutes: 90,
     isActive: true,
     courts: ["Court 1", "Court 2"],
+    facilities: ["1", "3", "4", "5", "6", "8", "9"],
   },
   {
-    name: "Baseline Club",
-    address: "5 Volley Rd, Makati",
+    name: "Sportcomplex Deurne",
+    address: "Turnhoutsebaan 5, 2100 Deurne",
     imageUrl: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&q=80",
+    latitude: 51.2181,
+    longitude: 4.4590,
     openTime: "06:00",
     closeTime: "23:00",
     slotDurationMinutes: 60,
     isActive: true,
-    courts: ["North Court", "South Court", "Center Court"],
+    courts: ["Noord Court", "Zuid Court", "Centrum Court"],
+    facilities: ["2", "3", "4", "5", "6", "7", "9"],
   },
 ];
 
@@ -106,7 +129,7 @@ async function seed() {
   // venueCourtMap: { [venueName]: { venueId, courts: { [courtName]: courtId } } }
   const venueCourtMap = {};
 
-  for (const { courts: courtNames, ...venueData } of VENUES) {
+  for (const { courts: courtNames, facilities: facilityIds, ...venueData } of VENUES) {
     let venueId;
     let existingCourts = null;
 
@@ -124,7 +147,8 @@ async function seed() {
         name,
         isActive: true,
       }));
-      const ref = await addDoc(collection(db, "venues"), { ...venueData, courts });
+      const facilities = ALL_FACILITIES.filter((f) => facilityIds.includes(f.id));
+      const ref = await addDoc(collection(db, "venues"), { ...venueData, courts, facilities });
       venueId = ref.id;
       existingCourts = courts;
       console.log(`  venue "${venueData.name}"  id=${venueId}`);
@@ -142,22 +166,22 @@ async function seed() {
   // ---- reservations ----
   console.log("\nSeeding reservations...");
 
-  const { venueId: smashId, courts: smashCourts } = venueCourtMap["Smash Arena"];
-  const { venueId: rallyId, courts: rallyCourts } = venueCourtMap["Rally Hub"];
-  const { venueId: baseId,  courts: baseCourts  } = venueCourtMap["Baseline Club"];
+  const { venueId: schijnId, courts: schijnCourts } = venueCourtMap["Sporthal Schijnpoort"];
+  const { venueId: berchemId, courts: berchemCourts } = venueCourtMap["Topsporthal Berchem"];
+  const { venueId: deurneId, courts: deurneCourts } = venueCourtMap["Sportcomplex Deurne"];
 
   const RESERVATIONS = [
     // Today
-    { venueId: smashId, courtId: smashCourts["Court A"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "09:00", endTime: "10:00", status: "ongoing", matchId: null },
-    { venueId: smashId, courtId: smashCourts["Court A"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(0), startTime: "11:00", endTime: "12:00", status: "ongoing", matchId: null },
-    { venueId: rallyId, courtId: rallyCourts["Court 1"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "08:00", endTime: "09:30", status: "ongoing", matchId: null },
+    { venueId: schijnId, courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "09:00", endTime: "10:00", status: "upcoming", matchId: null },
+    { venueId: schijnId, courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(0), startTime: "11:00", endTime: "12:00", status: "upcoming", matchId: null },
+    { venueId: berchemId, courtId: berchemCourts["Court 1"],     bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "08:00", endTime: "09:30", status: "upcoming", matchId: null },
     // Tomorrow
-    { venueId: smashId, courtId: smashCourts["Court B"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "10:00", endTime: "11:00", status: "ongoing", matchId: null },
-    { venueId: baseId,  courtId: baseCourts["North Court"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(1), startTime: "07:00", endTime: "08:00", status: "ongoing", matchId: null },
-    { venueId: baseId,  courtId: baseCourts["Center Court"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "14:00", endTime: "15:00", status: "cancelled", matchId: null },
+    { venueId: schijnId, courtId: schijnCourts["Court B"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "10:00", endTime: "11:00", status: "upcoming", matchId: null },
+    { venueId: deurneId, courtId: deurneCourts["Noord Court"],   bookedBy: PLACEHOLDER_USERS[0], date: dayTs(1), startTime: "07:00", endTime: "08:00", status: "upcoming", matchId: null },
+    { venueId: deurneId, courtId: deurneCourts["Centrum Court"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "14:00", endTime: "15:00", status: "cancelled", matchId: null },
     // Day after tomorrow
-    { venueId: rallyId, courtId: rallyCourts["Court 2"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(2), startTime: "09:30", endTime: "11:00", status: "ongoing", matchId: null },
-    { venueId: smashId, courtId: smashCourts["Court C"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(2), startTime: "13:00", endTime: "14:00", status: "ongoing", matchId: null },
+    { venueId: berchemId, courtId: berchemCourts["Court 2"],     bookedBy: PLACEHOLDER_USERS[0], date: dayTs(2), startTime: "09:30", endTime: "11:00", status: "upcoming", matchId: null },
+    { venueId: schijnId, courtId: schijnCourts["Court C"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(2), startTime: "13:00", endTime: "14:00", status: "upcoming", matchId: null },
   ];
 
   for (const r of RESERVATIONS) {
