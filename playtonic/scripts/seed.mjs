@@ -9,6 +9,9 @@ import {
   collection,
   addDoc,
   getDocs,
+  doc,
+  getDoc,
+  setDoc,
   query,
   where,
 } from "firebase/firestore";
@@ -107,8 +110,16 @@ const VENUES = [
   },
 ];
 
+const SEED_USERS = [
+  { id: "seed_user_001", displayName: "Alex De Smedt",   email: "alex@playtonic.app",   skilllevel: 2.0, isActive: true },
+  { id: "seed_user_002", displayName: "Nora Claes",       email: "nora@playtonic.app",   skilllevel: 3.5, isActive: true },
+  { id: "seed_user_003", displayName: "Pieter Van Acker", email: "pieter@playtonic.app", skilllevel: 5.0, isActive: true },
+  { id: "seed_user_004", displayName: "Sara Willems",     email: "sara@playtonic.app",   skilllevel: 1.5, isActive: true },
+  { id: "seed_user_005", displayName: "Jens Bogaert",     email: "jens@playtonic.app",   skilllevel: 6.5, isActive: true },
+];
+
 // bookedBy uses placeholder IDs — replace with real UIDs if needed
-const PLACEHOLDER_USERS = ["seed_user_001", "seed_user_002"];
+const PLACEHOLDER_USERS = SEED_USERS.map((u) => u.id);
 
 async function reservationExists(courtId, date, startTime) {
   const snap = await getDocs(
@@ -124,6 +135,19 @@ async function reservationExists(courtId, date, startTime) {
 
 async function seed() {
   console.log("Seeding Firestore...\n");
+
+  // ---- users ----
+  console.log("Seeding users...");
+  for (const user of SEED_USERS) {
+    const { id, ...data } = user;
+    const snap = await getDoc(doc(db, "users", id));
+    if (snap.exists()) {
+      console.log(`  skip  user "${user.displayName}" (exists)`);
+    } else {
+      await setDoc(doc(db, "users", id), { ...data, createdAt: Date.now() });
+      console.log(`  user "${user.displayName}"  skilllevel=${user.skilllevel}  id=${id}`);
+    }
+  }
 
   // ---- venues & courts ----
   // venueCourtMap: { [venueName]: { venueId, courts: { [courtName]: courtId } } }
@@ -172,16 +196,17 @@ async function seed() {
 
   const RESERVATIONS = [
     // Today
-    { venueId: schijnId, courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "09:00", endTime: "10:00", status: "upcoming", matchId: null },
-    { venueId: schijnId, courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(0), startTime: "11:00", endTime: "12:00", status: "upcoming", matchId: null },
-    { venueId: berchemId, courtId: berchemCourts["Court 1"],     bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "08:00", endTime: "09:30", status: "upcoming", matchId: null },
+    { venueId: schijnId,  courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "09:00", endTime: "10:00", status: "upcoming",  matchId: null },
+    { venueId: schijnId,  courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(0), startTime: "11:00", endTime: "12:00", status: "upcoming",  matchId: null },
+    { venueId: berchemId, courtId: berchemCourts["Court 1"],      bookedBy: PLACEHOLDER_USERS[2], date: dayTs(0), startTime: "08:00", endTime: "09:30", status: "upcoming",  matchId: null },
     // Tomorrow
-    { venueId: schijnId, courtId: schijnCourts["Court B"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "10:00", endTime: "11:00", status: "upcoming", matchId: null },
-    { venueId: deurneId, courtId: deurneCourts["Noord Court"],   bookedBy: PLACEHOLDER_USERS[0], date: dayTs(1), startTime: "07:00", endTime: "08:00", status: "upcoming", matchId: null },
-    { venueId: deurneId, courtId: deurneCourts["Centrum Court"], bookedBy: PLACEHOLDER_USERS[1], date: dayTs(1), startTime: "14:00", endTime: "15:00", status: "cancelled", matchId: null },
+    { venueId: schijnId,  courtId: schijnCourts["Court B"],       bookedBy: PLACEHOLDER_USERS[3], date: dayTs(1), startTime: "10:00", endTime: "11:00", status: "upcoming",  matchId: null },
+    { venueId: deurneId,  courtId: deurneCourts["Noord Court"],   bookedBy: PLACEHOLDER_USERS[4], date: dayTs(1), startTime: "07:00", endTime: "08:00", status: "upcoming",  matchId: null },
+    { venueId: deurneId,  courtId: deurneCourts["Centrum Court"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(1), startTime: "14:00", endTime: "15:00", status: "cancelled", matchId: null },
     // Day after tomorrow
-    { venueId: berchemId, courtId: berchemCourts["Court 2"],     bookedBy: PLACEHOLDER_USERS[0], date: dayTs(2), startTime: "09:30", endTime: "11:00", status: "upcoming", matchId: null },
-    { venueId: schijnId, courtId: schijnCourts["Court C"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(2), startTime: "13:00", endTime: "14:00", status: "upcoming", matchId: null },
+    { venueId: berchemId, courtId: berchemCourts["Court 2"],      bookedBy: PLACEHOLDER_USERS[1], date: dayTs(2), startTime: "09:30", endTime: "11:00", status: "upcoming",  matchId: null },
+    { venueId: schijnId,  courtId: schijnCourts["Court C"],       bookedBy: PLACEHOLDER_USERS[2], date: dayTs(2), startTime: "13:00", endTime: "14:00", status: "upcoming",  matchId: null },
+    { venueId: deurneId,  courtId: deurneCourts["Zuid Court"],    bookedBy: PLACEHOLDER_USERS[3], date: dayTs(2), startTime: "16:00", endTime: "17:00", status: "upcoming",  matchId: null },
   ];
 
   for (const r of RESERVATIONS) {
