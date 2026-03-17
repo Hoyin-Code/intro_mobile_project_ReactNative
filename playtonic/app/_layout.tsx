@@ -1,6 +1,7 @@
 import { auth, db } from "@/firebase";
 import { UserContext, AppUserContext } from "@/src/models/appUserContext";
 import { Stack } from "expo-router";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react";
@@ -53,6 +54,7 @@ export default function RootLayout() {
   if (loading) return null;
 
   return (
+    <KeyboardProvider>
     <UserContext.Provider value={profile}>
       <Stack
         screenOptions={{
@@ -67,5 +69,6 @@ export default function RootLayout() {
         )}
       </Stack>
     </UserContext.Provider>
+    </KeyboardProvider>
   );
 }

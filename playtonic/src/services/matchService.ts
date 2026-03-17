@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "@/firebase";
 import { FSMatch } from "../models/match.model";
 
@@ -36,6 +36,11 @@ export async function getMatchesByPlayer(userId: string): Promise<FSMatch[]> {
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
     .filter((m) => m.date >= today.getTime());
+}
+
+export async function joinMatch(matchId: string, userId: string): Promise<void> {
+  const matchRef = doc(matchesCol(), matchId);
+  await updateDoc(matchRef, { players: arrayUnion(userId) });
 }
 
 export async function getOpenMatchesByVenue(venueId: string): Promise<FSMatch[]> {

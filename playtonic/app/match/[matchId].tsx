@@ -1,12 +1,13 @@
-import { AppUserContext } from "@/src/models/appUserContext";
+import { AppUserContext, UserContext } from "@/src/models/appUserContext";
 import { FSMatch } from "@/src/models/match.model";
-import { getMatchById } from "@/src/services/matchService";
+import { getMatchById, joinMatch } from "@/src/services/matchService";
 import { getUserById } from "@/src/services/userService";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -34,24 +35,24 @@ const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function MatchOverview() {
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
+  const user = useContext(UserContext);
   const [match, setMatch] = useState<FSMatch | null>(null);
   const [players, setPlayers] = useState<AppUserContext[]>([]);
   const [loading, setLoading] = useState(true);
+  const [joining, setJoining] = useState(false);
 
-  useEffect(() => {
+  const loadMatch = async () => {
     if (!matchId) return;
-    (async () => {
-      const m = await getMatchById(matchId);
-      if (!m) {
-        setLoading(false);
-        return;
-      }
-      setMatch(m);
-      const results = await Promise.all(m.players.map(getUserById));
-      setPlayers(results.filter(Boolean) as AppUserContext[]);
-      setLoading(false);
-    })();
-  }, [matchId]);
+    setLoading(true);
+    const m = await getMatchById(matchId);
+    if (!m) { setLoading(false); return; }
+    setMatch(m);
+    const results = await Promise.all(m.players.map(getUserById));
+    setPlayers(results.filter(Boolean) as AppUserContext[]);
+    setLoading(false);
+  };
+
+  useEffect(() => { loadMatch(); }, [matchId]);
 
   if (loading) {
     return (
@@ -177,19 +178,48 @@ export default function MatchOverview() {
         ))}
       </View>
 
-      {/* Chat button */}
-      <TouchableOpacity
-        style={styles.chatBtn}
-        onPress={() =>
-          router.push({
-            pathname: "/chat/[matchId]",
-            params: { matchId: match.id, matchName: match.matchName },
-          })
-        }
-      >
-        <Ionicons name="chatbubble-outline" size={18} color="#fff" />
-        <Text style={styles.chatBtnText}>Open Chat</Text>
-      </TouchableOpacity>
+      {user && match.players.includes(user.id) ? (
+        <TouchableOpacity
+          style={styles.chatBtn}
+          onPress={() =>
+            router.push({
+              pathname: "/chat/[matchId]",
+              params: { matchId: match.id, matchName: match.matchName },
+            })
+          }
+        >
+          <Ionicons name="chatbubble-outline" size={18} color="#fff" />
+          <Text style={styles.chatBtnText}>Open Chat</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={[styles.chatBtn, styles.joinBtn, joining && styles.btnDisabled]}
+          disabled={joining || match.status === "full"}
+          onPress={async () => {
+            if (!user) return;
+            setJoining(true);
+            try {
+              await joinMatch(match.id, user.id);
+              await loadMatch();
+            } catch {
+              Alert.alert("Error", "Could not join match. Please try again.");
+            } finally {
+              setJoining(false);
+            }
+          }}
+        >
+          {joining ? (
+            <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <>
+              <Ionicons name="person-add-outline" size={18} color="#fff" />
+              <Text style={styles.chatBtnText}>
+                {match.status === "full" ? "Match Full" : "Join Match"}
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
@@ -211,7 +241,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 4,
     marginBottom: 20,
-    marginTop: 100,
+    marginTop: 20,
   },
   badgeOpen: { backgroundColor: "#e6f4ea" },
   badgeFull: { backgroundColor: "#fdecea" },
@@ -275,4 +305,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   chatBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  joinBtn: { backgroundColor: "#4caf50" },
+  btnDisabled: { opacity: 0.5 },
 });
