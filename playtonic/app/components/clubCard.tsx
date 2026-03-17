@@ -1,4 +1,3 @@
-import { Club } from "@/src/models/club";
 import { FSVenue } from "@/src/models/venue.model";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
