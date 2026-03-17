@@ -130,7 +130,8 @@ export default function Reserve() {
             const isPast = (() => {
               if (!selectedDate) return false;
               const now = new Date();
-              if (selectedDate.toDateString() !== now.toDateString()) return false;
+              if (selectedDate.toDateString() !== now.toDateString())
+                return false;
               const [h, m] = slot.startTime.split(":").map(Number);
               return h * 60 + m <= now.getHours() * 60 + now.getMinutes();
             })();
@@ -171,6 +172,7 @@ export default function Reserve() {
       )}
 
       {/* Confirm button — only when all fields selected */}
+      <Text style={styles.sectionTitle}>Confirm your booking</Text>
       {selectedSlot && selectedCourt && selectedDate && venue && (
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
@@ -212,8 +214,13 @@ export default function Reserve() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
-  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", marginBottom: 8 },
-    sectionTitle: {
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#111",
+    marginBottom: 8,
+  },
+  sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#111",
@@ -267,7 +274,7 @@ const styles = StyleSheet.create({
   slotTextTaken: { color: "#bbb" },
   empty: { color: "#999", fontStyle: "italic", marginVertical: 8 },
   summary: {
-    marginTop: 28,
+    marginTop: 10,
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 18,
