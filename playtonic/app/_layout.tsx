@@ -39,6 +39,7 @@ export default function RootLayout() {
             email: String(d.email ?? ""),
             isActive: Boolean(d.isActive ?? true),
             imageUrl: d.photoUrl ?? null,
+            skillLevel: d.skillLevel,
           });
         }
         setLoading(false);
@@ -55,20 +56,20 @@ export default function RootLayout() {
 
   return (
     <KeyboardProvider>
-    <UserContext.Provider value={profile}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: "slide_from_right",
-        }}
-      >
-        {user ? (
-          <Stack.Screen name="tabs" />
-        ) : (
-          <Stack.Screen name="auth/login" />
-        )}
-      </Stack>
-    </UserContext.Provider>
+      <UserContext.Provider value={profile}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
+        >
+          {user ? (
+            <Stack.Screen name="tabs" />
+          ) : (
+            <Stack.Screen name="auth/login" />
+          )}
+        </Stack>
+      </UserContext.Provider>
     </KeyboardProvider>
   );
 }

@@ -1,21 +1,17 @@
-import {
-  DAY_NAMES,
-  getDates,
-  MONTH_NAMES,
-  useVenueBooking,
-} from "@/src/hooks/useVenueBooking";
+import { DAY_NAMES, getDates, MONTH_NAMES, useVenueBooking } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
-import { fileURLToPath } from "node:url";
 import React from "react";
 import {
   ActivityIndicator,
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import CourtSelector from "./components/CourtSelector";
+import DateSelector from "./components/DateSelector";
+import TimeSlotGrid from "./components/TimeSlotGrid";
 
 const ACCENT = "rgb(111, 161, 226)";
 const dates = getDates(50);
@@ -35,175 +31,60 @@ export default function Reserve() {
     booking,
     onSelectCourt,
     onSelectDate,
-    onBook,
     confirm,
   } = useVenueBooking();
-  // Todo: make general css file
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {venueLoading && (
-        <ActivityIndicator color={ACCENT} style={styles.loader} />
-      )}
+      {venueLoading && <ActivityIndicator color={ACCENT} style={styles.loader} />}
 
       <Text style={styles.pageTitle}>Create a Reservation</Text>
 
-      {/* Courts */}
       <Text style={styles.sectionTitle}>Select Court</Text>
-      {venueLoading ? (
-        <ActivityIndicator color={ACCENT} style={styles.loader} />
-      ) : (
-        <FlatList
-          data={courts}
-          keyExtractor={(c) => c.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.hList}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.chip,
-                selectedCourt?.id === item.id && styles.chipSelected,
-              ]}
-              onPress={() => onSelectCourt(item)}
-            >
-              <Text
-                style={[
-                  styles.chipText,
-                  selectedCourt?.id === item.id && styles.chipTextSelected,
-                ]}
-              >
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-      )}
-
-      {/* Date */}
-      <Text style={styles.sectionTitle}>Select Date</Text>
-      <FlatList
-        data={dates}
-        keyExtractor={(d) => d.toISOString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hList}
-        renderItem={({ item }) => {
-          const isSelected =
-            selectedDate?.toDateString() === item.toDateString();
-          return (
-            <TouchableOpacity
-              style={[styles.dateCard, isSelected && styles.dateCardSelected]}
-              onPress={() => onSelectDate(item)}
-            >
-              <Text
-                style={[styles.dateDow, isSelected && styles.dateTextSelected]}
-              >
-                {DAY_NAMES[item.getDay()]}
-              </Text>
-              <Text
-                style={[styles.dateNum, isSelected && styles.dateTextSelected]}
-              >
-                {item.getDate()}
-              </Text>
-              <Text
-                style={[styles.dateMon, isSelected && styles.dateTextSelected]}
-              >
-                {MONTH_NAMES[item.getMonth()]}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
+      <CourtSelector
+        courts={courts}
+        selectedCourt={selectedCourt}
+        onSelectCourt={onSelectCourt}
+        loading={venueLoading}
       />
 
-      {/* Time Slots */}
-      <Text style={styles.sectionTitle}>Select Time</Text>
-      {!selectedCourt || !selectedDate ? (
-        <Text style={styles.empty}>Select a court and date first.</Text>
-      ) : slotsLoading ? (
-        <ActivityIndicator color={ACCENT} style={styles.loader} />
-      ) : slots.length === 0 ? (
-        <Text style={styles.empty}>No slots available.</Text>
-      ) : (
-        <View style={styles.slotGrid}>
-          {slots.map((slot) => {
-            const taken = takenSlots.has(slot.startTime);
-            const isPast = (() => {
-              if (!selectedDate) return false;
-              const now = new Date();
-              if (selectedDate.toDateString() !== now.toDateString())
-                return false;
-              const [h, m] = slot.startTime.split(":").map(Number);
-              return h * 60 + m <= now.getHours() * 60 + now.getMinutes();
-            })();
-            const isSelected = selectedSlot?.startTime === slot.startTime;
-            return (
-              <TouchableOpacity
-                key={slot.startTime}
-                disabled={taken || isPast}
-                onPress={() => setSelectedSlot(slot)}
-                style={[
-                  styles.slot,
-                  (taken || isPast) && styles.slotTaken,
-                  isSelected && styles.slotSelected,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.slotText,
-                    (taken || isPast) && styles.slotTextTaken,
-                    isSelected && styles.slotTextSelected,
-                  ]}
-                >
-                  {slot.startTime}
-                </Text>
-                <Text
-                  style={[
-                    styles.slotSub,
-                    (taken || isPast) && styles.slotTextTaken,
-                    isSelected && styles.slotTextSelected,
-                  ]}
-                >
-                  {slot.endTime}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      )}
+      <Text style={styles.sectionTitle}>Select Date</Text>
+      <DateSelector dates={dates} selectedDate={selectedDate} onSelectDate={onSelectDate} />
 
-      {/* Confirm button — only when all fields selected */}
+      <Text style={styles.sectionTitle}>Select Time</Text>
+      <TimeSlotGrid
+        slots={slots}
+        takenSlots={takenSlots}
+        selectedDate={selectedDate}
+        selectedSlot={selectedSlot}
+        onSelectSlot={setSelectedSlot}
+        loading={slotsLoading}
+        courtAndDateSelected={!!selectedCourt && !!selectedDate}
+      />
+
       <Text style={styles.sectionTitle}>Confirm your booking</Text>
       {selectedSlot && selectedCourt && selectedDate && venue && (
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
             <Ionicons name="location-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>
-              {venue.name} · {selectedCourt.name}
-            </Text>
+            <Text style={styles.summaryText}>{venue.name} · {selectedCourt.name}</Text>
           </View>
           <View style={styles.summaryRow}>
             <Ionicons name="calendar-outline" size={16} color="#555" />
             <Text style={styles.summaryText}>
-              {DAY_NAMES[selectedDate.getDay()]},{" "}
-              {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
+              {DAY_NAMES[selectedDate.getDay()]}, {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
             </Text>
           </View>
           <View style={styles.summaryRow}>
             <Ionicons name="time-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>
-              {selectedSlot.startTime} – {selectedSlot.endTime}
-            </Text>
+            <Text style={styles.summaryText}>{selectedSlot.startTime} – {selectedSlot.endTime}</Text>
           </View>
           <TouchableOpacity
             style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
             onPress={confirm}
             disabled={booking}
           >
-            {booking ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.bookBtnText}>Confirm Booking</Text>
-            )}
+            {booking ? <ActivityIndicator color="#fff" /> : <Text style={styles.bookBtnText}>Confirm Booking</Text>}
           </TouchableOpacity>
         </View>
       )}
@@ -214,83 +95,16 @@ export default function Reserve() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
-  pageTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#111",
-    marginBottom: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111",
-    marginTop: 20,
-    marginBottom: 10,
-  },
+  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", marginBottom: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#111", marginTop: 20, marginBottom: 10 },
   loader: { marginVertical: 16 },
-  hList: { gap: 10 },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
-  },
-  chipSelected: { borderColor: ACCENT, backgroundColor: ACCENT },
-  chipText: { fontSize: 14, fontWeight: "600", color: "#333" },
-  chipTextSelected: { color: "#fff" },
-  dateCard: {
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
-    minWidth: 58,
-  },
-  dateCardSelected: { borderColor: ACCENT, backgroundColor: ACCENT },
-  dateDow: { fontSize: 11, fontWeight: "600", color: "#888" },
-  dateNum: { fontSize: 20, fontWeight: "800", color: "#111", lineHeight: 26 },
-  dateMon: { fontSize: 11, fontWeight: "600", color: "#888" },
-  dateTextSelected: { color: "#fff" },
-  slotGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  slot: {
-    alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
-    minWidth: 75,
-  },
-  slotSelected: { borderColor: ACCENT, backgroundColor: ACCENT },
-  slotTaken: { backgroundColor: "#f0f0f0", borderColor: "#e0e0e0" },
-  slotText: { fontSize: 14, fontWeight: "700", color: "#111" },
-  slotSub: { fontSize: 11, color: "#777", marginTop: 2 },
-  slotTextSelected: { color: "#fff" },
-  slotTextTaken: { color: "#bbb" },
-  empty: { color: "#999", fontStyle: "italic", marginVertical: 8 },
   summary: {
-    marginTop: 10,
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: "#eee",
-    gap: 10,
+    marginTop: 10, backgroundColor: "#fff", borderRadius: 16,
+    padding: 18, borderWidth: 1, borderColor: "#eee", gap: 10,
   },
   summaryRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   summaryText: { fontSize: 14, color: "#333", fontWeight: "500" },
-  bookBtn: {
-    backgroundColor: ACCENT,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginTop: 8,
-  },
+  bookBtn: { backgroundColor: ACCENT, borderRadius: 12, paddingVertical: 14, alignItems: "center", marginTop: 8 },
   bookBtnDisabled: { opacity: 0.6 },
   bookBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });

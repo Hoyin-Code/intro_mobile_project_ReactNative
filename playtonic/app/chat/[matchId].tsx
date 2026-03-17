@@ -21,7 +21,7 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import EmptyState from "@/src/components/EmptyState";
 
 import ChatInput from "./components/ChatInput";
 import MessageBubble from "./components/MessageBubble";
@@ -87,13 +87,17 @@ export default function ChatRoom() {
     if (!matchId) return;
     return onValue(ref(rtdb, `chats/${matchId}/typing`), (snap) => {
       const data = snap.val() as Record<string, string> | null;
-      if (!data) { setTypingLabel(""); return; }
+      if (!data) {
+        setTypingLabel("");
+        return;
+      }
       const names = Object.entries(data)
         .filter(([id]) => id !== user?.id)
         .map(([, name]) => name);
       if (names.length === 0) setTypingLabel("");
       else if (names.length === 1) setTypingLabel(`${names[0]} is typing…`);
-      else if (names.length === 2) setTypingLabel(`${names[0]} and ${names[1]} are typing…`);
+      else if (names.length === 2)
+        setTypingLabel(`${names[0]} and ${names[1]} are typing…`);
       else setTypingLabel("Several people are typing…");
     });
   }, [matchId, user?.id]);
@@ -182,24 +186,22 @@ export default function ChatRoom() {
           contentContainerStyle={styles.list}
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons name="chatbubbles-outline" size={48} color="#ddd" />
-              <Text style={styles.emptyTitle}>No messages yet</Text>
-              <Text style={styles.emptySub}>
-                Be the first to say something!
-              </Text>
-            </View>
+            <EmptyState icon="chatbubbles-outline" title="No messages yet" subtitle="Be the first to say something!" />
           }
         />
       )}
-      {typingLabel ? <Text style={styles.typingLabel}>{typingLabel}</Text> : null}
+      {typingLabel ? (
+        <Text style={styles.typingLabel}>{typingLabel}</Text>
+      ) : null}
       <ChatInput
         value={text}
         onChange={setText}
         onSend={onSend}
         sending={sending}
         onTypingChange={(isTyping) =>
-          user && matchId && setTyping(matchId, user.id, isTyping ? user.displayName : null)
+          user &&
+          matchId &&
+          setTyping(matchId, user.id, isTyping ? user.displayName : null)
         }
       />
     </KeyboardAvoidingView>
@@ -223,14 +225,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
   },
   dateLabel: { fontSize: 12, color: "#999", fontWeight: "600" },
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 80,
-    gap: 8,
+  typingLabel: {
+    fontSize: 12,
+    alignSelf: "flex-end",
+    color: "#999",
+    fontStyle: "italic",
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    backgroundColor: "#f0f2f5",
   },
-  emptyTitle: { fontSize: 16, fontWeight: "700", color: "#bbb" },
-  emptySub: { fontSize: 13, color: "#ccc" },
-  typingLabel: { fontSize: 12, color: "#999", fontStyle: "italic", paddingHorizontal: 16, paddingVertical: 4, backgroundColor: "#f0f2f5" },
 });

@@ -29,7 +29,6 @@ export const MONTH_NAMES = [
   "Nov",
   "Dec",
 ];
-// TODO: add current time to grey out the passed time slots
 export function getDates(count = 50): Date[] {
   return Array.from({ length: count }, (_, i) => {
     const d = new Date();

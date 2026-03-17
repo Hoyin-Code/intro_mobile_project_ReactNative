@@ -50,7 +50,7 @@ function formatDate(ts: number) {
   const d = new Date(ts);
   return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
 }
-
+// TODO: fix logic so it changes status after fetch
 const STATUS_LABEL: Record<ReservationStatus, string> = {
   upcoming: "Upcoming",
   ongoing: "Ongoing",
@@ -151,7 +151,7 @@ export default function Reservations() {
         <Text style={styles.emptyText}>No reservations yet</Text>
         <TouchableOpacity
           style={styles.bookBtn}
-          onPress={() => router.push("/tabs/userinfo/reservations")}
+          onPress={() => router.push("/tabs")}
         >
           <Text style={styles.bookBtnText}>Book a Court </Text>
         </TouchableOpacity>
@@ -182,7 +182,9 @@ export default function Reservations() {
       }
       ListEmptyComponent={
         !showPast ? (
-          <Text style={styles.emptyFiltered}>No upcoming or ongoing reservations.</Text>
+          <Text style={styles.emptyFiltered}>
+            No upcoming or ongoing reservations.
+          </Text>
         ) : null
       }
       refreshControl={
@@ -194,7 +196,8 @@ export default function Reservations() {
       }
       renderItem={({ item }) => {
         const effectiveStatus = getEffectiveStatus(item);
-        const cancelled = effectiveStatus === "cancelled" || effectiveStatus === "completed";
+        const cancelled =
+          effectiveStatus === "cancelled" || effectiveStatus === "completed";
         const badgeStyle =
           effectiveStatus === "ongoing"
             ? styles.badgeOngoing
@@ -333,5 +336,10 @@ const styles = StyleSheet.create({
     borderColor: ACCENT,
   },
   pastBtnText: { color: ACCENT, fontWeight: "600", fontSize: 13 },
-  emptyFiltered: { color: "#999", fontStyle: "italic", marginTop: 16, textAlign: "center" },
+  emptyFiltered: {
+    color: "#999",
+    fontStyle: "italic",
+    marginTop: 16,
+    textAlign: "center",
+  },
 });

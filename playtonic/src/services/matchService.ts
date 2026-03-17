@@ -1,4 +1,14 @@
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "@/firebase";
 import { FSMatch } from "../models/match.model";
 
@@ -19,7 +29,7 @@ export async function getMatchById(matchId: string): Promise<FSMatch | null> {
   if (!snapshot.exists()) return null;
   return { id: snapshot.id, ...snapshot.data() } as FSMatch;
 }
-
+// TODO: make max skill level selectable
 export async function createMatch(
   data: Omit<FSMatch, "id" | "createdAt">,
 ): Promise<FSMatch> {
@@ -38,12 +48,17 @@ export async function getMatchesByPlayer(userId: string): Promise<FSMatch[]> {
     .filter((m) => m.date >= today.getTime());
 }
 
-export async function joinMatch(matchId: string, userId: string): Promise<void> {
+export async function joinMatch(
+  matchId: string,
+  userId: string,
+): Promise<void> {
   const matchRef = doc(matchesCol(), matchId);
   await updateDoc(matchRef, { players: arrayUnion(userId) });
 }
 
-export async function getOpenMatchesByVenue(venueId: string): Promise<FSMatch[]> {
+export async function getOpenMatchesByVenue(
+  venueId: string,
+): Promise<FSMatch[]> {
   const q = query(
     matchesCol(),
     where("venueId", "==", venueId),

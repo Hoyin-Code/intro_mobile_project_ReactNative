@@ -21,7 +21,7 @@ export async function getUserById(uid: string): Promise<AppUserContext | null> {
     email: String(d.email ?? ""),
     isActive: Boolean(d.isActive ?? true),
     imageUrl: d.photoUrl ?? null,
-    skilllevel: Number(d.skilllevel ?? 1.0),
+    skillLevel: Number(d.skilllevel ?? 1.0),
   };
 }
 

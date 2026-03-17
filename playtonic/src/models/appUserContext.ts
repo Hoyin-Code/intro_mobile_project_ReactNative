@@ -7,6 +7,6 @@ export interface AppUserContext {
   email: string;
   isActive: boolean;
   imageUrl?: string | null;
-  skilllevel: number;
+  skillLevel: number;
 }
 export const UserContext = createContext<AppUserContext | null>(null);

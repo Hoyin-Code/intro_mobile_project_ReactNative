@@ -94,6 +94,14 @@ const RootLayout = () => {
           name="userinfo/myMatches"
           options={{ href: null, title: "mymatches" }}
         />
+        <Tabs.Screen
+          name="components/ChatCard"
+          options={{ href: null, title: "ChatCard" }}
+        />
+        <Tabs.Screen
+          name="components/MatchCard"
+          options={{ href: null, title: "MatchCard" }}
+        />
       </Tabs>
 
       <Modal
@@ -104,14 +112,20 @@ const RootLayout = () => {
         <SafeAreaView style={styles.menuPage}>
           {/* Header */}
           <View style={styles.menuHeader}>
-            <TouchableOpacity onPress={() => setMenuOpen(false)} style={styles.closeBtn}>
+            <TouchableOpacity
+              onPress={() => setMenuOpen(false)}
+              style={styles.closeBtn}
+            >
               <Ionicons name="close" size={22} color="#111" />
             </TouchableOpacity>
           </View>
 
           {/* Profile */}
           <View style={styles.profileRow}>
-            <TouchableOpacity style={styles.avatarContainer} onPress={openImageOptions}>
+            <TouchableOpacity
+              style={styles.avatarContainer}
+              onPress={openImageOptions}
+            >
               {imageUri || profile?.imageUrl ? (
                 <Image
                   source={{ uri: (imageUri ?? profile?.imageUrl) as string }}
@@ -142,26 +156,42 @@ const RootLayout = () => {
           <View style={styles.menuGroup}>
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={() => { router.push("/tabs/userinfo/myMatches"); setMenuOpen(false); }}
+              onPress={() => {
+                router.push("/tabs/userinfo/myMatches");
+                setMenuOpen(false);
+              }}
             >
               <View style={styles.menuIcon}>
                 <Ionicons name="tennisball-outline" size={20} color="#555" />
               </View>
               <Text style={styles.menuItemText}>My Matches</Text>
-              <Ionicons name="chevron-forward" size={16} color="#ccc" style={{ marginLeft: "auto" }} />
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color="#ccc"
+                style={{ marginLeft: "auto" }}
+              />
             </TouchableOpacity>
 
             <View style={styles.divider} />
 
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={() => { router.push("/tabs/userinfo/reservations"); setMenuOpen(false); }}
+              onPress={() => {
+                router.push("/tabs/userinfo/reservations");
+                setMenuOpen(false);
+              }}
             >
               <View style={styles.menuIcon}>
                 <Ionicons name="calendar-outline" size={20} color="#555" />
               </View>
               <Text style={styles.menuItemText}>My Reservations</Text>
-              <Ionicons name="chevron-forward" size={16} color="#ccc" style={{ marginLeft: "auto" }} />
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color="#ccc"
+                style={{ marginLeft: "auto" }}
+              />
             </TouchableOpacity>
           </View>
 
