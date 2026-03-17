@@ -1,5 +1,4 @@
-export interface RTDBMessage {
-  id: string;
+export interface RTDBMessageData {
   senderId: string;
   senderName: string;
   senderImageUrl: string | null;
@@ -7,8 +6,12 @@ export interface RTDBMessage {
   createdAt: number; // Unix timestamp
 }
 
+export interface RTDBMessage extends RTDBMessageData {
+  id: string;
+}
+
 export interface RTDBChat {
-  messages: Record<string, Omit<RTDBMessage, "id">>;
+  messages: Record<string, RTDBMessageData>;
   typing: Record<string, boolean>; // { [userId]: true }
 }
 

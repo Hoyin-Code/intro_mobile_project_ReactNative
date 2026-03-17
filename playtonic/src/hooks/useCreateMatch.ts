@@ -3,7 +3,11 @@ import { FSMatch } from "@/src/models/match.model";
 import { FSReservation } from "@/src/models/reservations.model";
 import { FSCourt, FSVenue } from "@/src/models/venue.model";
 import { VenueContext } from "@/src/models/venueContext";
-import { getOpenMatchesByVenue } from "@/src/services/matchService";
+import { createMatchChat } from "@/src/services/chat.service";
+import {
+  createMatch,
+  getOpenMatchesByVenue,
+} from "@/src/services/matchService";
 import {
   createReservation,
   getReservationsByCourt,
@@ -11,34 +15,7 @@ import {
 import { getUserById } from "@/src/services/userService";
 import { useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
-
-export type TimeSlot = { startTime: string; endTime: string };
-
-export const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-export const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-// TODO: add current time to grey out the passed time slots
-export function getDates(count = 50): Date[] {
-  return Array.from({ length: count }, (_, i) => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-}
-export type SlotMatch = { match: FSMatch; players: AppUserContext[] };
+import { DAY_NAMES, MONTH_NAMES, SlotMatch, TimeSlot } from "./useVenueBooking";
 
 function generateSlots(
   openTime: string,
@@ -59,7 +36,7 @@ function generateSlots(
   return slots;
 }
 
-export function useVenueBooking() {
+export function useCreateMatch() {
   const user = useContext(UserContext);
   const { venue, courts, loading: venueLoading } = useContext(VenueContext);
 
@@ -75,6 +52,10 @@ export function useVenueBooking() {
   const [slotMatches, setSlotMatches] = useState<Map<string, SlotMatch>>(
     new Map(),
   );
+
+  // Match-specific fields
+  const [matchName, setMatchName] = useState("");
+  const [maxPlayers, setMaxPlayers] = useState(4);
 
   const loadSlots = useCallback(
     async (court: FSCourt, date: Date, v: FSVenue) => {
@@ -92,7 +73,6 @@ export function useVenueBooking() {
       );
       setSlots(generateSlots(v.openTime, v.closeTime, v.slotDurationMinutes));
 
-      // filter to matches on this court+date, then fetch their players
       const courtMatches = venueMatches.filter(
         (m) => m.courtId === court.id && m.date === dateTs,
       );
@@ -134,24 +114,13 @@ export function useVenueBooking() {
     },
     [selectedCourt, venue, loadSlots],
   );
-  const confirm = () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
-      return;
-    Alert.alert(
-      "Are you sure you want to make this booking?",
-      `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: onBook },
-      ],
-    );
-  };
-  const onBook = useCallback(async () => {
+
+  const onCreateMatch = useCallback(async () => {
     if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
       return;
     setBooking(true);
     try {
-      await createReservation({
+      const reservation = await createReservation({
         venueId: venue.id,
         courtId: selectedCourt.id,
         bookedBy: user.id,
@@ -161,18 +130,62 @@ export function useVenueBooking() {
         status: "upcoming",
         matchId: null,
       });
+
+      const match = await createMatch({
+        reservationId: reservation.id,
+        matchName:
+          matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
+        courtId: selectedCourt.id,
+        venueId: venue.id,
+        hostId: user.id,
+        date: selectedDate.getTime(),
+        startTime: selectedSlot.startTime,
+        endTime: selectedSlot.endTime,
+        minSkillLevel: 0.5,
+        maxSkillLevel: 7.0,
+        maxPlayers,
+        players: [user.id],
+        status: "open",
+        description: null,
+      });
+
+      await createMatchChat(match.id);
+
       Alert.alert(
-        "Booked!",
+        "Match Created!",
         `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
       );
       setSelectedSlot(null);
+      setMatchName("");
       loadSlots(selectedCourt, selectedDate, venue);
     } catch {
-      Alert.alert("Error", "Could not complete booking. Please try again.");
+      Alert.alert("Error", "Could not create match. Please try again.");
     } finally {
       setBooking(false);
     }
-  }, [user, venue, selectedCourt, selectedDate, selectedSlot, loadSlots]);
+  }, [
+    user,
+    venue,
+    selectedCourt,
+    selectedDate,
+    selectedSlot,
+    matchName,
+    maxPlayers,
+    loadSlots,
+  ]);
+
+  const confirm = () => {
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
+      return;
+    Alert.alert(
+      "Create this match?",
+      `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: onCreateMatch },
+      ],
+    );
+  };
 
   return {
     venue,
@@ -188,7 +201,11 @@ export function useVenueBooking() {
     booking,
     onSelectCourt,
     onSelectDate,
-    onBook,
+    slotMatches,
+    matchName,
+    setMatchName,
+    maxPlayers,
+    setMaxPlayers,
     confirm,
   };
 }
