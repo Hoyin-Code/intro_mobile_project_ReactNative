@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { Float } from "react-native/Libraries/Types/CodegenTypes";
 
 export interface AppUserContext {
   id: string;
@@ -6,5 +7,6 @@ export interface AppUserContext {
   email: string;
   isActive: boolean;
   imageUrl?: string | null;
+  skilllevel: number;
 }
 export const UserContext = createContext<AppUserContext | null>(null);

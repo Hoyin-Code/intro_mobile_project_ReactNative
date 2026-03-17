@@ -13,6 +13,7 @@ export type AppUserDoc = {
   createdAt: unknown;
   isActive: boolean;
   photoUrl?: string;
+  skillevel: number;
 };
 
 export type RegisterInput = {
@@ -36,8 +37,8 @@ export async function registerUser(
   if (!email.includes("@")) throw new Error("Invalid email address.");
   if (password.length < 6)
     throw new Error("Password must be at least 6 characters.");
-//TODO: make displayname required or change to first or last name
-//TODO: fix register logic 
+  //TODO: make displayname required or change to first or last name
+  //TODO: fix register logic
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   const displayName = (input.displayName ?? "").trim();
 
@@ -49,6 +50,7 @@ export async function registerUser(
     displayName: displayName || (cred.user.displayName ?? ""),
     createdAt: serverTimestamp(),
     isActive: true,
+    skillevel: 1.5,
   };
   await setDoc(doc(db(), "users", cred.user.uid), userDoc, { merge: true });
 
