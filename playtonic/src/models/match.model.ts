@@ -4,6 +4,7 @@ export type SkillLevel = "beginner" | "intermediate" | "advanced" | "any";
 export interface FSMatch {
   id: string;
   reservationId: string;
+  matchName: string;
   courtId: string;
   venueId: string;
   hostId: string; // userId

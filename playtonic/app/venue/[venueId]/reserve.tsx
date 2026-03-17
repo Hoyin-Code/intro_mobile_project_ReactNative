@@ -45,6 +45,8 @@ export default function Reserve() {
         <ActivityIndicator color={ACCENT} style={styles.loader} />
       )}
 
+      <Text style={styles.pageTitle}>Create a Reservation</Text>
+
       {/* Courts */}
       <Text style={styles.sectionTitle}>Select Court</Text>
       {venueLoading ? (
@@ -210,6 +212,7 @@ export default function Reserve() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
+  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", marginBottom: 8 },
     sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
