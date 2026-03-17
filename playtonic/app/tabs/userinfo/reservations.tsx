@@ -2,11 +2,11 @@ import { UserContext } from "@/src/models/appUserContext";
 import {
   FSReservation,
   ReservationStatus,
+  getEffectiveStatus,
 } from "@/src/models/reservations.model";
 import {
   cancelReservation,
   getReservationsByUser,
-  markCompletedReservations,
 } from "@/src/services/reservationService";
 import { getCourtById, getVenueById } from "@/src/services/venueService";
 import { Ionicons } from "@expo/vector-icons";
@@ -51,23 +51,6 @@ function formatDate(ts: number) {
   return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
 }
 
-function getEffectiveStatus(r: FSReservation): ReservationStatus {
-  if (r.status === "cancelled") return "cancelled";
-  if (r.status === "completed") return "completed";
-  const now = new Date();
-  const [eh, em] = r.endTime.split(":").map(Number);
-  const endDate = new Date(r.date);
-  endDate.setHours(eh, em, 0, 0);
-  if (endDate < now) return "completed";
-  const todayTs = new Date();
-  todayTs.setHours(0, 0, 0, 0);
-  if (r.date !== todayTs.getTime()) return r.status;
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const [sh, sm] = r.startTime.split(":").map(Number);
-  if (nowMins >= sh * 60 + sm) return "ongoing";
-  return r.status;
-}
-
 const STATUS_LABEL: Record<ReservationStatus, string> = {
   upcoming: "Upcoming",
   ongoing: "Ongoing",
@@ -85,7 +68,6 @@ export default function Reservations() {
 
   const load = useCallback(async () => {
     if (!user) return;
-    await markCompletedReservations(user.id);
     const raw = await getReservationsByUser(user.id);
 
     const statusOrder: Record<ReservationStatus, number> = {
