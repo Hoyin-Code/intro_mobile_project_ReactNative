@@ -29,14 +29,11 @@ export default function VenueInfo() {
       ) : (
         <>
           <Text style={styles.sectionTitle}>Club facilities</Text>
-          <FlatList
-            data={facilities}
-            keyExtractor={(c) => c.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hList}
-            renderItem={({ item }) => (
+
+          <View style={styles.hList}>
+            {facilities.map((item) => (
               <View
+                key={item.id}
                 style={[
                   styles.chip,
                   { flexDirection: "row", alignItems: "center" },
@@ -50,18 +47,14 @@ export default function VenueInfo() {
                 />
                 <Text style={styles.chipText}>{item.name}</Text>
               </View>
-            )}
-          />
+            ))}
+          </View>
           <Text style={styles.sectionTitle}>Courts</Text>
 
-          <FlatList
-            data={courts}
-            keyExtractor={(c) => c.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hList}
-            renderItem={({ item }) => (
+          <View style={styles.hList}>
+            {courts.map((item) => (
               <View
+                key={item.id}
                 style={[
                   styles.chip,
                   { flexDirection: "row", alignItems: "center" },
@@ -75,12 +68,13 @@ export default function VenueInfo() {
                 />
                 <Text style={styles.chipText}>{item.name}</Text>
               </View>
-            )}
-          />
+            ))}
+          </View>
+
           <Text style={styles.sectionTitle}>Location</Text>
-          <View style= {{flex:1 ,flexDirection:"row" }}>
+          <View style={{ flex: 1, flexDirection: "row" }}>
             <Ionicons name="location-outline" size={20}></Ionicons>
-          <Text style={styles.chipText}>{venue?.address}</Text>
+            <Text style={styles.chipText}>{venue?.address}</Text>
           </View>
           <View
             onTouchStart={() => setScrollEnabled(false)}
@@ -112,6 +106,12 @@ export default function VenueInfo() {
               )}
             </MapView>
           </View>
+          <Text style={styles.sectionTitle}>Opening hours</Text>
+          <View>
+            <Text style={styles.chipText}>
+              Monday - Sunday: {venue?.openTime} - {venue?.closeTime}
+            </Text>
+          </View>
         </>
       )}
     </ScrollView>
@@ -129,7 +129,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loader: { marginVertical: 16 },
-  hList: { gap: 10 },
+  hList: {
+    gap: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
   chip: {
     paddingHorizontal: 16,
     paddingVertical: 2,
