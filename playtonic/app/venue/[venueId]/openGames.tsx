@@ -27,6 +27,7 @@ export default function OpenGames() {
     selectedDate,
     slots,
     takenSlots,
+    slotMatches,
     slotsLoading,
     selectedSlot,
     setSelectedSlot,
@@ -59,6 +60,7 @@ export default function OpenGames() {
       <TimeSlotGrid
         slots={slots}
         takenSlots={takenSlots}
+        slotMatches={slotMatches}
         selectedDate={selectedDate}
         selectedSlot={selectedSlot}
         onSelectSlot={setSelectedSlot}

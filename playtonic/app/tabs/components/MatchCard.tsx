@@ -1,6 +1,8 @@
 import { FSMatch } from "@/src/models/match.model";
+import { getUserById } from "@/src/services/userService";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 type EnrichedMatch = FSMatch & { venueName: string };
 
@@ -12,6 +14,8 @@ function formatDate(ts: number) {
   return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
 }
 
+type PlayerInfo = { id: string; imageUrl: string | null; displayName: string };
+
 type Props = {
   match: EnrichedMatch;
   onPress: () => void;
@@ -20,6 +24,22 @@ type Props = {
 export default function MatchCard({ match, onPress }: Props) {
   const isFull = match.status === "full";
   const spotsLeft = match.maxPlayers - match.players.length;
+  const [players, setPlayers] = useState<PlayerInfo[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(match.players.map((id) => getUserById(id))).then((results) => {
+      if (cancelled) return;
+      setPlayers(
+        results.map((u, i) => ({
+          id: match.players[i],
+          imageUrl: u?.imageUrl ?? null,
+          displayName: u?.displayName ?? "?",
+        }))
+      );
+    });
+    return () => { cancelled = true; };
+  }, [match.players]);
 
   return (
     <Pressable style={[styles.card, isFull && styles.cardFull]} onPress={onPress}>
@@ -36,31 +56,51 @@ export default function MatchCard({ match, onPress }: Props) {
       <View style={styles.divider} />
 
       <View style={styles.cardFooter}>
-        <View style={styles.infoRow}>
-          <Ionicons name="calendar-outline" size={14} color="#666" />
-          <Text style={styles.infoText}>{formatDate(match.date)}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Ionicons name="time-outline" size={14} color="#666" />
-          <Text style={styles.infoText}>{match.startTime} – {match.endTime}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Ionicons name="people-outline" size={14} color="#666" />
-          <Text style={styles.infoText}>{match.players.length} / {match.maxPlayers} players</Text>
-        </View>
-        {match.description ? (
+        <View style={styles.footerLeft}>
           <View style={styles.infoRow}>
-            <Ionicons name="chatbubble-outline" size={14} color="#666" />
-            <Text style={styles.infoText} numberOfLines={2}>{match.description}</Text>
+            <Ionicons name="calendar-outline" size={14} color="#666" />
+            <Text style={styles.infoText}>{formatDate(match.date)}</Text>
           </View>
-        ) : null}
+          <View style={styles.infoRow}>
+            <Ionicons name="time-outline" size={14} color="#666" />
+            <Text style={styles.infoText}>{match.startTime} – {match.endTime}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Ionicons name="people-outline" size={14} color="#666" />
+            <Text style={styles.infoText}>{match.players.length} / {match.maxPlayers} players</Text>
+          </View>
+          {match.description ? (
+            <View style={styles.infoRow}>
+              <Ionicons name="chatbubble-outline" size={14} color="#666" />
+              <Text style={styles.infoText} numberOfLines={2}>{match.description}</Text>
+            </View>
+          ) : null}
+        </View>
+
+        <View style={styles.avatarStack}>
+          {Array.from({ length: match.maxPlayers }).map((_, i) => {
+            const player = players[i];
+            return (
+              <View key={i} style={styles.avatarWrapper}>
+                {player?.imageUrl ? (
+                  <Image source={{ uri: player.imageUrl }} style={styles.avatar} />
+                ) : player ? (
+                  <View style={[styles.avatar, styles.avatarFallback]}>
+                    <Text style={styles.avatarInitial}>
+                      {player.displayName[0]?.toUpperCase()}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={[styles.avatar, styles.avatarEmpty]}>
+                    <Ionicons name="person-add-outline" size={14} color="#ccc" />
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </View>
       </View>
 
-      <View style={[styles.spotsBadge, isFull ? styles.spotsFull : styles.spotsOpen]}>
-        <Text style={styles.spotsText}>
-          {isFull ? "Full" : `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`}
-        </Text>
-      </View>
     </Pressable>
   );
 }
@@ -75,9 +115,26 @@ const styles = StyleSheet.create({
   skillBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, backgroundColor: "#e8f0fe" },
   skillText: { fontSize: 12, fontWeight: "600", color: "#444" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "#eee", marginVertical: 12 },
-  cardFooter: { gap: 6 },
+  cardFooter: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  footerLeft: { flex: 1, gap: 6 },
   infoRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   infoText: { fontSize: 14, color: "#444", flex: 1 },
+  avatarStack: { 
+    gap: 6, 
+    alignItems: "center", 
+    paddingLeft: 8, 
+    width:150,
+    height:100,
+    justifyContent:"center",
+    display:"contents",
+    flexDirection:"row"
+  },
+    
+  avatarWrapper: {marginLeft:3},
+  avatar: { width: 36, height: 36, borderRadius: 18, borderWidth: 2, borderColor: "#eee" },
+  avatarFallback: { backgroundColor: "#dde8f7", alignItems: "center", justifyContent: "center" },
+  avatarEmpty: { backgroundColor: "#f5f5f5", borderWidth: 1, borderColor: "#e0e0e0", borderStyle: "dashed", alignItems: "center", justifyContent: "center" },
+  avatarInitial: { fontSize: 14, fontWeight: "700", color: "#555" },
   spotsBadge: { alignSelf: "flex-start", marginTop: 12, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
   spotsOpen: { backgroundColor: "#e8f0fe" },
   spotsFull: { backgroundColor: "#f5f5f5" },
