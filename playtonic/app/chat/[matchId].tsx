@@ -179,14 +179,16 @@ export default function ChatRoom() {
       ) : (
         <FlatList
           data={items}
-          inverted
+          inverted = {true}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           style={styles.messageList}
           contentContainerStyle={styles.list}
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
-            <EmptyState icon="chatbubbles-outline" title="No messages yet" subtitle="Be the first to say something!" />
+            <View style={styles.emptyWrapper}>
+              <EmptyState icon="chatbubbles-outline" title="No messages yet" subtitle="Be the first to say something!" />
+            </View>
           }
         />
       )}
@@ -225,6 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
   },
   dateLabel: { fontSize: 12, color: "#999", fontWeight: "600" },
+  emptyWrapper: {flex:1, margin:"auto",paddingBottom:400},
   typingLabel: {
     fontSize: 12,
     alignSelf: "flex-end",

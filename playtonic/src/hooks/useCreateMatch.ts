@@ -11,11 +11,12 @@ import {
 import {
   createReservation,
   getReservationsByCourt,
+  updateReservationMatchId,
 } from "@/src/services/reservationService";
 import { getUserById } from "@/src/services/userService";
 import { useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
-import { DAY_NAMES, MONTH_NAMES, SlotMatch, TimeSlot } from "./useVenueBooking";
+import {MONTH_NAMES, SlotMatch, TimeSlot } from "./useVenueBooking";
 
 function generateSlots(
   openTime: string,
@@ -131,7 +132,7 @@ export function useCreateMatch() {
         matchId: null,
       });
 
-      const match = await createMatch({
+      const match :FSMatch= await createMatch({
         reservationId: reservation.id,
         matchName:
           matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
@@ -149,6 +150,7 @@ export function useCreateMatch() {
         description: null,
       });
 
+      await updateReservationMatchId(reservation.id, match.id);
       await createMatchChat(match.id);
 
       Alert.alert(

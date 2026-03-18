@@ -78,6 +78,10 @@ export default function VenueInfo() {
             )}
           />
           <Text style={styles.sectionTitle}>Location</Text>
+          <View style= {{flex:1 ,flexDirection:"row" }}>
+            <Ionicons name="location-outline" size={20}></Ionicons>
+          <Text style={styles.chipText}>{venue?.address}</Text>
+          </View>
           <View
             onTouchStart={() => setScrollEnabled(false)}
             onTouchEnd={() => setScrollEnabled(true)}
@@ -86,6 +90,7 @@ export default function VenueInfo() {
             <MapView
               style={styles.map}
               scrollEnabled={false}
+              rotateEnabled={false}
               scrollDuringRotateOrZoomEnabled={false}
               initialRegion={{
                 latitude: venue?.latitude ?? 51.2194,

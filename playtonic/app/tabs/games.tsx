@@ -77,7 +77,7 @@ export default function Games() {
       </View>
     );
   }
-
+  // TODO: make the create button a hover button on the bottom  of the screen
   return (
     <FlatList
       data={filtered}

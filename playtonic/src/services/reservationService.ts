@@ -66,3 +66,10 @@ export async function cancelReservation(id: string): Promise<void> {
   await updateReservationStatus(id, "cancelled");
 }
 
+export async function updateReservationMatchId(
+  id: string,
+  matchId: string,
+): Promise<void> {
+  await updateDoc(doc(reservationsCol(), id), { matchId });
+}
+
