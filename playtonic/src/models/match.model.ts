@@ -26,3 +26,5 @@ export interface FSMatch {
   description: string | null;
   createdAt: number;
 }
+// TODO: add sub-object for results and add results button to matchpage where host enters 
+// also make algortihm to divide skillpoints 

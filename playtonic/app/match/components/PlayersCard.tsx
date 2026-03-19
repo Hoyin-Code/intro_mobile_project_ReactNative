@@ -1,6 +1,6 @@
 import { AppUserContext } from "@/src/models/appUserContext";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const ACCENT = "rgb(111, 161, 226)";
 
@@ -8,9 +8,10 @@ type Props = {
   players: AppUserContext[];
   spotsLeft: number;
   hostId: string;
+  onResultsPress?: () => void;
 };
 
-export default function PlayersCard({ players, spotsLeft, hostId }: Props) {
+export default function PlayersCard({ players, spotsLeft, hostId, onResultsPress }: Props) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Players</Text>
@@ -45,6 +46,12 @@ export default function PlayersCard({ players, spotsLeft, hostId }: Props) {
           <Text style={styles.emptySlot}>Open slot</Text>
         </View>
       ))}
+
+      {onResultsPress && (
+        <TouchableOpacity style={styles.resultsBtn} onPress={onResultsPress}>
+          <Text style={styles.resultsBtnText}>View Results</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -60,7 +67,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardTitle: { fontSize: 15, fontWeight: "700", color: "#111", marginBottom: 4 },
-  playerRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 },
+  playerRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 4 },
   playerDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "#eee" },
   avatar: { width: 44, height: 44, borderRadius: 22 },
   avatarPlaceholder: {
@@ -79,4 +86,6 @@ const styles = StyleSheet.create({
   hostTag: { fontWeight: "400", color: ACCENT },
   playerSub: { fontSize: 12, color: "#888", marginTop: 1 },
   emptySlot: { fontSize: 14, color: "#bbb", fontStyle: "italic" },
+  resultsBtn: { marginTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "#eee", paddingTop: 12, alignItems: "center" },
+  resultsBtnText: { fontSize: 14, fontWeight: "600", color: "#666" },
 });

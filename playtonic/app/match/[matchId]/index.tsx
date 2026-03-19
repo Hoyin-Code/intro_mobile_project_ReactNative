@@ -4,13 +4,13 @@ import { FSVenue } from "@/src/models/venue.model";
 import { getMatchById, joinMatch } from "@/src/services/matchService";
 import { getUserById } from "@/src/services/userService";
 import { getVenueById } from "@/src/services/venueService";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 
-import MatchActionButton from "./components/MatchActionButton";
-import MatchInfoCard from "./components/MatchInfoCard";
-import PlayersCard from "./components/PlayersCard";
+import MatchActionButton from "../components/MatchActionButton";
+import MatchInfoCard from "../components/MatchInfoCard";
+import PlayersCard from "../components/PlayersCard";
 
 const ACCENT = "rgb(111, 161, 226)";
 
@@ -62,7 +62,12 @@ export default function MatchOverview() {
     <View style={styles.container}>
       <Text style={styles.matchName}>{match.matchName}</Text>
       <MatchInfoCard match={match} venue={venue} />
-      <PlayersCard players={players} spotsLeft={spotsLeft} hostId={match.hostId} />
+      <PlayersCard
+        players={players}
+        spotsLeft={spotsLeft}
+        hostId={match.hostId}
+        onResultsPress={() => router.push({ pathname: "/match/[matchId]/results", params: { matchId: match.id } })}
+      />
       <MatchActionButton
         match={match}
         user={user}
@@ -89,4 +94,5 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { color: "#999", fontSize: 16 },
   matchName: { fontSize: 24, fontWeight: "800", color: "#111", marginBottom: 16, marginTop: 50 },
+
 });
