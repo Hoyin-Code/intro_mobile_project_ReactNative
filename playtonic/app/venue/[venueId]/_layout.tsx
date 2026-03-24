@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 const SCREENS = [
   { name: "info", label: "Info" },
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   tabTextActive: {
-    color: ACCENT,
+    color: COLORS.accent,
   },
   tabIndicator: {
     position: "absolute",
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     right: 16,
     height: 2,
     borderRadius: 2,
-    backgroundColor: ACCENT,
+    backgroundColor: COLORS.accent,
   },
   header1: {
     flexDirection: "row",

@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { Facility } from "@/src/models/venue.model";
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 export default function VenueInfo() {
   const { venue, courts, loading: venueLoading } = useContext(VenueContext);
@@ -25,7 +25,7 @@ export default function VenueInfo() {
       scrollEnabled={scrollEnabled}
     >
       {venueLoading ? (
-        <ActivityIndicator color={ACCENT} style={styles.loader} />
+        <ActivityIndicator color={COLORS.accent} style={styles.loader} />
       ) : (
         <>
           <Text style={styles.sectionTitle}>Club facilities</Text>
@@ -101,7 +101,7 @@ export default function VenueInfo() {
                   }}
                   title={venue.name}
                   description={venue.address}
-                  pinColor={ACCENT}
+                  pinColor={COLORS.accent}
                 />
               )}
             </MapView>

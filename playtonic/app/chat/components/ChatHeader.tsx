@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 type Props = {
   matchId: string;
@@ -26,7 +26,7 @@ export default function ChatHeader({ matchId, matchName }: Props) {
           router.push({ pathname: "/match/[matchId]", params: { matchId } })
         }
       >
-        <Ionicons name="information-circle-outline" size={24} color={ACCENT} />
+        <Ionicons name="information-circle-outline" size={24} color={COLORS.accent} />
       </TouchableOpacity>
     </View>
   );

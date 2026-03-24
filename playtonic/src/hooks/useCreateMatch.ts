@@ -14,28 +14,11 @@ import {
   updateReservationMatchId,
 } from "@/src/services/reservationService";
 import { getUserById } from "@/src/services/userService";
+import { MONTH_NAMES } from "@/src/constants/dates";
+import { generateSlots } from "@/src/utils/slotUtils";
 import { useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
-import {MONTH_NAMES, SlotMatch, TimeSlot } from "./useVenueBooking";
-
-function generateSlots(
-  openTime: string,
-  closeTime: string,
-  durationMins: number,
-): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  const [openH, openM] = openTime.split(":").map(Number);
-  const [closeH, closeM] = closeTime.split(":").map(Number);
-  let cur = openH * 60 + openM;
-  const end = closeH * 60 + closeM;
-  while (cur + durationMins <= end) {
-    const fmt = (m: number) =>
-      `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-    slots.push({ startTime: fmt(cur), endTime: fmt(cur + durationMins) });
-    cur += durationMins;
-  }
-  return slots;
-}
+import { SlotMatch, TimeSlot } from "./useVenueBooking";
 
 export function useCreateMatch() {
   const user = useContext(UserContext);
@@ -132,7 +115,7 @@ export function useCreateMatch() {
         matchId: null,
       });
 
-      const match :FSMatch= await createMatch({
+      const match: FSMatch = await createMatch({
         reservationId: reservation.id,
         matchName:
           matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
@@ -145,6 +128,7 @@ export function useCreateMatch() {
         minSkillLevel: 0.5,
         maxSkillLevel: 7.0,
         maxPlayers,
+        results: undefined,
         players: [user.id],
         status: "open",
         description: null,

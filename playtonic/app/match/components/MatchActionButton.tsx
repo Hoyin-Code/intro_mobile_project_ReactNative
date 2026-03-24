@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 type Props = {
   match: FSMatch;
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: ACCENT,
+    backgroundColor: COLORS.accent,
     borderRadius: 14,
     paddingVertical: 14,
     marginTop: 4,

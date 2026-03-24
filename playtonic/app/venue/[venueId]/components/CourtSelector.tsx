@@ -1,7 +1,7 @@
 import { FSCourt } from "@/src/models/venue.model";
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 type Props = {
   courts: FSCourt[];
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function CourtSelector({ courts, selectedCourt, onSelectCourt, loading }: Props) {
-  if (loading) return <ActivityIndicator color={ACCENT} style={styles.loader} />;
+  if (loading) return <ActivityIndicator color={COLORS.accent} style={styles.loader} />;
   return (
     <FlatList
       data={courts}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     backgroundColor: "#fff",
   },
-  chipSelected: { borderColor: ACCENT, backgroundColor: ACCENT },
+  chipSelected: { borderColor: COLORS.accent, backgroundColor: COLORS.accent },
   chipText: { fontSize: 14, fontWeight: "600", color: "#333" },
   chipTextSelected: { color: "#fff" },
 });

@@ -1,3 +1,4 @@
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
 import { getUserById } from "@/src/services/userService";
 import { Ionicons } from "@expo/vector-icons";
@@ -5,9 +6,6 @@ import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 type EnrichedMatch = FSMatch & { venueName: string };
-
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 function formatDate(ts: number) {
   const d = new Date(ts);

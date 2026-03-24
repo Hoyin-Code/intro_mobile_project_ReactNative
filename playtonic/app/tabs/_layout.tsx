@@ -1,3 +1,4 @@
+import { COLORS } from "@/src/constants/colors";
 import { auth } from "@/firebase";
 import { UserContext } from "@/src/models/appUserContext";
 import { useImagePicker } from "@/src/hooks/useImagePicker";
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: "rgb(111, 161, 226)",
+    backgroundColor: COLORS.accent,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,

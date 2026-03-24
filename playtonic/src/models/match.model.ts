@@ -1,3 +1,5 @@
+import { AppUserContext } from "./appUserContext";
+
 export type MatchStatus = "open" | "full" | "cancelled" | "completed";
 
 /** Numeric skill rating on a 0.5–7.0 scale (e.g. DUPR-style). */
@@ -25,6 +27,26 @@ export interface FSMatch {
   status: MatchStatus;
   description: string | null;
   createdAt: number;
+  results?: Results;
 }
-// TODO: add sub-object for results and add results button to matchpage where host enters 
-// also make algortihm to divide skillpoints 
+export interface GameScore {
+  team1: number;
+  team2: number;
+  winner: "team1" | "team2" | "draw";
+}
+
+export interface Results {
+  team1: AppUserContext[];
+  team2: AppUserContext[];
+  games: GameScore[];
+  winner: "team1" | "team2" | "draw";
+  ratingDeltas: Record<string, number>;
+  submittedAt: number;
+}
+
+export function getTotals(results: Results): { team1: number; team2: number } {
+  return results.games.reduce(
+    (acc, g) => ({ team1: acc.team1 + g.team1, team2: acc.team2 + g.team2 }),
+    { team1: 0, team2: 0 },
+  );
+}

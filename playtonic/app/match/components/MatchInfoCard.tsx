@@ -1,10 +1,8 @@
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
 import { FSVenue } from "@/src/models/venue.model";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
-
-const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 type Props = {
   match: FSMatch;

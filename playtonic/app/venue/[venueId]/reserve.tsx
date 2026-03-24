@@ -1,4 +1,5 @@
-import { DAY_NAMES, getDates, MONTH_NAMES, useVenueBooking } from "@/src/hooks/useVenueBooking";
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
+import { getDates, useVenueBooking } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -13,7 +14,7 @@ import CourtSelector from "./components/CourtSelector";
 import DateSelector from "./components/DateSelector";
 import TimeSlotGrid from "./components/TimeSlotGrid";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 const dates = getDates(50);
 
 export default function Reserve() {
@@ -36,7 +37,7 @@ export default function Reserve() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {venueLoading && <ActivityIndicator color={ACCENT} style={styles.loader} />}
+      {venueLoading && <ActivityIndicator color={COLORS.accent} style={styles.loader} />}
 
       <Text style={styles.pageTitle}>Create a Reservation</Text>
 
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   },
   summaryRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   summaryText: { fontSize: 14, color: "#333", fontWeight: "500" },
-  bookBtn: { backgroundColor: ACCENT, borderRadius: 12, paddingVertical: 14, alignItems: "center", marginTop: 8 },
+  bookBtn: { backgroundColor: COLORS.accent, borderRadius: 12, paddingVertical: 14, alignItems: "center", marginTop: 8 },
   bookBtnDisabled: { opacity: 0.6 },
   bookBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });

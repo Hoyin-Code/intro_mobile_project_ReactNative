@@ -12,7 +12,7 @@ import MatchActionButton from "../components/MatchActionButton";
 import MatchInfoCard from "../components/MatchInfoCard";
 import PlayersCard from "../components/PlayersCard";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 export default function MatchOverview() {
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
@@ -43,7 +43,7 @@ export default function MatchOverview() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator color={ACCENT} size="large" />
+        <ActivityIndicator color={COLORS.accent} size="large" />
       </View>
     );
   }

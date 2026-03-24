@@ -1,4 +1,5 @@
 import { AppUserContext, UserContext } from "@/src/models/appUserContext";
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
 import { FSReservation } from "@/src/models/reservations.model";
 import { FSCourt, FSVenue } from "@/src/models/venue.model";
@@ -9,26 +10,12 @@ import {
   getReservationsByCourt,
 } from "@/src/services/reservationService";
 import { getUserById } from "@/src/services/userService";
+import { generateSlots } from "@/src/utils/slotUtils";
 import { useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
 
 export type TimeSlot = { startTime: string; endTime: string };
 
-export const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-export const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
 export function getDates(count = 50): Date[] {
   return Array.from({ length: count }, (_, i) => {
     const d = new Date();
@@ -38,25 +25,6 @@ export function getDates(count = 50): Date[] {
   });
 }
 export type SlotMatch = { match: FSMatch; players: AppUserContext[] };
-
-function generateSlots(
-  openTime: string,
-  closeTime: string,
-  durationMins: number,
-): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  const [openH, openM] = openTime.split(":").map(Number);
-  const [closeH, closeM] = closeTime.split(":").map(Number);
-  let cur = openH * 60 + openM;
-  const end = closeH * 60 + closeM;
-  while (cur + durationMins <= end) {
-    const fmt = (m: number) =>
-      `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-    slots.push({ startTime: fmt(cur), endTime: fmt(cur + durationMins) });
-    cur += durationMins;
-  }
-  return slots;
-}
 
 export function useVenueBooking() {
   const user = useContext(UserContext);

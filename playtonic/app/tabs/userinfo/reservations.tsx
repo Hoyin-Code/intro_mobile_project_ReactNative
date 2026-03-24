@@ -1,3 +1,5 @@
+import { COLORS } from "@/src/constants/colors";
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { UserContext } from "@/src/models/appUserContext";
 import {
   FSReservation,
@@ -28,23 +30,6 @@ type EnrichedReservation = FSReservation & {
   venueName: string;
   courtName: string;
 };
-
-const ACCENT = "rgb(111, 161, 226)";
-const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function formatDate(ts: number) {
   const d = new Date(ts);
@@ -140,7 +125,7 @@ export default function Reservations() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={ACCENT} />
+        <ActivityIndicator size="large" color={COLORS.accent} />
       </View>
     );
   }
@@ -191,7 +176,7 @@ export default function Reservations() {
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          tintColor={ACCENT}
+          tintColor={COLORS.accent}
         />
       }
       renderItem={({ item }) => {
@@ -266,7 +251,7 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 16, color: "#aaa", marginTop: 8 },
   bookBtn: {
     marginTop: 4,
-    backgroundColor: ACCENT,
+    backgroundColor: COLORS.accent,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 10,
@@ -333,9 +318,9 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: ACCENT,
+    borderColor: COLORS.accent,
   },
-  pastBtnText: { color: ACCENT, fontWeight: "600", fontSize: 13 },
+  pastBtnText: { color: COLORS.accent, fontWeight: "600", fontSize: 13 },
   emptyFiltered: {
     color: "#999",
     fontStyle: "italic",

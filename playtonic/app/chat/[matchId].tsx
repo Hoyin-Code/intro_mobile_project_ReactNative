@@ -1,3 +1,4 @@
+import { COLORS } from "@/src/constants/colors";
 import { UserContext } from "@/src/models/appUserContext";
 import { RTDBMessage } from "@/src/models/chat.model";
 import { sendMessage, setTyping } from "@/src/services/chat.service";
@@ -174,7 +175,7 @@ export default function ChatRoom() {
     <KeyboardAvoidingView style={styles.container} behavior={"height"}>
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator color="rgb(111, 161, 226)" size="large" />
+          <ActivityIndicator color={COLORS.accent} size="large" />
         </View>
       ) : (
         <FlatList

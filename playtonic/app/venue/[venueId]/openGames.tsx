@@ -1,10 +1,11 @@
+import { COLORS } from "@/src/constants/colors";
 import { useCreateMatch } from "@/src/hooks/useCreateMatch";
-import { DAY_NAMES, getDates, MONTH_NAMES } from "@/src/hooks/useVenueBooking";
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
+import { getDates } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   ActivityIndicator,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -14,8 +15,8 @@ import {
 import CourtSelector from "./components/CourtSelector";
 import DateSelector from "./components/DateSelector";
 import TimeSlotGrid from "./components/TimeSlotGrid";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
-const ACCENT = "rgb(111, 161, 226)";
 const dates = getDates(50);
 
 export default function OpenGames() {
@@ -40,88 +41,130 @@ export default function OpenGames() {
   } = useCreateMatch();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {venueLoading && <ActivityIndicator color={ACCENT} style={styles.loader} />}
+    <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        {venueLoading && (
+          <ActivityIndicator color={COLORS.accent} style={styles.loader} />
+        )}
 
-      <Text style={styles.pageTitle}>Create a Match</Text>
+        <Text style={styles.pageTitle}>Create a Match</Text>
 
-      <Text style={styles.sectionTitle}>Select Court</Text>
-      <CourtSelector
-        courts={courts}
-        selectedCourt={selectedCourt}
-        onSelectCourt={onSelectCourt}
-        loading={venueLoading}
-      />
+        <Text style={styles.sectionTitle}>Select Court</Text>
+        <CourtSelector
+          courts={courts}
+          selectedCourt={selectedCourt}
+          onSelectCourt={onSelectCourt}
+          loading={venueLoading}
+        />
 
-      <Text style={styles.sectionTitle}>Select Date</Text>
-      <DateSelector dates={dates} selectedDate={selectedDate} onSelectDate={onSelectDate} />
+        <Text style={styles.sectionTitle}>Select Date</Text>
+        <DateSelector
+          dates={dates}
+          selectedDate={selectedDate}
+          onSelectDate={onSelectDate}
+        />
 
-      <Text style={styles.sectionTitle}>Select Time</Text>
-      <TimeSlotGrid
-        slots={slots}
-        takenSlots={takenSlots}
-        slotMatches={slotMatches}
-        selectedDate={selectedDate}
-        selectedSlot={selectedSlot}
-        onSelectSlot={setSelectedSlot}
-        loading={slotsLoading}
-        courtAndDateSelected={!!selectedCourt && !!selectedDate}
-      />
+        <Text style={styles.sectionTitle}>Select Time</Text>
+        <TimeSlotGrid
+          slots={slots}
+          takenSlots={takenSlots}
+          slotMatches={slotMatches}
+          selectedDate={selectedDate}
+          selectedSlot={selectedSlot}
+          onSelectSlot={setSelectedSlot}
+          loading={slotsLoading}
+          courtAndDateSelected={!!selectedCourt && !!selectedDate}
+        />
 
-      <Text style={styles.sectionTitle}>Confirm your Match</Text>
-      {selectedSlot && selectedCourt && selectedDate && venue && (
-        <View style={styles.summary}>
-          <View style={styles.summaryRow}>
-            <Ionicons name="location-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>{venue.name} · {selectedCourt.name}</Text>
+        <Text style={styles.sectionTitle}>Confirm your Match</Text>
+        {selectedSlot && selectedCourt && selectedDate && venue && (
+          <View style={styles.summary}>
+            <View style={styles.summaryRow}>
+              <Ionicons name="location-outline" size={16} color="#555" />
+              <Text style={styles.summaryText}>
+                {venue.name} · {selectedCourt.name}
+              </Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Ionicons name="calendar-outline" size={16} color="#555" />
+              <Text style={styles.summaryText}>
+                {DAY_NAMES[selectedDate.getDay()]},{" "}
+                {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
+              </Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Ionicons name="time-outline" size={16} color="#555" />
+              <Text style={styles.summaryText}>
+                {selectedSlot.startTime} – {selectedSlot.endTime}
+              </Text>
+            </View>
+            <TextInput
+              style={styles.matchNameInput}
+              placeholder="Match name (optional)"
+              value={matchName}
+              onChangeText={setMatchName}
+            />
+            <TouchableOpacity
+              style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
+              onPress={confirm}
+              disabled={booking}
+            >
+              {booking ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.bookBtnText}>Create Match</Text>
+              )}
+            </TouchableOpacity>
           </View>
-          <View style={styles.summaryRow}>
-            <Ionicons name="calendar-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>
-              {DAY_NAMES[selectedDate.getDay()]}, {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
-            </Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Ionicons name="time-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>{selectedSlot.startTime} – {selectedSlot.endTime}</Text>
-          </View>
-          <TextInput
-            style={styles.matchNameInput}
-            placeholder="Match name (optional)"
-            value={matchName}
-            onChangeText={setMatchName}
-          />
-          <TouchableOpacity
-            style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
-            onPress={confirm}
-            disabled={booking}
-          >
-            {booking ? <ActivityIndicator color="#fff" /> : <Text style={styles.bookBtnText}>Create Match</Text>}
-          </TouchableOpacity>
-        </View>
-      )}
-    </ScrollView>
+        )}
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
-  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", marginBottom: 8 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#111", marginTop: 20, marginBottom: 10 },
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#111",
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111",
+    marginTop: 20,
+    marginBottom: 10,
+  },
   loader: { marginVertical: 16 },
   summary: {
-    marginTop: 20, backgroundColor: "#fff", borderRadius: 16,
-    padding: 18, borderWidth: 1, borderColor: "#eee", gap: 10,
+    marginTop: 20,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: "#eee",
+    gap: 10,
   },
   summaryRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   summaryText: { fontSize: 14, color: "#333", fontWeight: "500" },
-  bookBtn: { backgroundColor: ACCENT, borderRadius: 12, paddingVertical: 14, alignItems: "center", marginTop: 8 },
+  bookBtn: {
+    backgroundColor: COLORS.accent,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 8,
+  },
   bookBtnDisabled: { opacity: 0.6 },
   bookBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
   matchNameInput: {
-    borderWidth: 1, borderColor: "#ddd", borderRadius: 10,
-    paddingHorizontal: 12, paddingVertical: 10, fontSize: 14,
-    color: "#333", backgroundColor: "#f9f9f9",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: "#333",
+    backgroundColor: "#f9f9f9",
   },
 });

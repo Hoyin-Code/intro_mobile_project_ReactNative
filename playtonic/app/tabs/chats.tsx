@@ -6,7 +6,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import ChatCard from "./components/ChatCard";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 export default function Chatlist() {
   const user = useContext(UserContext);
@@ -35,7 +35,7 @@ export default function Chatlist() {
         keyExtractor={(m) => m.id}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={load} colors={[ACCENT]} tintColor={ACCENT} />
+          <RefreshControl refreshing={loading} onRefresh={load} colors={[COLORS.accent]} tintColor={COLORS.accent} />
         }
         renderItem={({ item }) => (
           <ChatCard

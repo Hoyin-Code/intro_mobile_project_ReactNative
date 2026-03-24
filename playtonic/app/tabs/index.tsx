@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import ClubCard from "../components/clubCard";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 const Index = () => {
   const [venues, setVenues] = useState<FSVenue[]>([]);
@@ -30,7 +30,7 @@ const Index = () => {
       </View>
 
       {loading ? (
-        <ActivityIndicator color={ACCENT} style={{ marginTop: 40 }} />
+        <ActivityIndicator color={COLORS.accent} style={{ marginTop: 40 }} />
       ) : (
         <FlatList
           initialNumToRender={6}

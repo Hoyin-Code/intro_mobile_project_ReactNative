@@ -14,7 +14,7 @@ import {
   View,
 } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 export default function SelectVenue() {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function SelectVenue() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={ACCENT} />
+        <ActivityIndicator size="large" color={COLORS.accent} />
       </View>
     );
   }
@@ -52,7 +52,7 @@ export default function SelectVenue() {
       keyExtractor={(v) => v.id}
       contentContainerStyle={styles.list}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={ACCENT} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.accent} />
       }
       ListHeaderComponent={
         <Text style={styles.subtitle}>Choose a venue to host your match</Text>

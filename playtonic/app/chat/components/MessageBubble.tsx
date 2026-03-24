@@ -1,7 +1,7 @@
 import { RTDBMessage } from "@/src/models/chat.model";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 const RADIUS = 18;
 const RADIUS_SMALL = 4;
 
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   avatar: { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: ACCENT, justifyContent: "center", alignItems: "center",
+    backgroundColor: COLORS.accent, justifyContent: "center", alignItems: "center",
   },
   avatarInitial: { fontSize: 13, fontWeight: "700", color: "#fff" },
 
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   senderName: { fontSize: 11, fontWeight: "700", color: "#888", marginLeft: 4, marginBottom: 1 },
 
   bubble: { paddingHorizontal: 14, paddingVertical: 9 },
-  bubbleMe: { backgroundColor: ACCENT },
+  bubbleMe: { backgroundColor: COLORS.accent },
   bubbleThem: { backgroundColor: "#fff" },
 
   bubbleMeRound:  { borderRadius: RADIUS },

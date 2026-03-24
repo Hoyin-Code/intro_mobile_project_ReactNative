@@ -1,6 +1,5 @@
+import { COLORS } from "../constants/colors";
 import { Image, StyleSheet, Text, View } from "react-native";
-
-const ACCENT = "rgb(111, 161, 226)";
 
 type Props = {
   uri?: string | null;
@@ -23,6 +22,6 @@ export default function Avatar({ uri, name, size = 44 }: Props) {
 }
 
 const styles = StyleSheet.create({
-  fallback: { backgroundColor: ACCENT, justifyContent: "center", alignItems: "center" },
+  fallback: { backgroundColor: COLORS.accent, justifyContent: "center", alignItems: "center" },
   initial: { fontWeight: "700", color: "#fff" },
 });

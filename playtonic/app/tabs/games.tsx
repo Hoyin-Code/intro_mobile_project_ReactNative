@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 const SKILL_FILTERS: { label: string; min: number; max: number }[] = [
   { label: "All", min: 0.5, max: 7.0 },
@@ -73,7 +73,7 @@ export default function Games() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={ACCENT} />
+        <ActivityIndicator size="large" color={COLORS.accent} />
       </View>
     );
   }
@@ -120,7 +120,7 @@ export default function Games() {
         <EmptyState icon="tennisball-outline" title="No open matches found" />
       }
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={ACCENT} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.accent} />
       }
       renderItem={({ item }) => (
         <MatchCard
@@ -141,10 +141,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 7,
     borderRadius: 20, borderWidth: 1, borderColor: "#ddd", backgroundColor: "#fff",
   },
-  filterChipActive: { backgroundColor: ACCENT, borderColor: ACCENT },
+  filterChipActive: { backgroundColor: COLORS.accent, borderColor: COLORS.accent },
   filterChipText: { fontSize: 13, fontWeight: "600", color: "#666" },
   filterChipTextActive: { color: "#fff" },
   titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  createBtn: { backgroundColor: ACCENT, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20 },
+  createBtn: { backgroundColor: COLORS.accent, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20 },
   createBtnText: { color: "#fff", fontWeight: "700", fontSize: 13 },
 });

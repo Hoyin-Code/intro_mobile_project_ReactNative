@@ -1,7 +1,7 @@
-import { DAY_NAMES, MONTH_NAMES } from "@/src/hooks/useVenueBooking";
+import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const ACCENT = "rgb(111, 161, 226)";
+import { COLORS } from "@/src/constants/colors";
 
 type Props = {
   dates: Date[];
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     minWidth: 58,
   },
-  dateCardSelected: { borderColor: ACCENT, backgroundColor: ACCENT },
+  dateCardSelected: { borderColor: COLORS.accent, backgroundColor: COLORS.accent },
   dateDow: { fontSize: 11, fontWeight: "600", color: "#888" },
   dateNum: { fontSize: 20, fontWeight: "800", color: "#111", lineHeight: 26 },
   dateMon: { fontSize: 11, fontWeight: "600", color: "#888" },

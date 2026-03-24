@@ -1,9 +1,8 @@
+import { COLORS } from "@/src/constants/colors";
+import { MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-const ACCENT = "rgb(111, 161, 226)";
-const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 type Props = {
   match: FSMatch;
@@ -15,7 +14,7 @@ export default function ChatCard({ match, onPress }: Props) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.iconContainer}>
-        <Ionicons name="chatbubbles-outline" size={24} color={ACCENT} />
+        <Ionicons name="chatbubbles-outline" size={24} color={COLORS.accent} />
       </View>
       <View style={styles.cardContent}>
         <Text style={styles.matchName}>{match.matchName}</Text>
