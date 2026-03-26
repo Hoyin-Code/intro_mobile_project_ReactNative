@@ -114,6 +114,7 @@ export function useCreateMatch() {
         status: "upcoming",
         matchId: null,
       });
+      console.log(reservation)
 
       const match: FSMatch = await createMatch({
         reservationId: reservation.id,
@@ -128,11 +129,11 @@ export function useCreateMatch() {
         minSkillLevel: 0.5,
         maxSkillLevel: 7.0,
         maxPlayers,
-        results: undefined,
         players: [user.id],
         status: "open",
         description: null,
       });
+      console.log(match)
 
       await updateReservationMatchId(reservation.id, match.id);
       await createMatchChat(match.id);
