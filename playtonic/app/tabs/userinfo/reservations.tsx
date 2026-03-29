@@ -1,5 +1,5 @@
 import { COLORS } from "@/src/constants/colors";
-import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
+import { formatDate } from "@/src/utils/dateUtils";
 import { UserContext } from "@/src/models/appUserContext";
 import {
   FSReservation,
@@ -31,10 +31,7 @@ type EnrichedReservation = FSReservation & {
   courtName: string;
 };
 
-function formatDate(ts: number) {
-  const d = new Date(ts);
-  return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
-}
+
 // TODO: fix logic so it changes status after fetch
 const STATUS_LABEL: Record<ReservationStatus, string> = {
   upcoming: "Upcoming",

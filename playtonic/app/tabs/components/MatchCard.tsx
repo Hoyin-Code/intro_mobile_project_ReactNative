@@ -1,4 +1,4 @@
-import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
+import { formatDate } from "@/src/utils/dateUtils";
 import { FSMatch } from "@/src/models/match.model";
 import { getUserById } from "@/src/services/userService";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,10 +7,6 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 type EnrichedMatch = FSMatch & { venueName: string };
 
-function formatDate(ts: number) {
-  const d = new Date(ts);
-  return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
-}
 
 type PlayerInfo = { id: string; imageUrl: string | null; displayName: string };
 

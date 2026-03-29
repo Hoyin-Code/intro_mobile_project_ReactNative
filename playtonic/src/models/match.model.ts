@@ -27,7 +27,7 @@ export interface FSMatch {
   status: MatchStatus;
   description: string | null;
   createdAt: number;
-  results?: Results;
+  results?: Results | null;
 }
 export interface GameScore {
   team1: number;

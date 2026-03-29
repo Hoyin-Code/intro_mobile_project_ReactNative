@@ -1,27 +1,31 @@
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
   getDoc,
   getDocs,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import { FSMatch } from "../models/match.model";
+import { FSMatch, Results } from "../models/match.model";
+import { getTodayStart } from "../utils/dateUtils";
+import { loadEnvFile } from "node:process";
+import PlayersCard from "@/app/match/components/PlayersCard";
 
 const matchesCol = () => collection(db(), "matches");
 
 export async function getOpenMatches(): Promise<FSMatch[]> {
   const q = query(matchesCol(), where("status", "in", ["open", "full"]));
   const snap = await getDocs(q);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= today.getTime());
+    .filter((m) => m.date >= todayStart);
 }
 
 export async function getMatchById(matchId: string): Promise<FSMatch | null> {
@@ -41,11 +45,10 @@ export async function createMatch(
 export async function getMatchesByPlayer(userId: string): Promise<FSMatch[]> {
   const q = query(matchesCol(), where("players", "array-contains", userId));
   const snap = await getDocs(q);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= today.getTime());
+    .filter((m) => m.date >= todayStart);
 }
 
 export async function joinMatch(
@@ -54,6 +57,13 @@ export async function joinMatch(
 ): Promise<void> {
   const matchRef = doc(matchesCol(), matchId);
   await updateDoc(matchRef, { players: arrayUnion(userId) });
+}
+export async function leaveMatch(
+  matchId: string,
+  userId: string,
+): Promise<void> {
+  const matchRef = doc(matchesCol(), matchId);
+  await updateDoc(matchRef, matchId, { players: arrayRemove(userId) });
 }
 
 export async function getOpenMatchesByVenue(
@@ -65,9 +75,12 @@ export async function getOpenMatchesByVenue(
     where("status", "in", ["open", "full"]),
   );
   const snap = await getDocs(q);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= today.getTime());
+    .filter((m) => m.date >= todayStart);
+}
+export async function submitResults(match: FSMatch, results: Results) {
+  const matchRef = doc(matchesCol(), match.id);
+  const snap = await updateDoc(matchRef, { results: results });
 }

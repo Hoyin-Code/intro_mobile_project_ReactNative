@@ -2,15 +2,10 @@ import { RTDBMessage } from "@/src/models/chat.model";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import { COLORS } from "@/src/constants/colors";
+import { formatTime } from "@/src/utils/dateUtils";
 const RADIUS = 18;
 const RADIUS_SMALL = 4;
 
-function formatTime(ts: number) {
-  return new Date(ts).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 type Props = {
   msg: RTDBMessage;

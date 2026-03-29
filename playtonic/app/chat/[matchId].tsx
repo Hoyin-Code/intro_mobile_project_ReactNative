@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import EmptyState from "@/src/components/EmptyState";
+import { formatDateLabel } from "@/src/utils/dateUtils";
 
 import ChatInput from "./components/ChatInput";
 import MessageBubble from "./components/MessageBubble";
@@ -31,19 +32,6 @@ type ListItem =
   | { type: "date"; label: string; key: string }
   | { type: "message"; msg: RTDBMessage; isFirst: boolean; isLast: boolean };
 
-function formatDateLabel(ts: number): string {
-  const d = new Date(ts);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return "Today";
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString([], {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  });
-}
 
 function buildListItems(messages: RTDBMessage[]): ListItem[] {
   const items: ListItem[] = [];
