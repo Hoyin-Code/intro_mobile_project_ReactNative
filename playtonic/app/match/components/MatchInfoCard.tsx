@@ -1,5 +1,6 @@
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
+import { isMatchOngoing } from "@/src/utils/matchUtils";
 import { FSVenue } from "@/src/models/venue.model";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
@@ -9,16 +10,26 @@ type Props = {
   venue: FSVenue | null;
 };
 
+function getBadgeStatus(match: FSMatch): { label: string; style: object } {
+  if (match.status === "completed") return { label: "COMPLETED", style: styles.badgeCompleted };
+  if (match.status === "cancelled") return { label: "CANCELLED", style: styles.badgeCancelled };
+
+  if (isMatchOngoing(match)) return { label: "ONGOING", style: styles.badgeOngoing };
+  if (match.status === "full") return { label: "FULL", style: styles.badgeFull };
+  return { label: "OPEN", style: styles.badgeOpen };
+}
+
 export default function MatchInfoCard({ match, venue }: Props) {
   const date = new Date(match.date);
   const spotsLeft = match.maxPlayers - match.players.length;
+  const badge = getBadgeStatus(match);
 
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.cardTitle}>Match Info</Text>
-        <View style={[styles.badge, match.status === "open" ? styles.badgeOpen : styles.badgeFull]}>
-          <Text style={styles.badgeText}>{match.status.toUpperCase()}</Text>
+        <View style={[styles.badge, badge.style]}>
+          <Text style={styles.badgeText}>{badge.label}</Text>
         </View>
       </View>
 
@@ -82,6 +93,9 @@ const styles = StyleSheet.create({
   badge: { borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4 },
   badgeOpen: { backgroundColor: "#e6f4ea" },
   badgeFull: { backgroundColor: "#fdecea" },
+  badgeOngoing: { backgroundColor: "#fff3cd" },
+  badgeCompleted: { backgroundColor: "#e8eaf6" },
+  badgeCancelled: { backgroundColor: "#f5f5f5" },
   badgeText: { fontSize: 12, fontWeight: "700", color: "#333" },
   row: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
   rowText: { fontSize: 14, color: "#444", flex: 1 },

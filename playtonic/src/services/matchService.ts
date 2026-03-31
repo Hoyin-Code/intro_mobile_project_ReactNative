@@ -82,5 +82,5 @@ export async function getOpenMatchesByVenue(
 }
 export async function submitResults(match: FSMatch, results: Results) {
   const matchRef = doc(matchesCol(), match.id);
-  const snap = await updateDoc(matchRef, { results: results });
+  await updateDoc(matchRef, { results: results });
 }

@@ -110,6 +110,8 @@ const VENUES = [
   },
 ];
 
+const HOST_ID = "IKX3wHumQIWsgmVpPi57E7X08S02";
+
 const SEED_USERS = [
   { id: "seed_user_001", displayName: "Alex De Smedt",   email: "alex@playtonic.app",   skilllevel: 2.0, isActive: true },
   { id: "seed_user_002", displayName: "Nora Claes",       email: "nora@playtonic.app",   skilllevel: 3.5, isActive: true },
@@ -219,6 +221,81 @@ async function seed() {
       createdAt: Date.now(),
     });
     console.log(`  reservation ${r.startTime}–${r.endTime}  id=${ref.id}`);
+  }
+
+  // ---- matches ----
+  console.log("\nSeeding matches...");
+
+  const allPlayers = [HOST_ID, ...SEED_USERS.map((u) => u.id)];
+
+  const MATCHES = [
+    // Full match — today, ongoing window around now
+    {
+      matchName: "Afternoon Doubles",
+      venueId: schijnId,
+      courtId: schijnCourts["Court A"],
+      hostId: HOST_ID,
+      date: dayTs(0),
+      startTime: "00:00",
+      endTime: "23:59",
+      minSkillLevel: 1.0,
+      maxSkillLevel: 7.0,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_001", "seed_user_002", "seed_user_003"],
+      status: "full",
+      description: "Competitive doubles game, all levels welcome.",
+      results: null,
+    },
+    // Full match — tomorrow
+    {
+      matchName: "Morning Rally",
+      venueId: berchemId,
+      courtId: berchemCourts["Court 1"],
+      hostId: HOST_ID,
+      date: dayTs(1),
+      startTime: "09:00",
+      endTime: "10:30",
+      minSkillLevel: 2.0,
+      maxSkillLevel: 6.0,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_002", "seed_user_004", "seed_user_005"],
+      status: "full",
+      description: null,
+      results: null,
+    },
+    // Full match — day after tomorrow
+    {
+      matchName: "Evening Smash",
+      venueId: deurneId,
+      courtId: deurneCourts["Noord Court"],
+      hostId: HOST_ID,
+      date: dayTs(2),
+      startTime: "18:00",
+      endTime: "19:00",
+      minSkillLevel: 3.0,
+      maxSkillLevel: 7.0,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_001", "seed_user_003", "seed_user_005"],
+      status: "full",
+      description: "High-skill match, bring your A-game.",
+      results: null,
+    },
+  ];
+
+  for (const m of MATCHES) {
+    const existing = await getDocs(
+      query(
+        collection(db, "matches"),
+        where("matchName", "==", m.matchName),
+        where("date", "==", m.date),
+      ),
+    );
+    if (!existing.empty) {
+      console.log(`  skip  match "${m.matchName}" (exists)`);
+      continue;
+    }
+    const ref = await addDoc(collection(db, "matches"), { ...m, createdAt: Date.now() });
+    console.log(`  match "${m.matchName}"  id=${ref.id}  players=${m.players.length}`);
   }
 
   console.log("\nDone.");
