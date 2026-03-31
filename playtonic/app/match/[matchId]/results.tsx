@@ -124,6 +124,7 @@ export default function MatchResults() {
     submittedAt: Date.now(),
   };
   async function submit(match: FSMatch, results: Results) {
+    // TODO: fix validations when teams are empty and score is 0
     if (results.team1.length > 2 || results.team2.length > 2)
       return alert("Assign players to both teams before submitting.");
     if (results.games.length === 0)
