@@ -114,7 +114,6 @@ export function useCreateMatch() {
         status: "upcoming",
         matchId: null,
       });
-      console.log(reservation)
 
       const match: FSMatch = await createMatch({
         reservationId: reservation.id,
@@ -133,7 +132,6 @@ export function useCreateMatch() {
         status: "open",
         description: null,
       });
-      console.log(match)
 
       await updateReservationMatchId(reservation.id, match.id);
       await createMatchChat(match.id);
