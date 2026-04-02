@@ -10,7 +10,6 @@ import {
 } from "react-native";
 
 import { COLORS } from "@/src/constants/colors";
-import { isMainThread } from "node:worker_threads";
 import { isMatchOngoing } from "@/src/utils/matchUtils";
 
 type Props = {
@@ -55,7 +54,7 @@ export default function MatchActionButton({
             <Text style={styles.btnText}>Cancel Game</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.leavebtn} onPress={() => onLeaving}>
+          <TouchableOpacity style={styles.leavebtn} onPress={() => onLeaving()}>
             <Ionicons name="exit" size={18} color="#fff" />
             <Text style={styles.btnText}>Leave Game</Text>
           </TouchableOpacity>

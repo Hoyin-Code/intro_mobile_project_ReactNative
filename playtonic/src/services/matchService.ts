@@ -14,8 +14,7 @@ import {
 import { db } from "@/firebase";
 import { FSMatch, Results } from "../models/match.model";
 import { getTodayStart } from "../utils/dateUtils";
-import { loadEnvFile } from "node:process";
-import PlayersCard from "@/app/match/components/PlayersCard";
+import { cancelReservation } from "./reservationService";
 
 const matchesCol = () => collection(db(), "matches");
 
@@ -63,7 +62,7 @@ export async function leaveMatch(
   userId: string,
 ): Promise<void> {
   const matchRef = doc(matchesCol(), matchId);
-  await updateDoc(matchRef, matchId, { players: arrayRemove(userId) });
+  await updateDoc(matchRef,{ players: arrayRemove(userId) });
 }
 
 export async function getOpenMatchesByVenue(
@@ -83,4 +82,14 @@ export async function getOpenMatchesByVenue(
 export async function submitResults(match: FSMatch, results: Results) {
   const matchRef = doc(matchesCol(), match.id);
   await updateDoc(matchRef, { results: results });
+}
+
+export async function cancelMatch(
+  matchId: string,
+  reservationId: string,
+): Promise<void> {
+  await Promise.all([
+    updateDoc(doc(matchesCol(), matchId), { status: "cancelled" }),
+    cancelReservation(reservationId),
+  ]);
 }
