@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { RegisterInput, registerUser } from "@/src/services/auth.services";
+import { COLORS } from "@/src/constants/colors";
 
 export default function RegisterScreen() {
   const [form, setForm] = useState<RegisterInput>({
@@ -23,6 +24,7 @@ export default function RegisterScreen() {
     displayName: "",
     password: "",
     imageUri: null,
+    gender:"Male",
   });
   const [hiddenNew, setHiddenNew] = useState(true);
   const [hiddenConfirm, setHiddenConfirm] = useState(true);
@@ -135,6 +137,20 @@ export default function RegisterScreen() {
           />
         </TouchableOpacity>{" "}
       </View>
+      <View style={styles.genderRow}>
+        {(["Male", "Female"] as const).map((g) => (
+          <TouchableOpacity
+            key={g}
+            style={[styles.genderBtn, form.gender === g && styles.genderBtnActive]}
+            onPress={() => setForm((p) => ({ ...p, gender: g }))}
+          >
+            <Text style={[styles.genderText, form.gender === g && styles.genderTextActive]}>
+              {g}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <TouchableOpacity
         style={styles.primaryButton}
         onPress={handleRegister}
@@ -194,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
-    backgroundColor: "rgb(45, 33, 218)",
+    backgroundColor: COLORS.primary,
     margin: 7,
   },
   primaryText: { color: "white", fontSize: 16, fontWeight: "600" },
@@ -226,4 +242,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
   },
+  genderRow: { flexDirection: "row", gap: 12, marginBottom: 12 },
+  genderBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  genderBtnActive: { backgroundColor: COLORS.accent, borderColor: COLORS.accent },
+  genderText: { fontSize: 15, fontWeight: "600", color: "#555" },
+  genderTextActive: { color: "#fff" },
 });

@@ -8,5 +8,7 @@ export interface AppUserContext {
   isActive: boolean;
   imageUrl?: string | null;
   skillLevel: number;
+  gender: "Male" | "Female"
+  createdAt:unknown
 }
 export const UserContext = createContext<AppUserContext | null>(null);

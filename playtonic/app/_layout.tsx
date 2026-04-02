@@ -1,9 +1,10 @@
 import { auth, db } from "@/firebase";
 import { UserContext, AppUserContext } from "@/src/models/appUserContext";
 import { Stack } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react";
 
 export default function RootLayout() {
@@ -40,6 +41,8 @@ export default function RootLayout() {
             isActive: Boolean(d.isActive ?? true),
             imageUrl: d.photoUrl ?? null,
             skillLevel: d.skillLevel,
+            gender: d.gender,
+            createdAt: d.createdAt
           });
         }
         setLoading(false);
@@ -55,6 +58,7 @@ export default function RootLayout() {
   if (loading) return null;
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <KeyboardProvider>
       <UserContext.Provider value={profile}>
         <Stack
@@ -71,5 +75,6 @@ export default function RootLayout() {
         </Stack>
       </UserContext.Provider>
     </KeyboardProvider>
+    </GestureHandlerRootView>
   );
 }

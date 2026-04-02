@@ -6,15 +6,9 @@ import {
 } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { uploadProfileImage } from "./userService";
+import { AppUserContext } from "../models/appUserContext";
 
-export type AppUserDoc = {
-  email: string;
-  displayName: string;
-  createdAt: unknown;
-  isActive: boolean;
-  photoUrl?: string;
-  skillevel: number;
-};
+
 
 export type RegisterInput = {
   email: string;
@@ -22,6 +16,7 @@ export type RegisterInput = {
   confirmPassword?: string;
   displayName: string;
   imageUri?: string | null;
+  gender: "Male" | "Female"
 };
 
 function cleanEmail(email: string) {
@@ -45,12 +40,13 @@ export async function registerUser(
   if (displayName) {
     await updateProfile(cred.user, { displayName });
   }
-  const userDoc: AppUserDoc = {
+  const userDoc: Omit<AppUserContext, "id"> = {
     email,
     displayName: displayName || (cred.user.displayName ?? ""),
     createdAt: serverTimestamp(),
     isActive: true,
-    skillevel: 1.5,
+    skillLevel: 1.5,
+    gender: input.gender,
   };
   await setDoc(doc(db(), "users", cred.user.uid), userDoc, { merge: true });
 
