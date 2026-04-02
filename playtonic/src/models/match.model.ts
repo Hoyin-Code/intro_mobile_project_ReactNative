@@ -24,6 +24,7 @@ export interface FSMatch {
   maxSkillLevel: SkillRating;
   maxPlayers: number;
   players: string[]; // array of userIds in the match
+  competitive: boolean;
   status: MatchStatus;
   description: string | null;
   createdAt: number;

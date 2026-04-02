@@ -18,11 +18,18 @@ function getBadgeStatus(match: FSMatch): { label: string; style: object } {
   if (match.status === "full") return { label: "FULL", style: styles.badgeFull };
   return { label: "OPEN", style: styles.badgeOpen };
 }
-
+function getCompetitiveStatus(match:FSMatch){
+  if (match.competitive)
+    return true;
+  else 
+    return false
+}
 export default function MatchInfoCard({ match, venue }: Props) {
   const date = new Date(match.date);
   const spotsLeft = match.maxPlayers - match.players.length;
   const badge = getBadgeStatus(match);
+  const compBadge = getCompetitiveStatus(match);
+
 
   return (
     <View style={styles.card}>

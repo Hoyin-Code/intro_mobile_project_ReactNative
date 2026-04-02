@@ -40,6 +40,9 @@ export function useCreateMatch() {
   // Match-specific fields
   const [matchName, setMatchName] = useState("");
   const [maxPlayers, setMaxPlayers] = useState(4);
+  const [competitive, setCompetitive] = useState(false);
+  const [minSkillLevel, setMinSkillLevel] = useState(1);
+  const [maxSkillLevel, setMaxSkillLevel] = useState(7);
 
   const loadSlots = useCallback(
     async (court: FSCourt, date: Date, v: FSVenue) => {
@@ -90,6 +93,11 @@ export function useCreateMatch() {
     [selectedDate, venue, loadSlots],
   );
 
+  const refreshSlots = useCallback(() => {
+    if (selectedCourt && selectedDate && venue)
+      loadSlots(selectedCourt, selectedDate, venue);
+  }, [selectedCourt, selectedDate, venue, loadSlots]);
+
   const onSelectDate = useCallback(
     (date: Date) => {
       setSelectedDate(date);
@@ -102,6 +110,13 @@ export function useCreateMatch() {
   const onCreateMatch = useCallback(async () => {
     if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
       return;
+    if (competitive && (user.skillLevel < minSkillLevel || user.skillLevel > maxSkillLevel)) {
+      Alert.alert(
+        "Skill Level Mismatch",
+        `Your skill level (${user.skillLevel}) must be between ${minSkillLevel} and ${maxSkillLevel} to create this match.`,
+      );
+      return;
+    }
     setBooking(true);
     try {
       const reservation = await createReservation({
@@ -117,16 +132,16 @@ export function useCreateMatch() {
 
       const match: FSMatch = await createMatch({
         reservationId: reservation.id,
-        matchName:
-          matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
+        matchName: matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
         courtId: selectedCourt.id,
         venueId: venue.id,
         hostId: user.id,
         date: selectedDate.getTime(),
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
-        minSkillLevel: 0.5,
-        maxSkillLevel: 7.0,
+        competitive,
+        minSkillLevel: competitive ? minSkillLevel : 0,
+        maxSkillLevel: competitive ? maxSkillLevel : 7,
         maxPlayers,
         players: [user.id],
         status: "open",
@@ -156,6 +171,9 @@ export function useCreateMatch() {
     selectedSlot,
     matchName,
     maxPlayers,
+    competitive,
+    minSkillLevel,
+    maxSkillLevel,
     loadSlots,
   ]);
 
@@ -191,6 +209,13 @@ export function useCreateMatch() {
     setMatchName,
     maxPlayers,
     setMaxPlayers,
+    competitive,
+    setCompetitive,
+    minSkillLevel,
+    setMinSkillLevel,
+    maxSkillLevel,
+    setMaxSkillLevel,
+    refreshSlots,
     confirm,
   };
 }

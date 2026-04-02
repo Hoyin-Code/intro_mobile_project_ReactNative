@@ -42,8 +42,17 @@ export default function MatchCard({ match, onPress }: Props) {
           <Text style={styles.matchName}>{match.matchName}</Text>
           <Text style={styles.venueName}>{match.venueName}</Text>
         </View>
-        <View style={styles.skillBadge}>
-          <Text style={styles.skillText}>{match.minSkillLevel}–{match.maxSkillLevel}</Text>
+        <View style={styles.badgeRow}>
+          <View style={[styles.badge, match.competitive ? styles.badgeCompetitive : styles.badgeFriendly]}>
+            <Text style={[styles.badgeText, match.competitive ? styles.badgeTextCompetitive : styles.badgeTextFriendly]}>
+              {match.competitive ? "Competitive" : "Friendly"}
+            </Text>
+          </View>
+          {match.competitive && (
+            <View style={styles.skillBadge}>
+              <Text style={styles.skillText}>{match.minSkillLevel}–{match.maxSkillLevel}</Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -129,6 +138,13 @@ const styles = StyleSheet.create({
   avatarFallback: { backgroundColor: "#dde8f7", alignItems: "center", justifyContent: "center" },
   avatarEmpty: { backgroundColor: "#f5f5f5", borderWidth: 1, borderColor: "#e0e0e0", borderStyle: "dashed", alignItems: "center", justifyContent: "center" },
   avatarInitial: { fontSize: 14, fontWeight: "700", color: "#555" },
+  badgeRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  badgeCompetitive: { backgroundColor: "#fde8e8" },
+  badgeFriendly: { backgroundColor: "#e8f5e9" },
+  badgeText: { fontSize: 12, fontWeight: "600" },
+  badgeTextCompetitive: { color: "#c0392b" },
+  badgeTextFriendly: { color: "#27ae60" },
   spotsBadge: { alignSelf: "flex-start", marginTop: 12, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
   spotsOpen: { backgroundColor: "#e8f0fe" },
   spotsFull: { backgroundColor: "#f5f5f5" },
