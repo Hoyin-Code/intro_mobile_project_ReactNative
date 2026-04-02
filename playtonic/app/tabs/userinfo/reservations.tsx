@@ -12,8 +12,8 @@ import {
 } from "@/src/services/reservationService";
 import { getCourtById, getVenueById } from "@/src/services/venueService";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -81,10 +81,12 @@ export default function Reservations() {
     setReservations(enriched);
   }, [user]);
 
-  useEffect(() => {
-    setLoading(true);
-    load().finally(() => setLoading(false));
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      load().finally(() => setLoading(false));
+    }, [load]),
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

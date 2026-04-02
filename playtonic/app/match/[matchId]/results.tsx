@@ -5,8 +5,8 @@ import { getMatchById, submitResults } from "@/src/services/matchService";
 import { computeRatingDeltas } from "@/src/services/ratingService";
 import { getUserById } from "@/src/services/userService";
 import { isMatchOngoing } from "@/src/utils/matchUtils";
-import { useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,8 +19,6 @@ import {
 import RatingCard from "../components/RatingCard";
 import ScoreCard from "../components/ScoreCard";
 import TeamsCard from "../components/TeamsCard";
-import { hasUncaughtExceptionCaptureCallback } from "node:process";
-import { registerEventHandler } from "react-native-reanimated/lib/typescript/core";
 
 type TeamSlot = "A" | "B" | null;
 
@@ -56,9 +54,11 @@ export default function MatchResults() {
     }
   };
 
-  useEffect(() => {
-    loadMatch();
-  }, [matchId]);
+  useFocusEffect(
+    useCallback(() => {
+      loadMatch();
+    }, [matchId]),
+  );
 
   const isHost = !!user && !!match && user.id === match.hostId;
   const canSubmit = isHost && !match?.results;
@@ -123,12 +123,25 @@ export default function MatchResults() {
     ratingDeltas: deltas,
     submittedAt: Date.now(),
   };
+  function isValidGameScore(a: number, b: number) {
+    if (a === b) return false;
+    const max = Math.max(a, b);
+    if (max < 6) return false;
+    if (max === 6) return true;
+    return Math.abs(a - b) >= 2;
+  }
+
   async function submit(match: FSMatch, results: Results) {
-    // TODO: fix validations when teams are empty and score is 0
-    if (results.team1.length > 2 || results.team2.length > 2)
+    if (results.team1.length < 2 || results.team2.length < 2)
       return alert("Assign players to both teams before submitting.");
     if (results.games.length === 0)
       return alert("Add at least one game score before submitting.");
+    const invalidGame = results.games.find((g) => !isValidGameScore(g.team1, g.team2));
+    if (invalidGame)
+      return alert(
+        `Invalid score ${invalidGame.team1}–${invalidGame.team2}. ` +
+        "First to 6 wins; if above 6 a 2-point lead is required.",
+      );
     try {
       await submitResults(match, results);
       await loadMatch();

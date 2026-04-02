@@ -4,8 +4,8 @@ import { FSMatch } from "@/src/models/match.model";
 import { getMatchesByPlayer } from "@/src/services/matchService";
 import { getVenues } from "@/src/services/venueService";
 import { isMatchOngoing } from "@/src/utils/matchUtils";
-import { router } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -41,10 +41,12 @@ export default function MyMatches() {
     setMatches(enriched);
   }, [user]);
 
-  useEffect(() => {
-    setLoading(true);
-    load().finally(() => setLoading(false));
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      load().finally(() => setLoading(false));
+    }, [load]),
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

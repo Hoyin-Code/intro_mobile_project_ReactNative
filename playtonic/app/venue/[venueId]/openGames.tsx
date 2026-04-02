@@ -3,9 +3,11 @@ import { useCreateMatch } from "@/src/hooks/useCreateMatch";
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import { getDates } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback } from "react";
 import {
   ActivityIndicator,
+  Switch,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +16,7 @@ import {
 } from "react-native";
 import CourtSelector from "./components/CourtSelector";
 import DateSelector from "./components/DateSelector";
+import SkillLevelSelector from "./components/SkillLevelSelector";
 import TimeSlotGrid from "./components/TimeSlotGrid";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -37,8 +40,17 @@ export default function OpenGames() {
     onSelectDate,
     matchName,
     setMatchName,
+    competitive,
+    setCompetitive,
+    minSkillLevel,
+    setMinSkillLevel,
+    maxSkillLevel,
+    setMaxSkillLevel,
+    refreshSlots,
     confirm,
   } = useCreateMatch();
+
+  useFocusEffect(useCallback(() => { refreshSlots(); }, [refreshSlots]));
 
   return (
     <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -74,6 +86,26 @@ export default function OpenGames() {
           loading={slotsLoading}
           courtAndDateSelected={!!selectedCourt && !!selectedDate}
         />
+        <View style={styles.toggleRow}>
+          <Text style={styles.sectionTitle}>Competitive</Text>
+          <Switch
+            value={competitive}
+            onValueChange={setCompetitive}
+            trackColor={{ false: "#ddd", true: COLORS.accent }}
+            thumbColor="#fff"
+          />
+        </View>
+        {competitive && (
+          <>
+            <Text style={styles.sectionTitle}>Skill Level Range</Text>
+            <SkillLevelSelector
+              minSkill={minSkillLevel}
+              maxSkill={maxSkillLevel}
+              onChangeMin={setMinSkillLevel}
+              onChangeMax={setMaxSkillLevel}
+            />
+          </>
+        )}
 
         <Text style={styles.sectionTitle}>Confirm your Match</Text>
         {selectedSlot && selectedCourt && selectedDate && venue && (
@@ -137,6 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loader: { marginVertical: 16 },
+  toggleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
   summary: {
     marginTop: 20,
     backgroundColor: "#fff",

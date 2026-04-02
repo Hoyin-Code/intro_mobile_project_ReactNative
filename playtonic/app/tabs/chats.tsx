@@ -1,8 +1,8 @@
 import { UserContext } from "@/src/models/appUserContext";
 import { FSMatch } from "@/src/models/match.model";
 import { getMatchesByPlayer } from "@/src/services/matchService";
-import { router } from "expo-router";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useContext, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import ChatCard from "./components/ChatCard";
 
@@ -25,7 +25,7 @@ export default function Chatlist() {
     }
   }, [user]);
 
-  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   return (
     <View style={styles.container}>

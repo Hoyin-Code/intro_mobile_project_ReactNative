@@ -2,14 +2,15 @@ import { AppUserContext, UserContext } from "@/src/models/appUserContext";
 import { FSMatch } from "@/src/models/match.model";
 import { FSVenue } from "@/src/models/venue.model";
 import {
+  cancelMatch,
   getMatchById,
   joinMatch,
   leaveMatch,
 } from "@/src/services/matchService";
 import { getUserById } from "@/src/services/userService";
 import { getVenueById } from "@/src/services/venueService";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useContext, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -55,9 +56,11 @@ export default function MatchOverview() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    loadMatch();
-  }, [matchId]);
+  useFocusEffect(
+    useCallback(() => {
+      loadMatch();
+    }, [matchId]),
+  );
 
   if (loading) {
     return (
@@ -78,7 +81,7 @@ export default function MatchOverview() {
   const spotsLeft = match.maxPlayers - match.players.length;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Text style={styles.matchName}>{match.matchName}</Text>
       <MatchInfoCard match={match} venue={venue} />
       <PlayersCard
@@ -125,7 +128,7 @@ export default function MatchOverview() {
           if (!user) return;
           setCancel(true);
           try {
-            await cancelReservation(match.reservationId);
+            await cancelMatch(match.id,match.reservationId);
             setCancel(false);
             router.back();
           } catch {
@@ -141,6 +144,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f7f7f9",
+  },
+  contentContainer: {
     padding: 10,
     paddingBottom: 40,
   },
