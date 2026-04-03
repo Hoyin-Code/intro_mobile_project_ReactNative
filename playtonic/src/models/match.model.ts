@@ -1,8 +1,7 @@
 import { AppUserContext } from "./appUserContext";
 
 export type MatchStatus =
-  | "open"
-  | "full"
+  | "upcoming"
   | "ongoing"
   | "cancelled"
   | "completed";

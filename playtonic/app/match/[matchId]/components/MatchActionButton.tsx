@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { COLORS } from "@/src/constants/colors";
-import { getEffectiveMatchStatus } from "@/src/utils/matchUtils";
+
 
 type Props = {
   match: FSMatch;
@@ -31,7 +31,7 @@ export default function MatchActionButton({
   onCancel,
 }: Props) {
   const ishost = user?.id == match.hostId;
-  const matchstatus = getEffectiveMatchStatus(match);
+
   if (user && match.players.includes(user.id)) {
     return (
       <>
@@ -65,7 +65,7 @@ export default function MatchActionButton({
   return (
     <TouchableOpacity
       style={[styles.joinbtn, styles.joinBtn, joining && styles.btnDisabled]}
-      disabled={joining || matchstatus === "full"}
+      disabled={joining || match.players.length >= match.maxPlayers}
       onPress={onJoin}
     >
       {joining ? (
@@ -74,7 +74,7 @@ export default function MatchActionButton({
         <>
           <Ionicons name="person-add-outline" size={18} color="#fff" />
           <Text style={styles.btnText}>
-            {matchstatus === "full" ? "Match Full" : "Join Match"}
+            {match.players.length >= match.maxPlayers ? "Match Full" : "Join Match"}
           </Text>
         </>
       )}

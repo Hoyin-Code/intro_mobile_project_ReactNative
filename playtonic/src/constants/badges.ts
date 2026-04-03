@@ -1,6 +1,5 @@
 export const MATCH_BADGE: Record<string, { label: string; color: string }> = {
-  open: { label: "OPEN", color: "#e6f4ea" },
-  full: { label: "FULL", color: "#fdecea" },
+  upcoming: { label: "UPCOMING", color: "#e8f0fe" },
   ongoing: { label: "ONGOING", color: "#fff3cd" },
   completed: { label: "COMPLETED", color: "#e8eaf6" },
   cancelled: { label: "CANCELLED", color: "#f5f5f5" },

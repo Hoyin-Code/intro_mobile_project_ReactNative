@@ -36,7 +36,7 @@ export default function PlayersCard({
                 <Text style={styles.hostTag}> · Host</Text>
               ) : null}
             </Text>
-            <Text style={styles.playerSub}>Skill {p.skillLevel}</Text>
+            <Text style={styles.playerSub}>Skill {p.skillLevel.toFixed(2)}</Text>
           </View>
         </View>
       ))}
