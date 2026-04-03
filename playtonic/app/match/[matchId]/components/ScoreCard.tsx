@@ -45,7 +45,7 @@ export default function ScoreCard({
           Team A
         </Text>
         <View style={{ width: 40 }} />
-        <Text style={[styles.scoreTeamHeader, { color: "#e07b54" }]}>
+        <Text style={[styles.scoreTeamHeader, { color: "#aa1414" }]}>
           Team B
         </Text>
         {canSubmit && <View style={{ width: 28 }} />}
@@ -73,7 +73,7 @@ export default function ScoreCard({
           <Text style={styles.gameLabel}>G{i + 1}</Text>
           {canSubmit ? (
             <TextInput
-              style={[styles.scoreInput, { borderColor: "#e07b54" }]}
+              style={[styles.scoreInput, { borderColor: "#aa1414" }]}
               value={g.b}
               onChangeText={(v) =>
                 onUpdateGame(i, "b", v.replace(/[^0-9]/g, ""))
@@ -84,7 +84,7 @@ export default function ScoreCard({
               placeholderTextColor="#ccc"
             />
           ) : (
-            <Text style={[styles.scoreReadonly, { color: "#e07b54" }]}>
+            <Text style={[styles.scoreReadonly, { color: "#aa1414" }]}>
               {g.b || "0"}
             </Text>
           )}
@@ -106,7 +106,7 @@ export default function ScoreCard({
           {teamAScore}
         </Text>
         <Text style={styles.gameLabel}>Total</Text>
-        <Text style={[styles.totalScore, { color: "#e07b54" }]}>
+        <Text style={[styles.totalScore, { color: "#aa1414" }]}>
           {teamBScore}
         </Text>
         {canSubmit && <View style={{ width: 28 }} />}

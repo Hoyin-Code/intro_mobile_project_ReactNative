@@ -29,7 +29,7 @@ export default function TeamsCard({
         <View style={styles.vsBar}>
           <Text style={styles.vsText}>VS</Text>
         </View>
-        <TeamColumn label="Team B" color="#e07b54" players={teamPlayers("B")} />
+        <TeamColumn label="Team B" color="#aa1414" players={teamPlayers("B")} />
       </View>
 
       {canSubmit && (
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   teamBtnActiveA: { backgroundColor: "#4e8ef7", borderColor: "#4e8ef7" },
-  teamBtnActiveB: { backgroundColor: "#e07b54", borderColor: "#e07b54" },
+  teamBtnActiveB: { backgroundColor: "#aa1414", borderColor: "#aa1414" },
   teamBtnLabel: { fontSize: 13, fontWeight: "700", color: "#aaa" },
   teamBtnLabelActive: { color: "#fff" },
 });
