@@ -19,7 +19,6 @@ export default function Games() {
   const router = useRouter();
   const { loading, refreshing, onRefresh, filtered, filter, filterModalVisible, openFilter, closeFilter, applyFilter } =
     useGames();
-
   if (loading) {
     return (
       <View style={styles.centered}>

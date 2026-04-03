@@ -29,7 +29,7 @@ export function isFilterActive(f: FilterState) {
     f.toHour !== 22 ||
     f.minSkill !== 0.5 ||
     f.maxSkill !== 7.0 ||
-    f.gender !== "same"
+    f.gender !== "all"
   );
 }
 
