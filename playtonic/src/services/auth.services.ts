@@ -6,8 +6,6 @@ import {
 } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { uploadProfileImage } from "./userService";
-import { AppUserContext } from "../models/appUserContext";
-
 export type RegisterInput = {
   email: string;
   password: string;
@@ -36,7 +34,7 @@ export async function registerUser(
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(cred.user, { displayName });
 
-  const userDoc: Omit<AppUserContext, "id"> = {
+  const userDoc = {
     email,
     displayName,
     createdAt: serverTimestamp(),
