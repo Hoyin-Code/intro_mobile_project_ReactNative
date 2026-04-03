@@ -57,24 +57,25 @@ function dayTs(offsetDays = 0) {
 
 // Matches the Ionicons icons used in app/venue/[venueId]/info.tsx
 const ALL_FACILITIES = [
-  { id: "1", name: "Food",          icon: "fast-food"     },
-  { id: "2", name: "Drinks",        icon: "beer"          },
-  { id: "3", name: "Wi-Fi",         icon: "wifi"          },
-  { id: "4", name: "Dressing room", icon: "person"        },
-  { id: "5", name: "Parking lot",   icon: "car"           },
-  { id: "6", name: "Accessible",    icon: "accessibility"  },
-  { id: "7", name: "Rental",        icon: "basket"        },
-  { id: "8", name: "Terrace",       icon: "cafe"          },
-  { id: "9", name: "Night Courts",  icon: "moon"          },
+  { id: "1", name: "Food", icon: "fast-food" },
+  { id: "2", name: "Drinks", icon: "beer" },
+  { id: "3", name: "Wi-Fi", icon: "wifi" },
+  { id: "4", name: "Dressing room", icon: "person" },
+  { id: "5", name: "Parking lot", icon: "car" },
+  { id: "6", name: "Accessible", icon: "accessibility" },
+  { id: "7", name: "Rental", icon: "basket" },
+  { id: "8", name: "Terrace", icon: "cafe" },
+  { id: "9", name: "Night Courts", icon: "moon" },
 ];
 
 const VENUES = [
   {
     name: "Sporthal Schijnpoort",
-    address: "Schijnpoortweg 119, 2170 Antwerpen",
-    imageUrl: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=80",
-    latitude: 51.2302,
-    longitude: 4.4190,
+    address: "Schijnpoortweg 55, 2060 Antwerpen",
+    imageUrl:
+      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=80",
+    latitude: 51.2318,
+    longitude: 4.4197,
     openTime: "07:00",
     closeTime: "22:00",
     slotDurationMinutes: 60,
@@ -83,11 +84,12 @@ const VENUES = [
     facilities: ["1", "2", "3", "4", "5", "7"],
   },
   {
-    name: "Topsporthal Berchem",
-    address: "Boomsesteenweg 220, 2020 Antwerpen",
-    imageUrl: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&q=80",
-    latitude: 51.1989,
-    longitude: 4.4156,
+    name: "Sporthal Het Rooi",
+    address: "Berchemstadionstraat 73, 2600 Berchem",
+    imageUrl:
+      "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&q=80",
+    latitude: 51.1965,
+    longitude: 4.4321,
     openTime: "08:00",
     closeTime: "21:00",
     slotDurationMinutes: 90,
@@ -96,11 +98,12 @@ const VENUES = [
     facilities: ["1", "3", "4", "5", "6", "8", "9"],
   },
   {
-    name: "Sportcomplex Deurne",
-    address: "Turnhoutsebaan 5, 2100 Deurne",
-    imageUrl: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&q=80",
-    latitude: 51.2181,
-    longitude: 4.4590,
+    name: "Royal Antwerp Tennis Club",
+    address: "Boterlaarbaan 575, 2100 Deurne",
+    imageUrl:
+      "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&q=80",
+    latitude: 51.2204,
+    longitude: 4.4718,
     openTime: "06:00",
     closeTime: "23:00",
     slotDurationMinutes: 60,
@@ -113,11 +116,46 @@ const VENUES = [
 const HOST_ID = "IKX3wHumQIWsgmVpPi57E7X08S02";
 
 const SEED_USERS = [
-  { id: "seed_user_001", displayName: "Alex De Smedt",   email: "alex@playtonic.app",   skillLevel: 2.0, gender: "Male",   isActive: true },
-  { id: "seed_user_002", displayName: "Nora Claes",       email: "nora@playtonic.app",   skillLevel: 3.5, gender: "Female", isActive: true },
-  { id: "seed_user_003", displayName: "Pieter Van Acker", email: "pieter@playtonic.app", skillLevel: 5.0, gender: "Male",   isActive: true },
-  { id: "seed_user_004", displayName: "Sara Willems",     email: "sara@playtonic.app",   skillLevel: 1.5, gender: "Female", isActive: true },
-  { id: "seed_user_005", displayName: "Jens Bogaert",     email: "jens@playtonic.app",   skillLevel: 6.5, gender: "Male",   isActive: true },
+  {
+    id: "seed_user_001",
+    displayName: "Alex De Smedt",
+    email: "alex@playtonic.app",
+    skillLevel: 2.0,
+    gender: "Male",
+    isActive: true,
+  },
+  {
+    id: "seed_user_002",
+    displayName: "Nora Claes",
+    email: "nora@playtonic.app",
+    skillLevel: 3.5,
+    gender: "Female",
+    isActive: true,
+  },
+  {
+    id: "seed_user_003",
+    displayName: "Pieter Van Acker",
+    email: "pieter@playtonic.app",
+    skillLevel: 5.0,
+    gender: "Male",
+    isActive: true,
+  },
+  {
+    id: "seed_user_004",
+    displayName: "Sara Willems",
+    email: "sara@playtonic.app",
+    skillLevel: 1.5,
+    gender: "Female",
+    isActive: true,
+  },
+  {
+    id: "seed_user_005",
+    displayName: "Jens Bogaert",
+    email: "jens@playtonic.app",
+    skillLevel: 6.5,
+    gender: "Male",
+    isActive: true,
+  },
 ];
 
 const PLACEHOLDER_USERS = SEED_USERS.map((u) => u.id);
@@ -146,14 +184,20 @@ async function seed() {
       console.log(`  skip  user "${user.displayName}" (exists)`);
     } else {
       await setDoc(doc(db, "users", id), { ...data, createdAt: Date.now() });
-      console.log(`  user "${user.displayName}"  skillLevel=${user.skillLevel}  gender=${user.gender}  id=${id}`);
+      console.log(
+        `  user "${user.displayName}"  skillLevel=${user.skillLevel}  gender=${user.gender}  id=${id}`,
+      );
     }
   }
 
   // ---- venues & courts ----
   const venueCourtMap = {};
 
-  for (const { courts: courtNames, facilities: facilityIds, ...venueData } of VENUES) {
+  for (const {
+    courts: courtNames,
+    facilities: facilityIds,
+    ...venueData
+  } of VENUES) {
     let venueId;
     let existingCourts = null;
 
@@ -171,8 +215,14 @@ async function seed() {
         name,
         isActive: true,
       }));
-      const facilities = ALL_FACILITIES.filter((f) => facilityIds.includes(f.id));
-      const ref = await addDoc(collection(db, "venues"), { ...venueData, courts, facilities });
+      const facilities = ALL_FACILITIES.filter((f) =>
+        facilityIds.includes(f.id),
+      );
+      const ref = await addDoc(collection(db, "venues"), {
+        ...venueData,
+        courts,
+        facilities,
+      });
       venueId = ref.id;
       existingCourts = courts;
       console.log(`  venue "${venueData.name}"  id=${venueId}`);
@@ -182,38 +232,128 @@ async function seed() {
     venueCourtMap[venueData.name] = { venueId, courts: {} };
     for (const c of existingCourts) {
       venueCourtMap[venueData.name].courts[c.name] = c.id;
-      if (!existing.empty) console.log(`    skip  court "${c.name}" (exists)  id=${c.id}`);
+      if (!existing.empty)
+        console.log(`    skip  court "${c.name}" (exists)  id=${c.id}`);
     }
   }
 
   // ---- standalone reservations (not linked to matches) ----
   console.log("\nSeeding reservations...");
 
-  const { venueId: schijnId,  courts: schijnCourts  } = venueCourtMap["Sporthal Schijnpoort"];
-  const { venueId: berchemId, courts: berchemCourts } = venueCourtMap["Topsporthal Berchem"];
-  const { venueId: deurneId,  courts: deurneCourts  } = venueCourtMap["Sportcomplex Deurne"];
+  const { venueId: schijnId, courts: schijnCourts } =
+    venueCourtMap["Sporthal Schijnpoort"];
+  const { venueId: berchemId, courts: berchemCourts } =
+    venueCourtMap["Sporthal Het Rooi"];
+  const { venueId: deurneId, courts: deurneCourts } =
+    venueCourtMap["Royal Antwerp Tennis Club"];
 
   const STANDALONE_RESERVATIONS = [
     // Today
-    { venueId: schijnId,  courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[0], date: dayTs(0), startTime: "09:00", endTime: "10:00", status: "upcoming",  matchId: null },
-    { venueId: schijnId,  courtId: schijnCourts["Court A"],       bookedBy: PLACEHOLDER_USERS[1], date: dayTs(0), startTime: "11:00", endTime: "12:00", status: "upcoming",  matchId: null },
-    { venueId: berchemId, courtId: berchemCourts["Court 1"],      bookedBy: PLACEHOLDER_USERS[2], date: dayTs(0), startTime: "08:00", endTime: "09:30", status: "upcoming",  matchId: null },
+    {
+      venueId: schijnId,
+      courtId: schijnCourts["Court A"],
+      bookedBy: HOST_ID,
+      date: dayTs(0),
+      startTime: "09:00",
+      endTime: "10:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: schijnId,
+      courtId: schijnCourts["Court A"],
+      bookedBy: HOST_ID,
+      date: dayTs(0),
+      startTime: "11:00",
+      endTime: "12:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: berchemId,
+      courtId: berchemCourts["Court 1"],
+      bookedBy: HOST_ID,
+      date: dayTs(0),
+      startTime: "08:00",
+      endTime: "09:30",
+      cancelled: false,
+      matchId: null,
+    },
     // Tomorrow
-    { venueId: schijnId,  courtId: schijnCourts["Court B"],       bookedBy: PLACEHOLDER_USERS[3], date: dayTs(1), startTime: "10:00", endTime: "11:00", status: "upcoming",  matchId: null },
-    { venueId: deurneId,  courtId: deurneCourts["Noord Court"],   bookedBy: PLACEHOLDER_USERS[4], date: dayTs(1), startTime: "07:00", endTime: "08:00", status: "upcoming",  matchId: null },
-    { venueId: deurneId,  courtId: deurneCourts["Centrum Court"], bookedBy: PLACEHOLDER_USERS[0], date: dayTs(1), startTime: "14:00", endTime: "15:00", status: "cancelled", matchId: null },
+    {
+      venueId: schijnId,
+      courtId: schijnCourts["Court B"],
+      bookedBy: HOST_ID,
+      date: dayTs(1),
+      startTime: "10:00",
+      endTime: "11:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: deurneId,
+      courtId: deurneCourts["Noord Court"],
+      bookedBy: HOST_ID,
+      date: dayTs(1),
+      startTime: "07:00",
+      endTime: "08:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: deurneId,
+      courtId: deurneCourts["Centrum Court"],
+      bookedBy: HOST_ID,
+      date: dayTs(1),
+      startTime: "14:00",
+      endTime: "15:00",
+      cancelled: true,
+      matchId: null,
+    },
     // Day after tomorrow
-    { venueId: berchemId, courtId: berchemCourts["Court 2"],      bookedBy: PLACEHOLDER_USERS[1], date: dayTs(2), startTime: "09:30", endTime: "11:00", status: "upcoming",  matchId: null },
-    { venueId: schijnId,  courtId: schijnCourts["Court C"],       bookedBy: PLACEHOLDER_USERS[2], date: dayTs(2), startTime: "13:00", endTime: "14:00", status: "upcoming",  matchId: null },
-    { venueId: deurneId,  courtId: deurneCourts["Zuid Court"],    bookedBy: PLACEHOLDER_USERS[3], date: dayTs(2), startTime: "16:00", endTime: "17:00", status: "upcoming",  matchId: null },
+    {
+      venueId: berchemId,
+      courtId: berchemCourts["Court 2"],
+      bookedBy: HOST_ID,
+      date: dayTs(2),
+      startTime: "09:30",
+      endTime: "11:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: schijnId,
+      courtId: schijnCourts["Court C"],
+      bookedBy: HOST_ID,
+      date: dayTs(2),
+      startTime: "13:00",
+      endTime: "14:00",
+      cancelled: false,
+      matchId: null,
+    },
+    {
+      venueId: deurneId,
+      courtId: deurneCourts["Zuid Court"],
+      bookedBy: HOST_ID,
+      date: dayTs(2),
+      startTime: "16:00",
+      endTime: "17:00",
+      cancelled: false,
+      matchId: null,
+    },
   ];
 
   for (const r of STANDALONE_RESERVATIONS) {
     if (await reservationExists(r.courtId, r.date, r.startTime)) {
-      console.log(`  skip  reservation ${r.startTime} court=${r.courtId} (exists)`);
+      console.log(
+        `  skip  reservation ${r.startTime} court=${r.courtId} (exists)`,
+      );
       continue;
     }
-    const ref = await addDoc(collection(db, "reservations"), { ...r, createdAt: Date.now() });
+    const ref = await addDoc(collection(db, "reservations"), {
+      ...r,
+      createdAt: Date.now(),
+    });
     console.log(`  reservation ${r.startTime}–${r.endTime}  id=${ref.id}`);
   }
 
@@ -240,10 +380,15 @@ async function seed() {
       players: [HOST_ID, "seed_user_004"],
       competitive: false,
       mixedTeams: true,
-      status: "open",
+      cancelled: false,
       description: "Relaxed warmup session, beginners welcome.",
       results: null,
-      reservationData: { bookedBy: HOST_ID, date: dayTs(3), startTime: "10:00", endTime: "11:00" },
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(3),
+        startTime: "10:00",
+        endTime: "11:00",
+      },
     },
     {
       matchName: "Afternoon Doubles",
@@ -260,10 +405,15 @@ async function seed() {
       players: [HOST_ID, "seed_user_001", "seed_user_002", "seed_user_003"],
       competitive: true,
       mixedTeams: true,
-      status: "full",
+      cancelled: false,
       description: "Competitive doubles game, all levels welcome.",
       results: null,
-      reservationData: { bookedBy: HOST_ID, date: dayTs(0), startTime: "14:00", endTime: "15:00" },
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(0),
+        startTime: "14:00",
+        endTime: "15:00",
+      },
     },
     {
       matchName: "Morning Rally",
@@ -280,10 +430,15 @@ async function seed() {
       players: [HOST_ID],
       competitive: false,
       mixedTeams: false,
-      status: "cancelled",
+      cancelled: true,
       description: null,
       results: null,
-      reservationData: { bookedBy: HOST_ID, date: dayTs(1), startTime: "09:00", endTime: "10:30" },
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(1),
+        startTime: "09:00",
+        endTime: "10:30",
+      },
     },
     {
       matchName: "Evening Smash",
@@ -300,7 +455,7 @@ async function seed() {
       players: [HOST_ID, "seed_user_001", "seed_user_003", "seed_user_005"],
       competitive: true,
       mixedTeams: false,
-      status: "completed",
+      cancelled: false,
       description: "High-skill match, bring your A-game.",
       results: {
         team1: ["seed_user_001", HOST_ID],
@@ -314,7 +469,137 @@ async function seed() {
         ratingDeltas: {},
         submittedAt: dayTs(-1) + 19 * 60 * 60 * 1000,
       },
-      reservationData: { bookedBy: HOST_ID, date: dayTs(-1), startTime: "18:00", endTime: "19:00" },
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(-1),
+        startTime: "18:00",
+        endTime: "19:00",
+      },
+    },
+    // 3 days ago — completed with results
+    {
+      matchName: "Tuesday Clinic",
+      venueId: schijnId,
+      courtId: schijnCourts["Court C"],
+      hostId: HOST_ID,
+      hostGender: "Male",
+      date: dayTs(-3),
+      startTime: "10:00",
+      endTime: "11:00",
+      minSkillLevel: 1.0,
+      maxSkillLevel: 3.5,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_002", "seed_user_004", "seed_user_001"],
+      competitive: true,
+      mixedTeams: true,
+      cancelled: false,
+      description: "Beginner-friendly clinic session.",
+      results: {
+        team1: [HOST_ID, "seed_user_002"],
+        team2: ["seed_user_004", "seed_user_001"],
+        games: [
+          { team1: 6, team2: 2, winner: "team1" },
+          { team1: 6, team2: 4, winner: "team1" },
+        ],
+        winner: "team1",
+        ratingDeltas: {},
+        submittedAt: dayTs(-3) + 11 * 60 * 60 * 1000,
+      },
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(-3),
+        startTime: "10:00",
+        endTime: "11:00",
+      },
+    },
+    // 5 days ago — completed with results
+    {
+      matchName: "Friday Night Doubles",
+      venueId: berchemId,
+      courtId: berchemCourts["Court 2"],
+      hostId: HOST_ID,
+      hostGender: "Male",
+      date: dayTs(-5),
+      startTime: "20:00",
+      endTime: "21:30",
+      minSkillLevel: 3.5,
+      maxSkillLevel: 7.0,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_003", "seed_user_005", "seed_user_001"],
+      competitive: true,
+      mixedTeams: false,
+      cancelled: false,
+      description: null,
+      results: {
+        team1: [HOST_ID, "seed_user_005"],
+        team2: ["seed_user_003", "seed_user_001"],
+        games: [
+          { team1: 3, team2: 6, winner: "team2" },
+          { team1: 6, team2: 3, winner: "team1" },
+          { team1: 6, team2: 8, winner: "team2" },
+        ],
+        winner: "team2",
+        ratingDeltas: {},
+        submittedAt: dayTs(-5) + 21 * 60 * 60 * 1000,
+      },
+      reservationData: {
+        bookedBy: "seed_user_003",
+        date: dayTs(-5),
+        startTime: "20:00",
+        endTime: "21:30",
+      },
+    },
+    // 2 days ago — cancelled
+    {
+      matchName: "Wednesday Warmup",
+      venueId: deurneId,
+      courtId: deurneCourts["Zuid Court"],
+      hostId: HOST_ID,
+      hostGender: "Male",
+      date: dayTs(-2),
+      startTime: "08:00",
+      endTime: "09:00",
+      minSkillLevel: 1.0,
+      maxSkillLevel: 5.0,
+      maxPlayers: 4,
+      players: [HOST_ID],
+      competitive: false,
+      mixedTeams: true,
+      cancelled: true,
+      description: "Early morning session — cancelled due to low sign-ups.",
+      results: null,
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(-2),
+        startTime: "08:00",
+        endTime: "09:00",
+      },
+    },
+    // 7 days ago — cancelled
+    {
+      matchName: "Last Week Smash",
+      venueId: schijnId,
+      courtId: schijnCourts["Court B"],
+      hostId: HOST_ID,
+      hostGender: "Male",
+      date: dayTs(-7),
+      startTime: "15:00",
+      endTime: "16:00",
+      minSkillLevel: 4.0,
+      maxSkillLevel: 7.0,
+      maxPlayers: 4,
+      players: [HOST_ID, "seed_user_003"],
+      competitive: true,
+      mixedTeams: false,
+      cancelled: true,
+      description: null,
+      results: null,
+      reservationData: {
+        bookedBy: HOST_ID,
+        date: dayTs(-7),
+        startTime: "15:00",
+        endTime: "16:00",
+      },
     },
   ];
 
@@ -333,8 +618,13 @@ async function seed() {
 
     // create linked reservation first
     let reservationId = null;
-    if (!(await reservationExists(matchData.courtId, reservationData.date, reservationData.startTime))) {
-      const resStatus = matchData.status === "cancelled" ? "cancelled" : "upcoming";
+    if (
+      !(await reservationExists(
+        matchData.courtId,
+        reservationData.date,
+        reservationData.startTime,
+      ))
+    ) {
       const resRef = await addDoc(collection(db, "reservations"), {
         venueId: matchData.venueId,
         courtId: matchData.courtId,
@@ -342,7 +632,7 @@ async function seed() {
         date: reservationData.date,
         startTime: reservationData.startTime,
         endTime: reservationData.endTime,
-        status: resStatus,
+        cancelled: matchData.cancelled,
         matchId: null, // updated below
         createdAt: Date.now(),
       });
@@ -355,7 +645,9 @@ async function seed() {
       createdAt: Date.now(),
     });
 
-    console.log(`  match "${matchData.matchName}"  status=${matchData.status}  id=${matchRef.id}  reservationId=${reservationId}`);
+    console.log(
+      `  match "${matchData.matchName}"  cancelled=${matchData.cancelled}  id=${matchRef.id}  reservationId=${reservationId}`,
+    );
   }
 
   console.log("\nDone.");
