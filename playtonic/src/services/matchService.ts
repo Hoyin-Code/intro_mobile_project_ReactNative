@@ -29,7 +29,19 @@ export async function getOpenMatches(): Promise<FSMatch[]> {
 export async function getMatchById(matchId: string): Promise<FSMatch | null> {
   const snapshot = await getDoc(doc(matchesCol(), matchId));
   if (!snapshot.exists()) return null;
-  return { id: snapshot.id, ...snapshot.data() } as FSMatch;
+  const match = { id: snapshot.id, ...snapshot.data() } as FSMatch;
+
+  if (!match.cancelled && !match.results && match.players.length < match.maxPlayers) {
+    const d = new Date(match.date);
+    const [h, m] = match.startTime.split(":").map(Number);
+    const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
+    if (Date.now() >= start) {
+      await cancelMatch(match.id, match.reservationId);
+      return { ...match, cancelled: true };
+    }
+  }
+
+  return match;
 }
 
 // TODO: make max skill level selectable
