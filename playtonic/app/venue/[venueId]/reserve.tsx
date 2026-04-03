@@ -1,5 +1,6 @@
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
-import { getDates, useVenueBooking } from "@/src/hooks/useVenueBooking";
+import { getDates } from "@/src/utils/dateUtils";
+import { useVenueBooking } from "@/src/hooks/useVenueBooking";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {

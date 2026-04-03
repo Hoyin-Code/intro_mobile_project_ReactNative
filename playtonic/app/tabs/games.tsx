@@ -1,15 +1,9 @@
-import { FSMatch } from "@/src/models/match.model";
-import { FSVenue } from "@/src/models/venue.model";
-import { getOpenMatches } from "@/src/services/matchService";
-import { UserContext } from "@/src/models/appUserContext";
-import { getVenues } from "@/src/services/venueService";
+import { COLORS } from "@/src/constants/colors";
+import { useGames, isFilterActive } from "@/src/hooks/useGames";
 import EmptyState from "@/src/components/EmptyState";
 import MatchCard from "./components/MatchCard";
-import FilterModal, { FilterState } from "./components/FilterModal";
-import { useFocusedData } from "@/src/hooks/useFocusedData";
+import FilterModal from "./components/FilterModal";
 import { useRouter } from "expo-router";
-import React, { useCallback, useContext, useState } from "react";
-
 import {
   ActivityIndicator,
   FlatList,
@@ -19,77 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { COLORS } from "@/src/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-
-const DEFAULT_FILTER: FilterState = {
-  dates: new Set(),
-  fromHour: 6,
-  toHour: 22,
-  minSkill: 0.5,
-  maxSkill: 7.0,
-  gender: "same",
-};
-
-type EnrichedMatch = FSMatch & { venueName: string; courtName: string };
-
-function parseHour(time: string) {
-  return parseInt(time.split(":")[0], 10);
-}
-
-function isFilterActive(f: FilterState) {
-  return (
-    f.dates.size > 0 ||
-    f.fromHour !== 6 ||
-    f.toHour !== 22 ||
-    f.minSkill !== 0.5 ||
-    f.maxSkill !== 7.0 ||
-    f.gender !== "same"
-  );
-}
 
 export default function Games() {
   const router = useRouter();
-  const user = useContext(UserContext);
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
-
-  const loader = useCallback(async (): Promise<EnrichedMatch[]> => {
-    const [raw, venues] = await Promise.all([getOpenMatches(), getVenues()]);
-    const venueMap = new Map<string, FSVenue>(venues.map((v) => [v.id, v]));
-    const enriched: EnrichedMatch[] = raw.map((m) => {
-      const venue = venueMap.get(m.venueId);
-      const court = venue?.courts.find((c) => c.id === m.courtId);
-      return {
-        ...m,
-        venueName: venue?.name ?? "Unknown Venue",
-        courtName: court?.name ?? "Unknown Court",
-      };
-    });
-    enriched.sort(
-      (a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime),
-    );
-    return enriched;
-  }, []);
-
-  const { data, loading, refreshing, onRefresh } = useFocusedData(loader);
-  const matches = data ?? [];
-
-  const filtered = matches.filter((m) => {
-    if (filter.dates.size > 0) {
-      if (!filter.dates.has(new Date(m.date).toDateString())) return false;
-    }
-    const hour = parseHour(m.startTime);
-    if (hour < filter.fromHour || hour >= filter.toHour) return false;
-    if (m.minSkillLevel > filter.maxSkill || m.maxSkillLevel < filter.minSkill)
-      return false;
-    if (filter.gender === "mixed" && !m.mixedTeams) return false;
-    if (filter.gender === "same" && m.mixedTeams) return false;
-    if (filter.gender === "same" && user && m.hostGender !== user.gender)
-      return false;
-    return true;
-  });
+  const { loading, refreshing, onRefresh, filtered, filter, filterModalVisible, openFilter, closeFilter, applyFilter } =
+    useGames();
 
   if (loading) {
     return (
@@ -108,7 +37,7 @@ export default function Games() {
         ListHeaderComponent={
           <View style={styles.titleRow}>
             <Text style={styles.screenTitle}>Find a Match</Text>
-            <TouchableOpacity onPress={() => setFilterModalVisible(true)}>
+            <TouchableOpacity onPress={openFilter}>
               <Ionicons
                 name="filter-circle-outline"
                 size={35}
@@ -121,32 +50,20 @@ export default function Games() {
           <EmptyState icon="tennisball-outline" title="No open matches found" />
         }
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={COLORS.accent}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.accent} />
         }
         renderItem={({ item }) => (
           <MatchCard
             match={item}
-            onPress={() =>
-              router.push({
-                pathname: "/match/[matchId]",
-                params: { matchId: item.id },
-              })
-            }
+            onPress={() => router.push({ pathname: "/match/[matchId]", params: { matchId: item.id } })}
           />
         )}
       />
       <FilterModal
         visible={filterModalVisible}
         filter={filter}
-        onApply={(f) => {
-          setFilter(f);
-          setFilterModalVisible(false);
-        }}
-        onClose={() => setFilterModalVisible(false)}
+        onApply={applyFilter}
+        onClose={closeFilter}
       />
     </>
   );
