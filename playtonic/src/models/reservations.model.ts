@@ -1,8 +1,4 @@
-export type ReservationStatus =
-  | "upcoming"
-  | "ongoing"
-  | "completed"
-  | "cancelled";
+export type ReservationStatus = "upcoming" | "ongoing" | "completed" | "cancelled";
 
 export interface FSReservation {
   id: string;
@@ -12,19 +8,19 @@ export interface FSReservation {
   date: number;
   startTime: string; // "10:00"
   endTime: string; // "11:00"
-  status: ReservationStatus;
+  cancelled: boolean;
   matchId: string | null;
   createdAt: number;
 }
 
-/** changes status on fetch firestore only has "upcoming", "canceled"
- */
 export function getEffectiveStatus(r: FSReservation): ReservationStatus {
-  if (r.status === "cancelled") return "cancelled";
-  const dateStr = new Date(r.date).toDateString();
+  if (r.cancelled) return "cancelled";
+  const d = new Date(r.date);
   const now = Date.now();
-  const start = new Date(`${dateStr} ${r.startTime}`).getTime();
-  const end = new Date(`${dateStr} ${r.endTime}`).getTime();
+  const [startH, startM] = r.startTime.split(":").map(Number);
+  const [endH, endM] = r.endTime.split(":").map(Number);
+  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), startH, startM).getTime();
+  const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), endH, endM).getTime();
   if (now >= end) return "completed";
   if (now >= start) return "ongoing";
   return "upcoming";

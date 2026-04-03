@@ -80,7 +80,7 @@ export default function ReservationDetail() {
             try {
               await cancelReservation(reservation.id);
               setReservation((prev) =>
-                prev ? { ...prev, status: "cancelled" } : prev,
+                prev ? { ...prev, cancelled: true } : prev,
               );
             } finally {
               setCancelling(false);

@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
-import { FSReservation, ReservationStatus } from "../models/reservations.model";
+import { FSReservation } from "../models/reservations.model";
 
 const reservationsCol = () => collection(db(), "reservations");
 
@@ -22,7 +22,6 @@ export async function createReservation(
     createdAt: Date.now(),
   };
   const ref = await addDoc(reservationsCol(), newDoc);
-
   return { id: ref.id, ...newDoc };
 }
 
@@ -55,15 +54,8 @@ export async function getReservationsByCourt(
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as FSReservation);
 }
 
-export async function updateReservationStatus(
-  id: string,
-  status: ReservationStatus,
-): Promise<void> {
-  await updateDoc(doc(reservationsCol(), id), { status });
-}
-
 export async function cancelReservation(id: string): Promise<void> {
-  await updateReservationStatus(id, "cancelled");
+  await updateDoc(doc(reservationsCol(), id), { cancelled: true });
 }
 
 export async function updateReservationMatchId(
@@ -72,4 +64,3 @@ export async function updateReservationMatchId(
 ): Promise<void> {
   await updateDoc(doc(reservationsCol(), id), { matchId });
 }
-

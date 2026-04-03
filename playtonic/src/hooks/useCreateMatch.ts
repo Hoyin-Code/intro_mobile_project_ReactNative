@@ -60,7 +60,7 @@ export function useCreateMatch() {
         date: selectedDate.getTime(),
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
-        status: "upcoming",
+        cancelled: false,
         matchId: null,
       });
 
@@ -80,7 +80,7 @@ export function useCreateMatch() {
         maxSkillLevel: competitive ? maxSkillLevel : 7,
         maxPlayers,
         players: [user.id],
-        status: "open",
+        cancelled: false,
         description: null,
       });
 

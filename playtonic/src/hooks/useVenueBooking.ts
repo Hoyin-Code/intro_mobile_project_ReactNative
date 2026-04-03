@@ -49,7 +49,7 @@ export function useVenueBooking() {
         date: selectedDate.getTime(),
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
-        status: "upcoming",
+        cancelled: false,
         matchId: null,
       });
       Alert.alert(

@@ -1,4 +1,5 @@
 import { FSMatch, MatchStatus } from "../models/match.model";
+import { FSReservation, ReservationStatus } from "../models/reservations.model";
 
 export function getEffectiveMatchStatus(match: FSMatch): MatchStatus {
   if (match.cancelled) return "cancelled";
@@ -14,3 +15,4 @@ export function getEffectiveMatchStatus(match: FSMatch): MatchStatus {
   if (match.players.length >= match.maxPlayers) return "full";
   return "open";
 }
+

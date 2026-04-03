@@ -4,8 +4,8 @@ import { formatDate } from "@/src/utils/dateUtils";
 import { UserContext } from "@/src/models/appUserContext";
 import {
   FSReservation,
-  ReservationStatus,
   getEffectiveStatus,
+  ReservationStatus,
 } from "@/src/models/reservations.model";
 import {
   cancelReservation,
@@ -31,7 +31,6 @@ type EnrichedReservation = FSReservation & {
   venueName: string;
   courtName: string;
 };
-
 
 export default function Reservations() {
   const user = useContext(UserContext);
@@ -102,7 +101,7 @@ export default function Reservations() {
               await cancelReservation(r.id);
               setReservations((prev) =>
                 prev.map((x) =>
-                  x.id === r.id ? { ...x, status: "cancelled" } : x,
+                  x.id === r.id ? { ...x, cancelled: true } : x,
                 ),
               );
             } finally {
@@ -185,7 +184,12 @@ export default function Reservations() {
                 <Text style={styles.venueName}>{item.venueName}</Text>
                 <Text style={styles.courtName}>{item.courtName}</Text>
               </View>
-              <View style={[styles.badge, { backgroundColor: RESERVATION_BADGE[effectiveStatus].color }]}>
+              <View
+                style={[
+                  styles.badge,
+                  { backgroundColor: RESERVATION_BADGE[effectiveStatus].color },
+                ]}
+              >
                 <Text style={styles.badgeText}>
                   {RESERVATION_BADGE[effectiveStatus].label}
                 </Text>
