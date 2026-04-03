@@ -1,11 +1,11 @@
 import Avatar from "@/src/components/Avatar";
-import { AppUserContext } from "@/src/models/appUserContext";
+import { ResultPlayer } from "@/src/models/match.model";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type TeamSlot = "A" | "B" | null;
 
 type Props = {
-  players: AppUserContext[];
+  players: ResultPlayer[];
   assignments: Record<string, TeamSlot>;
   canSubmit: boolean;
   onAssign: (userId: string, team: TeamSlot) => void;
@@ -89,7 +89,7 @@ function TeamColumn({
 }: {
   label: string;
   color: string;
-  players: AppUserContext[];
+  players: ResultPlayer[];
 }) {
   return (
     <View style={styles.teamColumn}>

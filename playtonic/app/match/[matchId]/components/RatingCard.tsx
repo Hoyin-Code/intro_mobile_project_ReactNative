@@ -1,9 +1,9 @@
 import Avatar from "@/src/components/Avatar";
-import { AppUserContext } from "@/src/models/appUserContext";
+import { ResultPlayer } from "@/src/models/match.model";
 import { StyleSheet, Text, View } from "react-native";
 
 type Props = {
-  players: AppUserContext[];
+  players: ResultPlayer[];
   deltas: Record<string, number>;
 };
 
@@ -24,7 +24,7 @@ export default function RatingCard({ players, deltas }: Props) {
               <Text style={styles.ratingName} numberOfLines={1}>
                 {p.displayName}
               </Text>
-              <Text style={styles.ratingBase}>{p.skillLevel.toFixed(1)}</Text>
+              <Text style={styles.ratingBase}>{p.skillLevel.toFixed(2)}</Text>
               <Text
                 style={[
                   styles.ratingDelta,

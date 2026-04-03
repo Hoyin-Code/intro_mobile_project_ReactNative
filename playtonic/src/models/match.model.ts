@@ -43,9 +43,16 @@ export interface GameScore {
   winner: "team1" | "team2" | "draw";
 }
 
+export interface ResultPlayer {
+  id: string;
+  displayName: string;
+  imageUrl: string | null;
+  skillLevel: number;
+}
+
 export interface Results {
-  team1: AppUserContext[];
-  team2: AppUserContext[];
+  team1: ResultPlayer[];
+  team2: ResultPlayer[];
   games: GameScore[];
   winner: "team1" | "team2" | "draw";
   ratingDeltas: Record<string, number>;
