@@ -4,7 +4,7 @@ import { FSMatch, Results } from "@/src/models/match.model";
 import { getMatchById, submitResults } from "@/src/services/matchService";
 import { computeRatingDeltas } from "@/src/services/ratingService";
 import { getUserById } from "@/src/services/userService";
-import { isMatchOngoing } from "@/src/utils/matchUtils";
+import { getEffectiveMatchStatus } from "@/src/utils/matchUtils";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useState } from "react";
 import {
@@ -152,7 +152,7 @@ export default function MatchResults() {
     }
   }
   const canView =
-    !!match && (isMatchOngoing(match) || match.status === "completed");
+    !!match && (getEffectiveMatchStatus(match) === "ongoing" || getEffectiveMatchStatus(match) === "completed");
 
   return (
     <KeyboardAvoidingView
