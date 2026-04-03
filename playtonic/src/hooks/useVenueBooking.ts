@@ -1,18 +1,10 @@
 import { AppUserContext, UserContext } from "@/src/models/appUserContext";
-import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
+import { MONTH_NAMES } from "@/src/constants/dates";
 import { FSMatch } from "@/src/models/match.model";
-import { FSReservation } from "@/src/models/reservations.model";
-import { FSCourt, FSVenue } from "@/src/models/venue.model";
-import { VenueContext } from "@/src/models/venueContext";
-import { getOpenMatchesByVenue } from "@/src/services/matchService";
-import {
-  createReservation,
-  getReservationsByCourt,
-} from "@/src/services/reservationService";
-import { getUserById } from "@/src/services/userService";
-import { generateSlots } from "@/src/utils/slotUtils";
+import { createReservation } from "@/src/services/reservationService";
 import { useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
+import { useSlotSelection } from "./useSlotSelection";
 
 export type TimeSlot = { startTime: string; endTime: string };
 
@@ -28,94 +20,26 @@ export type SlotMatch = { match: FSMatch; players: AppUserContext[] };
 
 export function useVenueBooking() {
   const user = useContext(UserContext);
-  const { venue, courts, loading: venueLoading } = useContext(VenueContext);
+  const {
+    venue,
+    venueLoading,
+    courts,
+    selectedCourt,
+    selectedDate,
+    slots,
+    takenSlots,
+    slotsLoading,
+    selectedSlot,
+    setSelectedSlot,
+    onSelectCourt,
+    onSelectDate,
+    loadSlots,
+  } = useSlotSelection();
 
-  const [selectedCourt, setSelectedCourt] = useState<FSCourt | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
-  const [takenSlots, setTakenSlots] = useState<Set<string>>(new Set());
-  const [slotsLoading, setSlotsLoading] = useState(false);
-
-  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [booking, setBooking] = useState(false);
-  const [slotMatches, setSlotMatches] = useState<Map<string, SlotMatch>>(
-    new Map(),
-  );
 
-  const loadSlots = useCallback(
-    async (court: FSCourt, date: Date, v: FSVenue) => {
-      setSlotsLoading(true);
-      setSelectedSlot(null);
-      const dateTs = date.getTime();
-
-      const [existing, venueMatches] = await Promise.all([
-        getReservationsByCourt(court.id, dateTs),
-        getOpenMatchesByVenue(v.id),
-      ]).finally(() => setSlotsLoading(false));
-
-      setTakenSlots(
-        new Set<string>(existing.map((r: FSReservation) => r.startTime)),
-      );
-      setSlots(generateSlots(v.openTime, v.closeTime, v.slotDurationMinutes));
-
-      // filter to matches on this court+date, then fetch their players
-      const courtMatches = venueMatches.filter(
-        (m) => m.courtId === court.id && m.date === dateTs,
-      );
-      const allPlayerIds = [...new Set(courtMatches.flatMap((m) => m.players))];
-      const userResults = await Promise.all(allPlayerIds.map(getUserById));
-      const playerMap = new Map<string, AppUserContext>();
-      allPlayerIds.forEach((id, i) => {
-        if (userResults[i]) playerMap.set(id, userResults[i]!);
-      });
-
-      const map = new Map<string, SlotMatch>();
-      for (const match of courtMatches) {
-        map.set(match.startTime, {
-          match,
-          players: match.players
-            .map((id) => playerMap.get(id))
-            .filter(Boolean) as AppUserContext[],
-        });
-      }
-      setSlotMatches(map);
-    },
-    [],
-  );
-
-  const onSelectCourt = useCallback(
-    (court: FSCourt) => {
-      setSelectedCourt(court);
-      setSelectedSlot(null);
-      if (selectedDate && venue) loadSlots(court, selectedDate, venue);
-    },
-    [selectedDate, venue, loadSlots],
-  );
-
-  const onSelectDate = useCallback(
-    (date: Date) => {
-      setSelectedDate(date);
-      setSelectedSlot(null);
-      if (selectedCourt && venue) loadSlots(selectedCourt, date, venue);
-    },
-    [selectedCourt, venue, loadSlots],
-  );
-  const confirm = () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
-      return;
-    Alert.alert(
-      "Are you sure you want to make this booking?",
-      `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: onBook },
-      ],
-    );
-  };
   const onBook = useCallback(async () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
-      return;
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
     setBooking(true);
     try {
       await createReservation({
@@ -140,6 +64,18 @@ export function useVenueBooking() {
       setBooking(false);
     }
   }, [user, venue, selectedCourt, selectedDate, selectedSlot, loadSlots]);
+
+  const confirm = () => {
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
+    Alert.alert(
+      "Are you sure you want to make this booking?",
+      `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: onBook },
+      ],
+    );
+  };
 
   return {
     venue,
