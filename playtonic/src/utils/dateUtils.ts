@@ -31,3 +31,12 @@ export function getTodayStart(): number {
   today.setHours(0, 0, 0, 0);
   return today.getTime();
 }
+
+export function getDates(count = 50): Date[] {
+  return Array.from({ length: count }, (_, i) => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+}

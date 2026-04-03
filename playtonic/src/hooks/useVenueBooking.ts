@@ -8,14 +8,6 @@ import { useSlotSelection } from "./useSlotSelection";
 
 export type TimeSlot = { startTime: string; endTime: string };
 
-export function getDates(count = 50): Date[] {
-  return Array.from({ length: count }, (_, i) => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-}
 export type SlotMatch = { match: FSMatch; players: AppUserContext[] };
 
 export function useVenueBooking() {
