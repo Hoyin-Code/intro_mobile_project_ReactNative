@@ -107,6 +107,10 @@ const RootLayout = () => {
           name="components/FilterModal"
           options={{ href: null, title: "FilterModal" }}
         />
+        <Tabs.Screen
+          name="userinfo/components/MatchCard"
+          options={{ href: null, title: "matchcard" }}
+        />
       </Tabs>
 
       <Modal
