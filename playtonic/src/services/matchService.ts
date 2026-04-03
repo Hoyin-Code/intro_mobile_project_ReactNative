@@ -7,7 +7,6 @@ import {
   getDoc,
   getDocs,
   query,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -19,12 +18,12 @@ import { cancelReservation } from "./reservationService";
 const matchesCol = () => collection(db(), "matches");
 
 export async function getOpenMatches(): Promise<FSMatch[]> {
-  const q = query(matchesCol(), where("status", "in", ["open", "full"]));
+  const q = query(matchesCol(), where("cancelled", "==", false));
   const snap = await getDocs(q);
   const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= todayStart && m.players.length < 4);
+    .filter((m) => m.date >= todayStart && !m.results);
 }
 
 export async function getMatchById(matchId: string): Promise<FSMatch | null> {
@@ -32,6 +31,7 @@ export async function getMatchById(matchId: string): Promise<FSMatch | null> {
   if (!snapshot.exists()) return null;
   return { id: snapshot.id, ...snapshot.data() } as FSMatch;
 }
+
 // TODO: make max skill level selectable
 export async function createMatch(
   data: Omit<FSMatch, "id" | "createdAt">,
@@ -54,15 +54,14 @@ export async function joinMatch(
   matchId: string,
   userId: string,
 ): Promise<void> {
-  const matchRef = doc(matchesCol(), matchId);
-  await updateDoc(matchRef, { players: arrayUnion(userId) });
+  await updateDoc(doc(matchesCol(), matchId), { players: arrayUnion(userId) });
 }
+
 export async function leaveMatch(
   matchId: string,
   userId: string,
 ): Promise<void> {
-  const matchRef = doc(matchesCol(), matchId);
-  await updateDoc(matchRef, { players: arrayRemove(userId) });
+  await updateDoc(doc(matchesCol(), matchId), { players: arrayRemove(userId) });
 }
 
 export async function getOpenMatchesByVenue(
@@ -71,17 +70,17 @@ export async function getOpenMatchesByVenue(
   const q = query(
     matchesCol(),
     where("venueId", "==", venueId),
-    where("status", "in", ["open", "full"]),
+    where("cancelled", "==", false),
   );
   const snap = await getDocs(q);
   const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= todayStart);
+    .filter((m) => m.date >= todayStart && !m.results);
 }
+
 export async function submitResults(match: FSMatch, results: Results) {
-  const matchRef = doc(matchesCol(), match.id);
-  await updateDoc(matchRef, { results: results });
+  await updateDoc(doc(matchesCol(), match.id), { results });
 }
 
 export async function cancelMatch(
@@ -89,7 +88,7 @@ export async function cancelMatch(
   reservationId: string,
 ): Promise<void> {
   await Promise.all([
-    updateDoc(doc(matchesCol(), matchId), { status: "cancelled" }),
+    updateDoc(doc(matchesCol(), matchId), { cancelled: true }),
     cancelReservation(reservationId),
   ]);
 }

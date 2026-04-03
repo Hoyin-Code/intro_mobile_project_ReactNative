@@ -1,6 +1,6 @@
 import { AppUserContext } from "./appUserContext";
 
-export type MatchStatus = "open" | "full" | "cancelled" | "completed";
+export type MatchStatus = "open" | "full" | "ongoing" | "cancelled" | "completed";
 
 /** Numeric skill rating on a 0.5–7.0 scale (e.g. DUPR-style). */
 export type SkillRating = number;
@@ -25,7 +25,7 @@ export interface FSMatch {
   maxPlayers: number;
   players: string[]; // array of userIds in the match
   competitive: boolean;
-  status: MatchStatus;
+  cancelled: boolean;
   description: string | null;
   createdAt: number;
   results?: Results | null;

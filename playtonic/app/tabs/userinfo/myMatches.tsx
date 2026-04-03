@@ -3,7 +3,7 @@ import { UserContext } from "@/src/models/appUserContext";
 import { FSMatch } from "@/src/models/match.model";
 import { getMatchesByPlayer } from "@/src/services/matchService";
 import { getVenues } from "@/src/services/venueService";
-import { isMatchOngoing } from "@/src/utils/matchUtils";
+import { getEffectiveMatchStatus } from "@/src/utils/matchUtils";
 import { useFocusedData } from "@/src/hooks/useFocusedData";
 import { router } from "expo-router";
 import { useCallback, useContext } from "react";
@@ -69,17 +69,17 @@ export default function MyMatches() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       renderItem={({ item: m }) => {
-        const ongoing = isMatchOngoing(m);
+        const status = getEffectiveMatchStatus(m);
         const needsResults =
           m.hostId === user?.id &&
-          (ongoing || m.status === "completed") &&
+          (status === "ongoing" || status === "completed") &&
           !m.results;
 
         return (
           <Pressable
             style={styles.card}
             onPress={() => {
-              if (ongoing || m.status === "completed") {
+              if (status === "ongoing" || status === "completed") {
                 router.push({ pathname: "/match/[matchId]/results", params: { matchId: m.id } });
               } else {
                 router.push({ pathname: "/match/[matchId]", params: { matchId: m.id } });
@@ -92,14 +92,19 @@ export default function MyMatches() {
                 <Text style={styles.venueName}>{m.venueName}</Text>
               </View>
               <View style={styles.badges}>
-                {ongoing && (
+                {status === "ongoing" && (
                   <View style={[styles.badge, styles.badgeOngoing]}>
                     <Text style={styles.badgeText}>ONGOING</Text>
                   </View>
                 )}
-                {m.status === "completed" && !ongoing && (
+                {status === "completed" && (
                   <View style={[styles.badge, styles.badgeCompleted]}>
                     <Text style={styles.badgeText}>COMPLETED</Text>
+                  </View>
+                )}
+                {status === "cancelled" && (
+                  <View style={[styles.badge, styles.badgeCancelled]}>
+                    <Text style={styles.badgeText}>CANCELLED</Text>
                   </View>
                 )}
               </View>
@@ -158,6 +163,7 @@ const styles = StyleSheet.create({
   badge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
   badgeOngoing: { backgroundColor: "#fff3cd" },
   badgeCompleted: { backgroundColor: "#e8eaf6" },
+  badgeCancelled: { backgroundColor: "#f5f5f5" },
   badgeText: { fontSize: 11, fontWeight: "700", color: "#333" },
   infoRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   infoText: { fontSize: 13, color: "#555" },

@@ -1,11 +1,14 @@
-import { FSMatch } from "../models/match.model";
+import { FSMatch, MatchStatus } from "../models/match.model";
 
-export function isMatchOngoing(match: FSMatch): boolean {
-  const now = new Date();
-  const day = new Date(match.date);
-  const [startH, startM] = match.startTime.split(":").map(Number);
-  const [endH, endM] = match.endTime.split(":").map(Number);
-  const start = new Date(day.getFullYear(), day.getMonth(), day.getDate(), startH, startM);
-  const end = new Date(day.getFullYear(), day.getMonth(), day.getDate(), endH, endM);
-  return now >= start && now <= end;
+export function getEffectiveMatchStatus(match: FSMatch): MatchStatus {
+  if (match.cancelled) return "cancelled";
+  if (match.results) return "completed";
+  const dateStr = new Date(match.date).toDateString();
+  const now = Date.now();
+  const start = new Date(`${dateStr} ${match.startTime}`).getTime();
+  const end = new Date(`${dateStr} ${match.endTime}`).getTime();
+  if (now >= end) return "completed";
+  if (now >= start) return "ongoing";
+  if (match.players.length >= match.maxPlayers) return "full";
+  return "open";
 }
