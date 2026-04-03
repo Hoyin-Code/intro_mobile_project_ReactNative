@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import ClubCard from "../components/clubCard";
+import ClubCard from "@/src/components/ClubCard";
 
 import { COLORS } from "@/src/constants/colors";
 
