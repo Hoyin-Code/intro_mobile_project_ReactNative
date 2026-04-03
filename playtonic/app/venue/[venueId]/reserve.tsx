@@ -37,7 +37,9 @@ export default function Reserve() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {venueLoading && <ActivityIndicator color={COLORS.accent} style={styles.loader} />}
+      {venueLoading && (
+        <ActivityIndicator color={COLORS.accent} style={styles.loader} />
+      )}
 
       <Text style={styles.pageTitle}>Create a Reservation</Text>
 
@@ -50,7 +52,11 @@ export default function Reserve() {
       />
 
       <Text style={styles.sectionTitle}>Select Date</Text>
-      <DateSelector dates={dates} selectedDate={selectedDate} onSelectDate={onSelectDate} />
+      <DateSelector
+        dates={dates}
+        selectedDate={selectedDate}
+        onSelectDate={onSelectDate}
+      />
 
       <Text style={styles.sectionTitle}>Select Time</Text>
       <TimeSlotGrid
@@ -68,24 +74,33 @@ export default function Reserve() {
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
             <Ionicons name="location-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>{venue.name} · {selectedCourt.name}</Text>
+            <Text style={styles.summaryText}>
+              {venue.name} · {selectedCourt.name}
+            </Text>
           </View>
           <View style={styles.summaryRow}>
             <Ionicons name="calendar-outline" size={16} color="#555" />
             <Text style={styles.summaryText}>
-              {DAY_NAMES[selectedDate.getDay()]}, {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
+              {DAY_NAMES[selectedDate.getDay()]},{" "}
+              {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
             </Text>
           </View>
           <View style={styles.summaryRow}>
             <Ionicons name="time-outline" size={16} color="#555" />
-            <Text style={styles.summaryText}>{selectedSlot.startTime} – {selectedSlot.endTime}</Text>
+            <Text style={styles.summaryText}>
+              {selectedSlot.startTime} – {selectedSlot.endTime}
+            </Text>
           </View>
           <TouchableOpacity
             style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
             onPress={confirm}
             disabled={booking}
           >
-            {booking ? <ActivityIndicator color="#fff" /> : <Text style={styles.bookBtnText}>Confirm Booking</Text>}
+            {booking ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.bookBtnText}>Confirm Booking</Text>
+            )}
           </TouchableOpacity>
         </View>
       )}
@@ -96,16 +111,38 @@ export default function Reserve() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
   content: { padding: 16, paddingBottom: 40 },
-  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", marginBottom: 8 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#111", marginTop: 20, marginBottom: 10 },
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#111",
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111",
+    marginTop: 20,
+    marginBottom: 10,
+  },
   loader: { marginVertical: 16 },
   summary: {
-    marginTop: 10, backgroundColor: "#fff", borderRadius: 16,
-    padding: 18, borderWidth: 1, borderColor: "#eee", gap: 10,
+    marginTop: 10,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: "#eee",
+    gap: 10,
   },
   summaryRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   summaryText: { fontSize: 14, color: "#333", fontWeight: "500" },
-  bookBtn: { backgroundColor: COLORS.accent, borderRadius: 12, paddingVertical: 14, alignItems: "center", marginTop: 8 },
+  bookBtn: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 8,
+  },
   bookBtnDisabled: { opacity: 0.6 },
   bookBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });

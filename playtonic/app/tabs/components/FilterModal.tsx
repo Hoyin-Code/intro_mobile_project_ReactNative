@@ -136,16 +136,19 @@ export default function FilterModal({
     });
   };
 
-  const reset = () =>
-    setLocalFilter({
+  const reset = () => {
+    const defaultFilter: FilterState = {
       dates: new Set(),
       fromHour: 6,
       toHour: 22,
       minSkill: 0.5,
       maxSkill: 7.0,
       gender: "all",
-    });
-  onApply(localFilter);
+    };
+    setLocalFilter(defaultFilter);
+    onApply(defaultFilter);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -418,7 +421,7 @@ const styles = StyleSheet.create({
 
   applyBtn: {
     marginTop: 14,
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: "center",

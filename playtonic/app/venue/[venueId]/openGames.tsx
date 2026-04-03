@@ -52,113 +52,120 @@ export default function OpenGames() {
     confirm,
   } = useCreateMatch();
 
-  useFocusEffect(useCallback(() => { refreshSlots(); }, [refreshSlots]));
+  useFocusEffect(
+    useCallback(() => {
+      refreshSlots();
+    }, [refreshSlots]),
+  );
 
   return (
-    <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        {venueLoading && (
-          <ActivityIndicator color={COLORS.accent} style={styles.loader} />
-        )}
+    <KeyboardAwareScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+    >
+      {venueLoading && (
+        <ActivityIndicator color={COLORS.accent} style={styles.loader} />
+      )}
 
-        <Text style={styles.pageTitle}>Create a Match</Text>
+      <Text style={styles.pageTitle}>Create a Match</Text>
 
-        <Text style={styles.sectionTitle}>Select Court</Text>
-        <CourtSelector
-          courts={courts}
-          selectedCourt={selectedCourt}
-          onSelectCourt={onSelectCourt}
-          loading={venueLoading}
+      <Text style={styles.sectionTitle}>Select Court</Text>
+      <CourtSelector
+        courts={courts}
+        selectedCourt={selectedCourt}
+        onSelectCourt={onSelectCourt}
+        loading={venueLoading}
+      />
+
+      <Text style={styles.sectionTitle}>Select Date</Text>
+      <DateSelector
+        dates={dates}
+        selectedDate={selectedDate}
+        onSelectDate={onSelectDate}
+      />
+
+      <Text style={styles.sectionTitle}>Select Time</Text>
+      <TimeSlotGrid
+        slots={slots}
+        takenSlots={takenSlots}
+        slotMatches={slotMatches}
+        selectedDate={selectedDate}
+        selectedSlot={selectedSlot}
+        onSelectSlot={setSelectedSlot}
+        loading={slotsLoading}
+        courtAndDateSelected={!!selectedCourt && !!selectedDate}
+      />
+      <View style={styles.toggleRow}>
+        <Text style={styles.sectionTitle}>Competitive</Text>
+        <Switch
+          value={competitive}
+          onValueChange={setCompetitive}
+          trackColor={{ false: "#ddd", true: COLORS.accent }}
+          thumbColor="#fff"
         />
-
-        <Text style={styles.sectionTitle}>Select Date</Text>
-        <DateSelector
-          dates={dates}
-          selectedDate={selectedDate}
-          onSelectDate={onSelectDate}
-        />
-
-        <Text style={styles.sectionTitle}>Select Time</Text>
-        <TimeSlotGrid
-          slots={slots}
-          takenSlots={takenSlots}
-          slotMatches={slotMatches}
-          selectedDate={selectedDate}
-          selectedSlot={selectedSlot}
-          onSelectSlot={setSelectedSlot}
-          loading={slotsLoading}
-          courtAndDateSelected={!!selectedCourt && !!selectedDate}
-        />
-        <View style={styles.toggleRow}>
-          <Text style={styles.sectionTitle}>Competitive</Text>
-          <Switch
-            value={competitive}
-            onValueChange={setCompetitive}
-            trackColor={{ false: "#ddd", true: COLORS.accent }}
-            thumbColor="#fff"
+      </View>
+      {competitive && (
+        <>
+          <Text style={styles.sectionTitle}>Skill Level Range</Text>
+          <SkillLevelSelector
+            minSkill={minSkillLevel}
+            maxSkill={maxSkillLevel}
+            onChangeMin={setMinSkillLevel}
+            onChangeMax={setMaxSkillLevel}
           />
-        </View>
-        <View style={styles.toggleRow}>
-          <Text style={styles.sectionTitle}>Mixed Gender</Text>
-          <Switch
-            value={mixedTeams}
-            onValueChange={setMixedTeams}
-            trackColor={{ false: "#ddd", true: COLORS.accent }}
-            thumbColor="#fff"
-          />
-        </View>
-        {competitive && (
-          <>
-            <Text style={styles.sectionTitle}>Skill Level Range</Text>
-            <SkillLevelSelector
-              minSkill={minSkillLevel}
-              maxSkill={maxSkillLevel}
-              onChangeMin={setMinSkillLevel}
-              onChangeMax={setMaxSkillLevel}
-            />
-          </>
-        )}
-
-        <Text style={styles.sectionTitle}>Confirm your Match</Text>
-        {selectedSlot && selectedCourt && selectedDate && venue && (
-          <View style={styles.summary}>
-            <View style={styles.summaryRow}>
-              <Ionicons name="location-outline" size={16} color="#555" />
-              <Text style={styles.summaryText}>
-                {venue.name} · {selectedCourt.name}
-              </Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Ionicons name="calendar-outline" size={16} color="#555" />
-              <Text style={styles.summaryText}>
-                {DAY_NAMES[selectedDate.getDay()]},{" "}
-                {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
-              </Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Ionicons name="time-outline" size={16} color="#555" />
-              <Text style={styles.summaryText}>
-                {selectedSlot.startTime} – {selectedSlot.endTime}
-              </Text>
-            </View>
-            <TextInput
-              style={styles.matchNameInput}
-              placeholder="Match name (optional)"
-              value={matchName}
-              onChangeText={setMatchName}
-            />
-            <TouchableOpacity
-              style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
-              onPress={confirm}
-              disabled={booking}
-            >
-              {booking ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.bookBtnText}>Create Match</Text>
-              )}
-            </TouchableOpacity>
+        </>
+      )}
+      <View style={styles.toggleRow}>
+        <Text style={styles.sectionTitle}>Mixed Gender</Text>
+        <Switch
+          value={mixedTeams}
+          onValueChange={setMixedTeams}
+          trackColor={{ false: "#ddd", true: COLORS.accent }}
+          thumbColor="#fff"
+        />
+      </View>
+      <Text style={styles.sectionTitle}>Confirm your Match</Text>
+      {selectedSlot && selectedCourt && selectedDate && venue && (
+        <View style={styles.summary}>
+          <View style={styles.summaryRow}>
+            <Ionicons name="location-outline" size={16} color="#555" />
+            <Text style={styles.summaryText}>
+              {venue.name} · {selectedCourt.name}
+            </Text>
           </View>
-        )}
+          <View style={styles.summaryRow}>
+            <Ionicons name="calendar-outline" size={16} color="#555" />
+            <Text style={styles.summaryText}>
+              {DAY_NAMES[selectedDate.getDay()]},{" "}
+              {MONTH_NAMES[selectedDate.getMonth()]} {selectedDate.getDate()}
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Ionicons name="time-outline" size={16} color="#555" />
+            <Text style={styles.summaryText}>
+              {selectedSlot.startTime} – {selectedSlot.endTime}
+            </Text>
+          </View>
+          <TextInput
+            style={styles.matchNameInput}
+            placeholder="Match name (optional)"
+            value={matchName}
+            onChangeText={setMatchName}
+          />
+          <TouchableOpacity
+            style={[styles.bookBtn, booking && styles.bookBtnDisabled]}
+            onPress={confirm}
+            disabled={booking}
+          >
+            {booking ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.bookBtnText}>Create Match</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
     </KeyboardAwareScrollView>
   );
 }
@@ -180,7 +187,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loader: { marginVertical: 16 },
-  toggleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
+  toggleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
   summary: {
     marginTop: 20,
     backgroundColor: "#fff",
@@ -193,7 +205,7 @@ const styles = StyleSheet.create({
   summaryRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   summaryText: { fontSize: 14, color: "#333", fontWeight: "500" },
   bookBtn: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",

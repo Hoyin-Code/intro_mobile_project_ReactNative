@@ -19,7 +19,13 @@ type Props = {
   onTypingChange?: (isTyping: boolean) => void;
 };
 
-export default function ChatInput({ value, onChange, onSend, sending, onTypingChange }: Props) {
+export default function ChatInput({
+  value,
+  onChange,
+  onSend,
+  sending,
+  onTypingChange,
+}: Props) {
   const insets = useSafeAreaInsets();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -51,7 +57,10 @@ export default function ChatInput({ value, onChange, onSend, sending, onTypingCh
         multiline
       />
       <TouchableOpacity
-        style={[styles.sendBtn, (!value.trim() || sending) && styles.sendBtnDisabled]}
+        style={[
+          styles.sendBtn,
+          (!value.trim() || sending) && styles.sendBtnDisabled,
+        ]}
         onPress={onSend}
         disabled={!value.trim() || sending}
       >
@@ -91,7 +100,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
   },
