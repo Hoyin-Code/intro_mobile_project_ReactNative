@@ -22,12 +22,20 @@ export function computeRatingDeltas(
   scoreTeam2: number,
 ): Record<string, number> {
   if (team1.length === 0 || team2.length === 0) return {};
-  const [expected1, expected2] = expectedScores(avgSkill(team1), avgSkill(team2));
-  const score1 = scoreTeam1 > scoreTeam2 ? 1 : scoreTeam1 < scoreTeam2 ? 0 : 0.5;
+  const [expected1, expected2] = expectedScores(
+    avgSkill(team1),
+    avgSkill(team2),
+  );
+  const score1 =
+    scoreTeam1 > scoreTeam2 ? 1 : scoreTeam1 < scoreTeam2 ? 0 : 0.5;
   const score2 = 1 - score1;
   const deltas: Record<string, number> = {};
-  team1.forEach((p) => { deltas[p.id] = K * (score1 - expected1); });
-  team2.forEach((p) => { deltas[p.id] = K * (score2 - expected2); });
+  team1.forEach((p) => {
+    deltas[p.id] = K * (score1 - expected1);
+  });
+  team2.forEach((p) => {
+    deltas[p.id] = K * (score2 - expected2);
+  });
   return deltas;
 }
 
@@ -36,7 +44,10 @@ export async function updateRatings(
   team2: AppUserContext[],
   winner: "team1" | "team2" | "draw",
 ): Promise<void> {
-  const [expected1, expected2] = expectedScores(avgSkill(team1), avgSkill(team2));
+  const [expected1, expected2] = expectedScores(
+    avgSkill(team1),
+    avgSkill(team2),
+  );
 
   const score1 = winner === "team1" ? 1 : winner === "draw" ? 0.5 : 0;
   const score2 = 1 - score1;
@@ -46,11 +57,17 @@ export async function updateRatings(
   const updates = [
     ...team1.map((p) => ({
       id: p.id,
-      newSkill: Math.min(MAX_SKILL, Math.max(MIN_SKILL, p.skillLevel + K * (score1 - expected1))),
+      newSkill: Math.min(
+        MAX_SKILL,
+        Math.max(MIN_SKILL, p.skillLevel + K * (score1 - expected1)),
+      ),
     })),
     ...team2.map((p) => ({
       id: p.id,
-      newSkill: Math.min(MAX_SKILL, Math.max(MIN_SKILL, p.skillLevel + K * (score2 - expected2))),
+      newSkill: Math.min(
+        MAX_SKILL,
+        Math.max(MIN_SKILL, p.skillLevel + K * (score2 - expected2)),
+      ),
     })),
   ];
 

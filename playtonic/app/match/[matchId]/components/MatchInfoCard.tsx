@@ -41,11 +41,16 @@ export default function MatchInfoCard({ match, venue }: Props) {
         <Text style={styles.rowText}>
           {DAY_NAMES[date.getDay()]}, {MONTH_NAMES[date.getMonth()]}{" "}
           {date.getDate()}
+          {DAY_NAMES[date.getDay()]}, {MONTH_NAMES[date.getMonth()]}{" "}
+          {date.getDate()}
         </Text>
       </View>
 
       <View style={styles.row}>
         <Ionicons name="time-outline" size={16} color="#555" />
+        <Text style={styles.rowText}>
+          {match.startTime} – {match.endTime}
+        </Text>
         <Text style={styles.rowText}>
           {match.startTime} – {match.endTime}
         </Text>
@@ -58,11 +63,17 @@ export default function MatchInfoCard({ match, venue }: Props) {
           {spotsLeft > 0
             ? `  ·  ${spotsLeft} spot${spotsLeft > 1 ? "s" : ""} left`
             : "  ·  Full"}
+          {spotsLeft > 0
+            ? `  ·  ${spotsLeft} spot${spotsLeft > 1 ? "s" : ""} left`
+            : "  ·  Full"}
         </Text>
       </View>
 
       <View style={styles.row}>
         <Ionicons name="barbell-outline" size={16} color="#555" />
+        <Text style={styles.rowText}>
+          Skill {match.minSkillLevel} – {match.maxSkillLevel}
+        </Text>
         <Text style={styles.rowText}>
           Skill {match.minSkillLevel} – {match.maxSkillLevel}
         </Text>

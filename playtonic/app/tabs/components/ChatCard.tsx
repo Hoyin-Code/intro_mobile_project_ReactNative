@@ -19,9 +19,12 @@ export default function ChatCard({ match, onPress }: Props) {
       <View style={styles.cardContent}>
         <Text style={styles.matchName}>{match.matchName}</Text>
         <Text style={styles.matchSub}>
-          {MONTH_NAMES[date.getMonth()]} {date.getDate()} · {match.startTime} – {match.endTime}
+          {MONTH_NAMES[date.getMonth()]} {date.getDate()} · {match.startTime} –{" "}
+          {match.endTime}
         </Text>
-        <Text style={styles.matchSub}>{match.players.length}/{match.maxPlayers} players</Text>
+        <Text style={styles.matchSub}>
+          {match.players.length}/{match.maxPlayers} players
+        </Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color="#ccc" />
     </TouchableOpacity>
@@ -40,8 +43,12 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   iconContainer: {
-    width: 44, height: 44, borderRadius: 22,
-    backgroundColor: "#eef3fb", justifyContent: "center", alignItems: "center",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#eef3fb",
+    justifyContent: "center",
+    alignItems: "center",
   },
   cardContent: { flex: 1, gap: 2 },
   matchName: { fontSize: 15, fontWeight: "700", color: "#111" },

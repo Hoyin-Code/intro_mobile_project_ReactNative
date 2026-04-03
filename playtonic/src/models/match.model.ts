@@ -1,6 +1,11 @@
 import { AppUserContext } from "./appUserContext";
 
-export type MatchStatus = "open" | "full" | "ongoing" | "cancelled" | "completed";
+export type MatchStatus =
+  | "open"
+  | "full"
+  | "ongoing"
+  | "cancelled"
+  | "completed";
 
 /** Numeric skill rating on a 0.5–7.0 scale (e.g. DUPR-style). */
 export type SkillRating = number;

@@ -12,11 +12,18 @@ export function formatDateLabel(ts: number): string {
   yesterday.setDate(today.getDate() - 1);
   if (d.toDateString() === today.toDateString()) return "Today";
   if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" });
+  return d.toLocaleDateString([], {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export function formatTime(ts: number): string {
-  return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return new Date(ts).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function getTodayStart(): number {

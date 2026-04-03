@@ -21,10 +21,18 @@ export default function RatingCard({ players, deltas }: Props) {
           return (
             <View key={p.id} style={styles.ratingRow}>
               <Avatar uri={p.imageUrl} name={p.displayName} size={32} />
-              <Text style={styles.ratingName} numberOfLines={1}>{p.displayName}</Text>
+              <Text style={styles.ratingName} numberOfLines={1}>
+                {p.displayName}
+              </Text>
               <Text style={styles.ratingBase}>{p.skillLevel.toFixed(1)}</Text>
-              <Text style={[styles.ratingDelta, { color: gain ? "#34a853" : "#e03e3e" }]}>
-                {gain ? "+" : ""}{delta.toFixed(2)}
+              <Text
+                style={[
+                  styles.ratingDelta,
+                  { color: gain ? "#34a853" : "#e03e3e" },
+                ]}
+              >
+                {gain ? "+" : ""}
+                {delta.toFixed(2)}
               </Text>
             </View>
           );
@@ -45,7 +53,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#111", marginBottom: 12 },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 12,
+  },
   ratingRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -56,5 +69,10 @@ const styles = StyleSheet.create({
   },
   ratingName: { flex: 1, fontSize: 14, color: "#222" },
   ratingBase: { fontSize: 14, color: "#aaa", fontWeight: "600" },
-  ratingDelta: { fontSize: 15, fontWeight: "700", minWidth: 48, textAlign: "right" },
+  ratingDelta: {
+    fontSize: 15,
+    fontWeight: "700",
+    minWidth: 48,
+    textAlign: "right",
+  },
 });

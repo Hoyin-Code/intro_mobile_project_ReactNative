@@ -6,7 +6,6 @@ import { formatTime } from "@/src/utils/dateUtils";
 const RADIUS = 18;
 const RADIUS_SMALL = 4;
 
-
 type Props = {
   msg: RTDBMessage;
   isMe: boolean;
@@ -16,23 +15,38 @@ type Props = {
 
 export default function MessageBubble({ msg, isMe, isFirst, isLast }: Props) {
   const bubbleShape = isMe
-    ? isFirst && isLast ? styles.bubbleMeRound
-    : isFirst ? styles.bubbleMeFirst
-    : isLast  ? styles.bubbleMeLast
-    :            styles.bubbleMeMid
-    : isFirst && isLast ? styles.bubbleThemRound
-    : isFirst ? styles.bubbleThemFirst
-    : isLast  ? styles.bubbleThemLast
-    :            styles.bubbleThemMid;
+    ? isFirst && isLast
+      ? styles.bubbleMeRound
+      : isFirst
+        ? styles.bubbleMeFirst
+        : isLast
+          ? styles.bubbleMeLast
+          : styles.bubbleMeMid
+    : isFirst && isLast
+      ? styles.bubbleThemRound
+      : isFirst
+        ? styles.bubbleThemFirst
+        : isLast
+          ? styles.bubbleThemLast
+          : styles.bubbleThemMid;
 
   return (
-    <View style={[styles.row, isMe ? styles.rowMe : styles.rowThem, !isLast && styles.collapsed]}>
+    <View
+      style={[
+        styles.row,
+        isMe ? styles.rowMe : styles.rowThem,
+        !isLast && styles.collapsed,
+      ]}
+    >
       {/* Avatar (others only) */}
       {!isMe && (
         <View style={styles.avatarCol}>
           {isLast ? (
             msg.senderImageUrl ? (
-              <Image source={{ uri: msg.senderImageUrl }} style={styles.avatar} />
+              <Image
+                source={{ uri: msg.senderImageUrl }}
+                style={styles.avatar}
+              />
             ) : (
               <View style={styles.avatarFallback}>
                 <Text style={styles.avatarInitial}>
@@ -51,7 +65,13 @@ export default function MessageBubble({ msg, isMe, isFirst, isLast }: Props) {
         {!isMe && isFirst && (
           <Text style={styles.senderName}>{msg.senderName}</Text>
         )}
-        <View style={[styles.bubble, isMe ? styles.bubbleMe : styles.bubbleThem, bubbleShape]}>
+        <View
+          style={[
+            styles.bubble,
+            isMe ? styles.bubbleMe : styles.bubbleThem,
+            bubbleShape,
+          ]}
+        >
           <Text style={[styles.bubbleText, isMe && styles.bubbleTextMe]}>
             {msg.text}
           </Text>
@@ -67,7 +87,12 @@ export default function MessageBubble({ msg, isMe, isFirst, isLast }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "flex-end", marginBottom: 2, gap: 6 },
+  row: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    marginBottom: 2,
+    gap: 6,
+  },
   rowMe: { justifyContent: "flex-end" },
   rowThem: { justifyContent: "flex-start" },
   collapsed: { marginBottom: 1 },
@@ -76,29 +101,69 @@ const styles = StyleSheet.create({
   avatarSpacer: { width: 32 },
   avatar: { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: COLORS.accent, justifyContent: "center", alignItems: "center",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.accent,
+    justifyContent: "center",
+    alignItems: "center",
   },
   avatarInitial: { fontSize: 13, fontWeight: "700", color: "#fff" },
 
   bubbleCol: { maxWidth: "72%", gap: 2 },
   bubbleColMe: { alignItems: "flex-end" },
 
-  senderName: { fontSize: 11, fontWeight: "700", color: "#888", marginLeft: 4, marginBottom: 1 },
+  senderName: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#888",
+    marginLeft: 4,
+    marginBottom: 1,
+  },
 
   bubble: { paddingHorizontal: 14, paddingVertical: 9 },
   bubbleMe: { backgroundColor: COLORS.accent },
   bubbleThem: { backgroundColor: "#fff" },
 
-  bubbleMeRound:  { borderRadius: RADIUS },
-  bubbleMeFirst:  { borderTopLeftRadius: RADIUS, borderTopRightRadius: RADIUS, borderBottomLeftRadius: RADIUS, borderBottomRightRadius: RADIUS_SMALL },
-  bubbleMeMid:    { borderTopLeftRadius: RADIUS, borderTopRightRadius: RADIUS_SMALL, borderBottomLeftRadius: RADIUS, borderBottomRightRadius: RADIUS_SMALL },
-  bubbleMeLast:   { borderTopLeftRadius: RADIUS, borderTopRightRadius: RADIUS_SMALL, borderBottomLeftRadius: RADIUS, borderBottomRightRadius: RADIUS },
+  bubbleMeRound: { borderRadius: RADIUS },
+  bubbleMeFirst: {
+    borderTopLeftRadius: RADIUS,
+    borderTopRightRadius: RADIUS,
+    borderBottomLeftRadius: RADIUS,
+    borderBottomRightRadius: RADIUS_SMALL,
+  },
+  bubbleMeMid: {
+    borderTopLeftRadius: RADIUS,
+    borderTopRightRadius: RADIUS_SMALL,
+    borderBottomLeftRadius: RADIUS,
+    borderBottomRightRadius: RADIUS_SMALL,
+  },
+  bubbleMeLast: {
+    borderTopLeftRadius: RADIUS,
+    borderTopRightRadius: RADIUS_SMALL,
+    borderBottomLeftRadius: RADIUS,
+    borderBottomRightRadius: RADIUS,
+  },
 
   bubbleThemRound: { borderRadius: RADIUS },
-  bubbleThemFirst: { borderTopLeftRadius: RADIUS, borderTopRightRadius: RADIUS, borderBottomLeftRadius: RADIUS_SMALL, borderBottomRightRadius: RADIUS },
-  bubbleThemMid:   { borderTopLeftRadius: RADIUS_SMALL, borderTopRightRadius: RADIUS, borderBottomLeftRadius: RADIUS_SMALL, borderBottomRightRadius: RADIUS },
-  bubbleThemLast:  { borderTopLeftRadius: RADIUS_SMALL, borderTopRightRadius: RADIUS, borderBottomLeftRadius: RADIUS, borderBottomRightRadius: RADIUS },
+  bubbleThemFirst: {
+    borderTopLeftRadius: RADIUS,
+    borderTopRightRadius: RADIUS,
+    borderBottomLeftRadius: RADIUS_SMALL,
+    borderBottomRightRadius: RADIUS,
+  },
+  bubbleThemMid: {
+    borderTopLeftRadius: RADIUS_SMALL,
+    borderTopRightRadius: RADIUS,
+    borderBottomLeftRadius: RADIUS_SMALL,
+    borderBottomRightRadius: RADIUS,
+  },
+  bubbleThemLast: {
+    borderTopLeftRadius: RADIUS_SMALL,
+    borderTopRightRadius: RADIUS,
+    borderBottomLeftRadius: RADIUS,
+    borderBottomRightRadius: RADIUS,
+  },
 
   bubbleText: { fontSize: 15, color: "#111", lineHeight: 21 },
   bubbleTextMe: { color: "#fff" },

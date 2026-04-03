@@ -81,9 +81,19 @@ export default function MyMatches() {
             style={styles.card}
             onPress={() => {
               if (status === "ongoing" || status === "completed") {
-                router.push({ pathname: "/match/[matchId]/results", params: { matchId: m.id } });
+                router.push({
+                  pathname: "/match/[matchId]/results",
+                  params: { matchId: m.id },
+                });
               } else {
-                router.push({ pathname: "/match/[matchId]", params: { matchId: m.id } });
+                router.push({
+                  pathname: "/match/[matchId]",
+                  params: { matchId: m.id },
+                });
+                router.push({
+                  pathname: "/match/[matchId]",
+                  params: { matchId: m.id },
+                });
               }
             }}
           >
@@ -93,9 +103,18 @@ export default function MyMatches() {
                 <Text style={styles.venueName}>{m.venueName}</Text>
               </View>
               <View style={styles.badges}>
-                {(status === "ongoing" || status === "completed" || status === "cancelled") && (
-                  <View style={[styles.badge, { backgroundColor: MATCH_BADGE[status].color }]}>
-                    <Text style={styles.badgeText}>{MATCH_BADGE[status].label}</Text>
+                {(status === "ongoing" ||
+                  status === "completed" ||
+                  status === "cancelled") && (
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: MATCH_BADGE[status].color },
+                    ]}
+                  >
+                    <Text style={styles.badgeText}>
+                      {MATCH_BADGE[status].label}
+                    </Text>
                   </View>
                 )}
               </View>

@@ -23,12 +23,15 @@ export default function LoginScreen() {
 
   useEffect(() => {
     SecureStore.getItemAsync("email").then((v) => v && setField("email", v));
-    SecureStore.getItemAsync("password").then((v) => v && setField("password", v));
+    SecureStore.getItemAsync("password").then(
+      (v) => v && setField("password", v),
+    );
   }, []);
 
   const validate = () => {
     if (!form.email.trim().includes("@")) return "Enter a valid email.";
-    if (form.password.length < 6) return "Password must be at least 6 characters.";
+    if (form.password.length < 6)
+      return "Password must be at least 6 characters.";
     return null;
   };
 

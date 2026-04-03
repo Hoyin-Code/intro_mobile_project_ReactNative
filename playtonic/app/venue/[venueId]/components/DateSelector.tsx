@@ -9,7 +9,11 @@ type Props = {
   onSelectDate: (date: Date) => void;
 };
 
-export default function DateSelector({ dates, selectedDate, onSelectDate }: Props) {
+export default function DateSelector({
+  dates,
+  selectedDate,
+  onSelectDate,
+}: Props) {
   return (
     <FlatList
       data={dates}
@@ -24,13 +28,19 @@ export default function DateSelector({ dates, selectedDate, onSelectDate }: Prop
             style={[styles.dateCard, isSelected && styles.dateCardSelected]}
             onPress={() => onSelectDate(item)}
           >
-            <Text style={[styles.dateDow, isSelected && styles.dateTextSelected]}>
+            <Text
+              style={[styles.dateDow, isSelected && styles.dateTextSelected]}
+            >
               {DAY_NAMES[item.getDay()]}
             </Text>
-            <Text style={[styles.dateNum, isSelected && styles.dateTextSelected]}>
+            <Text
+              style={[styles.dateNum, isSelected && styles.dateTextSelected]}
+            >
               {item.getDate()}
             </Text>
-            <Text style={[styles.dateMon, isSelected && styles.dateTextSelected]}>
+            <Text
+              style={[styles.dateMon, isSelected && styles.dateTextSelected]}
+            >
               {MONTH_NAMES[item.getMonth()]}
             </Text>
           </TouchableOpacity>
@@ -52,7 +62,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     minWidth: 58,
   },
-  dateCardSelected: { borderColor: COLORS.accent, backgroundColor: COLORS.accent },
+  dateCardSelected: {
+    borderColor: COLORS.accent,
+    backgroundColor: COLORS.accent,
+  },
   dateDow: { fontSize: 11, fontWeight: "600", color: "#888" },
   dateNum: { fontSize: 20, fontWeight: "800", color: "#111", lineHeight: 26 },
   dateMon: { fontSize: 11, fontWeight: "600", color: "#888" },

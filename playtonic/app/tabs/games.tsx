@@ -67,7 +67,9 @@ export default function Games() {
         courtName: court?.name ?? "Unknown Court",
       };
     });
-    enriched.sort((a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime));
+    enriched.sort(
+      (a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime),
+    );
     return enriched;
   }, []);
 
@@ -80,10 +82,12 @@ export default function Games() {
     }
     const hour = parseHour(m.startTime);
     if (hour < filter.fromHour || hour >= filter.toHour) return false;
-    if (m.minSkillLevel > filter.maxSkill || m.maxSkillLevel < filter.minSkill) return false;
+    if (m.minSkillLevel > filter.maxSkill || m.maxSkillLevel < filter.minSkill)
+      return false;
     if (filter.gender === "mixed" && !m.mixedTeams) return false;
     if (filter.gender === "same" && m.mixedTeams) return false;
-    if (filter.gender === "same" && user && m.hostGender !== user.gender) return false;
+    if (filter.gender === "same" && user && m.hostGender !== user.gender)
+      return false;
     return true;
   });
 
@@ -117,12 +121,21 @@ export default function Games() {
           <EmptyState icon="tennisball-outline" title="No open matches found" />
         }
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.accent} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={COLORS.accent}
+          />
         }
         renderItem={({ item }) => (
           <MatchCard
             match={item}
-            onPress={() => router.push({ pathname: "/match/[matchId]", params: { matchId: item.id } })}
+            onPress={() =>
+              router.push({
+                pathname: "/match/[matchId]",
+                params: { matchId: item.id },
+              })
+            }
           />
         )}
       />
@@ -140,8 +153,18 @@ export default function Games() {
 }
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f7f7f9" },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f7f7f9",
+  },
   list: { padding: 16, gap: 12, backgroundColor: "#f7f7f9", flexGrow: 1 },
   screenTitle: { fontSize: 22, fontWeight: "800", color: "#111" },
-  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
 });

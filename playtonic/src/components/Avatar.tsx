@@ -10,7 +10,13 @@ type Props = {
   bordered?: boolean;
 };
 
-export default function Avatar({ uri, name, size = 44, empty = false, bordered = false }: Props) {
+export default function Avatar({
+  uri,
+  name,
+  size = 44,
+  empty = false,
+  bordered = false,
+}: Props) {
   const radius = size / 2;
   const base = { width: size, height: size, borderRadius: radius };
   const border = bordered ? { borderWidth: 2, borderColor: "#eee" } : {};

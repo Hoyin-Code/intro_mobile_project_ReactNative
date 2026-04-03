@@ -42,7 +42,7 @@ export default function RootLayout() {
             imageUrl: d.photoUrl ?? null,
             skillLevel: d.skillLevel,
             gender: d.gender,
-            createdAt: d.createdAt
+            createdAt: d.createdAt,
           });
         }
         setLoading(false);
@@ -59,22 +59,22 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <KeyboardProvider>
-      <UserContext.Provider value={profile}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "slide_from_right",
-          }}
-        >
-          {user ? (
-            <Stack.Screen name="tabs" />
-          ) : (
-            <Stack.Screen name="auth/login" />
-          )}
-        </Stack>
-      </UserContext.Provider>
-    </KeyboardProvider>
+      <KeyboardProvider>
+        <UserContext.Provider value={profile}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: "slide_from_right",
+            }}
+          >
+            {user ? (
+              <Stack.Screen name="tabs" />
+            ) : (
+              <Stack.Screen name="auth/login" />
+            )}
+          </Stack>
+        </UserContext.Provider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 }

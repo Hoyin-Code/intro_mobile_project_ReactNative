@@ -28,7 +28,6 @@ import {
 import { FSMatch } from "@/src/models/match.model";
 import { getMatchById } from "@/src/services/matchService";
 
-
 export default function ReservationDetail() {
   const { reservationId } = useLocalSearchParams<{ reservationId: string }>();
   const [reservation, setReservation] = useState<FSReservation | null>(null);
@@ -119,7 +118,12 @@ export default function ReservationDetail() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>Booking Info</Text>
-          <View style={[styles.badge, { backgroundColor: RESERVATION_BADGE[effectiveStatus].color }]}>
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: RESERVATION_BADGE[effectiveStatus].color },
+            ]}
+          >
             <Text style={styles.badgeText}>
               {RESERVATION_BADGE[effectiveStatus].label}
             </Text>

@@ -26,7 +26,11 @@ export default function ChatHeader({ matchId, matchName }: Props) {
           router.push({ pathname: "/match/[matchId]", params: { matchId } })
         }
       >
-        <Ionicons name="information-circle-outline" size={24} color={COLORS.accent} />
+        <Ionicons
+          name="information-circle-outline"
+          size={24}
+          color={COLORS.accent}
+        />
       </TouchableOpacity>
     </View>
   );

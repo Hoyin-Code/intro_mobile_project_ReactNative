@@ -103,7 +103,7 @@ const RootLayout = () => {
           name="components/MatchCard"
           options={{ href: null, title: "MatchCard" }}
         />
-                <Tabs.Screen
+        <Tabs.Screen
           name="components/FilterModal"
           options={{ href: null, title: "FilterModal" }}
         />

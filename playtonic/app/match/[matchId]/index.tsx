@@ -25,7 +25,6 @@ import MatchInfoCard from "./components/MatchInfoCard";
 import PlayersCard from "./components/PlayersCard";
 
 import { COLORS } from "@/src/constants/colors";
-import { cancelReservation } from "@/src/services/reservationService";
 
 export default function MatchOverview() {
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
@@ -81,7 +80,10 @@ export default function MatchOverview() {
   const spotsLeft = match.maxPlayers - match.players.length;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <Text style={styles.matchName}>{match.matchName}</Text>
       <MatchInfoCard match={match} venue={venue} />
       <PlayersCard
@@ -128,7 +130,7 @@ export default function MatchOverview() {
           if (!user) return;
           setCancel(true);
           try {
-            await cancelMatch(match.id,match.reservationId);
+            await cancelMatch(match.id, match.reservationId);
             setCancel(false);
             router.back();
           } catch {

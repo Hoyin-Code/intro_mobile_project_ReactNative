@@ -40,7 +40,8 @@ export function useCreateMatch() {
   const [booking, setBooking] = useState(false);
 
   const onCreateMatch = useCallback(async () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
+      return;
     if (
       competitive &&
       (user.skillLevel < minSkillLevel || user.skillLevel > maxSkillLevel)
@@ -66,7 +67,8 @@ export function useCreateMatch() {
 
       const match: FSMatch = await createMatch({
         reservationId: reservation.id,
-        matchName: matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
+        matchName:
+          matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
         courtId: selectedCourt.id,
         venueId: venue.id,
         hostId: user.id,
@@ -115,7 +117,8 @@ export function useCreateMatch() {
   ]);
 
   const confirm = () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
+      return;
     Alert.alert(
       "Create this match?",
       `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,

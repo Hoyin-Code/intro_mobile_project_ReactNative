@@ -1,5 +1,5 @@
 import { COLORS } from "@/src/constants/colors";
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -83,8 +83,12 @@ export default function SkillLevelSelector({
   return (
     <View style={styles.container}>
       <View style={styles.labelsRow}>
-        <Text style={styles.label}>Min: <Text style={styles.labelValue}>{minSkill}</Text></Text>
-        <Text style={styles.label}>Max: <Text style={styles.labelValue}>{maxSkill}</Text></Text>
+        <Text style={styles.label}>
+          Min: <Text style={styles.labelValue}>{minSkill}</Text>
+        </Text>
+        <Text style={styles.label}>
+          Max: <Text style={styles.labelValue}>{maxSkill}</Text>
+        </Text>
       </View>
       <View style={styles.track}>
         <Animated.View style={[styles.range, rangeStyle]} />
@@ -97,7 +101,9 @@ export default function SkillLevelSelector({
       </View>
       <View style={styles.tickRow}>
         {Array.from({ length: MAX - MIN + 1 }, (_, i) => i + MIN).map((n) => (
-          <Text key={n} style={styles.tick}>{n}</Text>
+          <Text key={n} style={styles.tick}>
+            {n}
+          </Text>
         ))}
       </View>
     </View>

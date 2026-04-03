@@ -11,12 +11,10 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import {
   ActivityIndicator,
   FlatList,
-  Platform,
   StyleSheet,
   Text,
   View,
@@ -31,7 +29,6 @@ import MessageBubble from "./components/MessageBubble";
 type ListItem =
   | { type: "date"; label: string; key: string }
   | { type: "message"; msg: RTDBMessage; isFirst: boolean; isLast: boolean };
-
 
 function buildListItems(messages: RTDBMessage[]): ListItem[] {
   const items: ListItem[] = [];
@@ -64,7 +61,6 @@ function buildListItems(messages: RTDBMessage[]): ListItem[] {
 
 export default function ChatRoom() {
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
-  const headerHeight = useHeaderHeight();
   const user = useContext(UserContext);
   const [messages, setMessages] = useState<RTDBMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,7 +164,7 @@ export default function ChatRoom() {
       ) : (
         <FlatList
           data={items}
-          inverted = {true}
+          inverted={true}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           style={styles.messageList}
@@ -176,7 +172,11 @@ export default function ChatRoom() {
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
             <View style={styles.emptyWrapper}>
-              <EmptyState icon="chatbubbles-outline" title="No messages yet" subtitle="Be the first to say something!" />
+              <EmptyState
+                icon="chatbubbles-outline"
+                title="No messages yet"
+                subtitle="Be the first to say something!"
+              />
             </View>
           }
         />
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
   },
   dateLabel: { fontSize: 12, color: "#999", fontWeight: "600" },
-  emptyWrapper: {flex:1, margin:"auto",paddingBottom:400},
+  emptyWrapper: { flex: 1, margin: "auto", paddingBottom: 400 },
   typingLabel: {
     fontSize: 12,
     alignSelf: "flex-end",
