@@ -15,7 +15,7 @@ export const DEFAULT_FILTER: FilterState = {
   toHour: 22,
   minSkill: 0.5,
   maxSkill: 7.0,
-  gender: "same",
+  gender: "all",
 };
 
 function parseHour(time: string) {
