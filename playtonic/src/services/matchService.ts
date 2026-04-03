@@ -24,7 +24,7 @@ export async function getOpenMatches(): Promise<FSMatch[]> {
   const todayStart = getTodayStart();
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }) as FSMatch)
-    .filter((m) => m.date >= todayStart);
+    .filter((m) => m.date >= todayStart && m.players.length < 4);
 }
 
 export async function getMatchById(matchId: string): Promise<FSMatch | null> {
@@ -62,7 +62,7 @@ export async function leaveMatch(
   userId: string,
 ): Promise<void> {
   const matchRef = doc(matchesCol(), matchId);
-  await updateDoc(matchRef,{ players: arrayRemove(userId) });
+  await updateDoc(matchRef, { players: arrayRemove(userId) });
 }
 
 export async function getOpenMatchesByVenue(
