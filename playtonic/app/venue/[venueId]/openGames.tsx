@@ -42,6 +42,8 @@ export default function OpenGames() {
     setMatchName,
     competitive,
     setCompetitive,
+    mixedTeams,
+    setMixedTeams,
     minSkillLevel,
     setMinSkillLevel,
     maxSkillLevel,
@@ -91,6 +93,15 @@ export default function OpenGames() {
           <Switch
             value={competitive}
             onValueChange={setCompetitive}
+            trackColor={{ false: "#ddd", true: COLORS.accent }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.toggleRow}>
+          <Text style={styles.sectionTitle}>Mixed Gender</Text>
+          <Switch
+            value={mixedTeams}
+            onValueChange={setMixedTeams}
             trackColor={{ false: "#ddd", true: COLORS.accent }}
             thumbColor="#fff"
           />

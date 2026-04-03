@@ -16,7 +16,7 @@ import {
 
 const DATES = getDates(20);
 const FROM_HOURS = Array.from({ length: 16 }, (_, i) => i + 6); // 6–21
-const TO_HOURS = Array.from({ length: 16 }, (_, i) => i + 7);   // 7–22
+const TO_HOURS = Array.from({ length: 16 }, (_, i) => i + 7); // 7–22
 const ITEM_HEIGHT = 48;
 
 const SKILL_FILTERS: { label: string; min: number; max: number }[] = [
@@ -33,6 +33,7 @@ export interface FilterState {
   toHour: number;
   minSkill: number;
   maxSkill: number;
+  gender: "all" | "mixed" | "same";
 }
 
 interface Props {
@@ -84,7 +85,12 @@ function TimePicker({ hours, value, onChange }: TimePickerProps) {
           const active = item === value;
           return (
             <View style={styles.pickerItem}>
-              <Text style={[styles.pickerItemText, active && styles.pickerItemTextActive]}>
+              <Text
+                style={[
+                  styles.pickerItemText,
+                  active && styles.pickerItemTextActive,
+                ]}
+              >
                 {formatHour(item)}
               </Text>
             </View>
@@ -95,7 +101,12 @@ function TimePicker({ hours, value, onChange }: TimePickerProps) {
   );
 }
 
-export default function FilterModal({ visible, filter, onApply, onClose }: Props) {
+export default function FilterModal({
+  visible,
+  filter,
+  onApply,
+  onClose,
+}: Props) {
   const [localFilter, setLocalFilter] = React.useState<FilterState>(filter);
   const slideAnim = useRef(new Animated.Value(500)).current;
 
@@ -126,12 +137,30 @@ export default function FilterModal({ visible, filter, onApply, onClose }: Props
   };
 
   const reset = () =>
-    setLocalFilter({ dates: new Set(), fromHour: 6, toHour: 22, minSkill: 0.5, maxSkill: 7.0 });
-
+    setLocalFilter({
+      dates: new Set(),
+      fromHour: 6,
+      toHour: 22,
+      minSkill: 0.5,
+      maxSkill: 7.0,
+      gender: "all",
+    });
+  onApply(localFilter);
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
-      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose} />
-      <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity
+        style={styles.backdrop}
+        activeOpacity={1}
+        onPress={onClose}
+      />
+      <Animated.View
+        style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}
+      >
         <View style={styles.handle} />
 
         <View style={styles.headerRow}>
@@ -141,20 +170,53 @@ export default function FilterModal({ visible, filter, onApply, onClose }: Props
           </TouchableOpacity>
         </View>
 
+        {/* Gender filter */}
+        <Text style={styles.sectionLabel}>Gender</Text>
+        <View style={styles.chipRow}>
+          {(["all", "mixed", "same"] as const).map((g) => {
+            const label =
+              g === "all" ? "All" : g === "mixed" ? "Mixed" : "Same Gender";
+            const active = localFilter.gender === g;
+            return (
+              <TouchableOpacity
+                key={g}
+                style={[styles.chip, active && styles.chipActive]}
+                onPress={() =>
+                  setLocalFilter((prev) => ({ ...prev, gender: g }))
+                }
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
         {/* Skill filter */}
         <Text style={styles.sectionLabel}>Skill Level</Text>
         <View style={styles.chipRow}>
           {SKILL_FILTERS.map((sf) => {
-            const active = localFilter.minSkill === sf.min && localFilter.maxSkill === sf.max;
+            const active =
+              localFilter.minSkill === sf.min &&
+              localFilter.maxSkill === sf.max;
             return (
               <TouchableOpacity
                 key={sf.label}
                 style={[styles.chip, active && styles.chipActive]}
                 onPress={() =>
-                  setLocalFilter((prev) => ({ ...prev, minSkill: sf.min, maxSkill: sf.max }))
+                  setLocalFilter((prev) => ({
+                    ...prev,
+                    minSkill: sf.min,
+                    maxSkill: sf.max,
+                  }))
                 }
               >
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
                   {sf.label}
                 </Text>
               </TouchableOpacity>
@@ -224,7 +286,10 @@ export default function FilterModal({ visible, filter, onApply, onClose }: Props
           </View>
         </View>
 
-        <TouchableOpacity style={styles.applyBtn} onPress={() => onApply(localFilter)}>
+        <TouchableOpacity
+          style={styles.applyBtn}
+          onPress={() => onApply(localFilter)}
+        >
           <Text style={styles.applyBtnText}>Apply</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -265,13 +330,22 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 17, fontWeight: "800", color: "#111" },
   resetText: { fontSize: 14, color: COLORS.accent, fontWeight: "600" },
-  sectionLabel: { fontSize: 13, fontWeight: "700", color: "#555", marginTop: 10 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#555",
+    marginTop: 10,
+  },
 
   // Skill chips
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 4 },
   chip: {
-    paddingHorizontal: 14, paddingVertical: 7,
-    borderRadius: 20, borderWidth: 1, borderColor: "#ddd", backgroundColor: "#fff",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
   },
   chipActive: { backgroundColor: COLORS.accent, borderColor: COLORS.accent },
   chipText: { fontSize: 13, fontWeight: "600", color: "#666" },
@@ -289,7 +363,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     minWidth: 58,
   },
-  dateCardActive: { borderColor: COLORS.accent, backgroundColor: COLORS.accent },
+  dateCardActive: {
+    borderColor: COLORS.accent,
+    backgroundColor: COLORS.accent,
+  },
   dateDow: { fontSize: 11, fontWeight: "600", color: "#888" },
   dateNum: { fontSize: 20, fontWeight: "800", color: "#111", lineHeight: 26 },
   dateMon: { fontSize: 11, fontWeight: "600", color: "#888" },
@@ -332,7 +409,12 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 18,
   },
-  timeDivider: { width: 1, backgroundColor: "#eee", alignSelf: "stretch", marginTop: 28 },
+  timeDivider: {
+    width: 1,
+    backgroundColor: "#eee",
+    alignSelf: "stretch",
+    marginTop: 28,
+  },
 
   applyBtn: {
     marginTop: 14,

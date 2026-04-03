@@ -29,6 +29,8 @@ export interface FSMatch {
   description: string | null;
   createdAt: number;
   results?: Results | null;
+  mixedTeams: boolean;
+  hostGender: "Male" | "Female";
 }
 export interface GameScore {
   team1: number;

@@ -1,12 +1,13 @@
 import { FSMatch } from "@/src/models/match.model";
 import { FSVenue } from "@/src/models/venue.model";
 import { getOpenMatches } from "@/src/services/matchService";
+import { UserContext } from "@/src/models/appUserContext";
 import { getVenues } from "@/src/services/venueService";
 import EmptyState from "@/src/components/EmptyState";
 import MatchCard from "./components/MatchCard";
 import FilterModal, { FilterState } from "./components/FilterModal";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -26,6 +27,7 @@ const DEFAULT_FILTER: FilterState = {
   toHour: 22,
   minSkill: 0.5,
   maxSkill: 7.0,
+  gender: "same",
 };
 
 type EnrichedMatch = FSMatch & { venueName: string; courtName: string };
@@ -40,12 +42,14 @@ function isFilterActive(f: FilterState) {
     f.fromHour !== 6 ||
     f.toHour !== 22 ||
     f.minSkill !== 0.5 ||
-    f.maxSkill !== 7.0
+    f.maxSkill !== 7.0 ||
+    f.gender !== "same"
   );
 }
 
 export default function Games() {
   const router = useRouter();
+  const user = useContext(UserContext);
   const [matches, setMatches] = useState<EnrichedMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -88,6 +92,9 @@ export default function Games() {
     const hour = parseHour(m.startTime);
     if (hour < filter.fromHour || hour >= filter.toHour) return false;
     if (m.minSkillLevel > filter.maxSkill || m.maxSkillLevel < filter.minSkill) return false;
+    if (filter.gender === "mixed" && !m.mixedTeams) return false;
+    if (filter.gender === "same" && m.mixedTeams) return false;
+    if (filter.gender === "same" && user && m.hostGender !== user.gender) return false;
     return true;
   });
 

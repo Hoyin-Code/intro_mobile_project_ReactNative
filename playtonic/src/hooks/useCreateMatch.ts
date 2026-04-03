@@ -41,6 +41,7 @@ export function useCreateMatch() {
   const [matchName, setMatchName] = useState("");
   const [maxPlayers, setMaxPlayers] = useState(4);
   const [competitive, setCompetitive] = useState(false);
+  const [mixedTeams, setMixedTeams] = useState(false);
   const [minSkillLevel, setMinSkillLevel] = useState(1);
   const [maxSkillLevel, setMaxSkillLevel] = useState(7);
 
@@ -110,7 +111,10 @@ export function useCreateMatch() {
   const onCreateMatch = useCallback(async () => {
     if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
       return;
-    if (competitive && (user.skillLevel < minSkillLevel || user.skillLevel > maxSkillLevel)) {
+    if (
+      competitive &&
+      (user.skillLevel < minSkillLevel || user.skillLevel > maxSkillLevel)
+    ) {
       Alert.alert(
         "Skill Level Mismatch",
         `Your skill level (${user.skillLevel}) must be between ${minSkillLevel} and ${maxSkillLevel} to create this match.`,
@@ -132,7 +136,8 @@ export function useCreateMatch() {
 
       const match: FSMatch = await createMatch({
         reservationId: reservation.id,
-        matchName: matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
+        matchName:
+          matchName.trim() || `${user.displayName ?? "Player"}'s Match`,
         courtId: selectedCourt.id,
         venueId: venue.id,
         hostId: user.id,
@@ -140,6 +145,8 @@ export function useCreateMatch() {
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
         competitive,
+        mixedTeams,
+        hostGender: user.gender,
         minSkillLevel: competitive ? minSkillLevel : 0,
         maxSkillLevel: competitive ? maxSkillLevel : 7,
         maxPlayers,
@@ -172,6 +179,7 @@ export function useCreateMatch() {
     matchName,
     maxPlayers,
     competitive,
+    mixedTeams,
     minSkillLevel,
     maxSkillLevel,
     loadSlots,
@@ -211,6 +219,8 @@ export function useCreateMatch() {
     setMaxPlayers,
     competitive,
     setCompetitive,
+    mixedTeams,
+    setMixedTeams,
     minSkillLevel,
     setMinSkillLevel,
     maxSkillLevel,
