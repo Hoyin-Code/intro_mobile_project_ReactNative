@@ -1,4 +1,5 @@
 import { COLORS } from "@/src/constants/colors";
+import { MATCH_BADGE } from "@/src/constants/badges";
 import { UserContext } from "@/src/models/appUserContext";
 import { FSMatch } from "@/src/models/match.model";
 import { getMatchesByPlayer } from "@/src/services/matchService";
@@ -92,19 +93,9 @@ export default function MyMatches() {
                 <Text style={styles.venueName}>{m.venueName}</Text>
               </View>
               <View style={styles.badges}>
-                {status === "ongoing" && (
-                  <View style={[styles.badge, styles.badgeOngoing]}>
-                    <Text style={styles.badgeText}>ONGOING</Text>
-                  </View>
-                )}
-                {status === "completed" && (
-                  <View style={[styles.badge, styles.badgeCompleted]}>
-                    <Text style={styles.badgeText}>COMPLETED</Text>
-                  </View>
-                )}
-                {status === "cancelled" && (
-                  <View style={[styles.badge, styles.badgeCancelled]}>
-                    <Text style={styles.badgeText}>CANCELLED</Text>
+                {(status === "ongoing" || status === "completed" || status === "cancelled") && (
+                  <View style={[styles.badge, { backgroundColor: MATCH_BADGE[status].color }]}>
+                    <Text style={styles.badgeText}>{MATCH_BADGE[status].label}</Text>
                   </View>
                 )}
               </View>
@@ -161,9 +152,6 @@ const styles = StyleSheet.create({
   venueName: { fontSize: 13, color: "#666", marginTop: 2 },
   badges: { flexDirection: "row", gap: 6, flexShrink: 0 },
   badge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
-  badgeOngoing: { backgroundColor: "#fff3cd" },
-  badgeCompleted: { backgroundColor: "#e8eaf6" },
-  badgeCancelled: { backgroundColor: "#f5f5f5" },
   badgeText: { fontSize: 11, fontWeight: "700", color: "#333" },
   infoRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   infoText: { fontSize: 13, color: "#555" },

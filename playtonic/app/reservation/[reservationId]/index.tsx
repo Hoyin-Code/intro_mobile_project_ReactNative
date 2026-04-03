@@ -1,8 +1,8 @@
 import { COLORS } from "@/src/constants/colors";
+import { RESERVATION_BADGE } from "@/src/constants/badges";
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
 import {
   FSReservation,
-  ReservationStatus,
   getEffectiveStatus,
 } from "@/src/models/reservations.model";
 import {
@@ -17,6 +17,7 @@ import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,19 +28,6 @@ import {
 import { FSMatch } from "@/src/models/match.model";
 import { getMatchById } from "@/src/services/matchService";
 
-const STATUS_LABEL: Record<ReservationStatus, string> = {
-  upcoming: "UPCOMING",
-  ongoing: "ONGOING",
-  completed: "COMPLETED",
-  cancelled: "CANCELLED",
-};
-
-const STATUS_BADGE: Record<ReservationStatus, object> = {
-  upcoming: { backgroundColor: "#e8f0fe" },
-  ongoing: { backgroundColor: "#fff3cd" },
-  completed: { backgroundColor: "#e8eaf6" },
-  cancelled: { backgroundColor: "#f5f5f5" },
-};
 
 export default function ReservationDetail() {
   const { reservationId } = useLocalSearchParams<{ reservationId: string }>();
@@ -131,9 +119,9 @@ export default function ReservationDetail() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>Booking Info</Text>
-          <View style={[styles.badge, STATUS_BADGE[effectiveStatus]]}>
+          <View style={[styles.badge, { backgroundColor: RESERVATION_BADGE[effectiveStatus].color }]}>
             <Text style={styles.badgeText}>
-              {STATUS_LABEL[effectiveStatus]}
+              {RESERVATION_BADGE[effectiveStatus].label}
             </Text>
           </View>
         </View>
@@ -186,6 +174,20 @@ export default function ReservationDetail() {
           </View>
         )}
       </View>
+
+      {venue?.address && (
+        <TouchableOpacity
+          style={styles.mapsBtn}
+          onPress={() =>
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue.address)}`,
+            )
+          }
+        >
+          <Ionicons name="navigate-outline" size={18} color="#fff" />
+          <Text style={styles.mapsBtnText}>Open in Google Maps</Text>
+        </TouchableOpacity>
+      )}
 
       {canCancel && (
         <TouchableOpacity
@@ -248,6 +250,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelBtnText: { color: "#c00", fontWeight: "700", fontSize: 15 },
+  mapsBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: COLORS.accent,
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginBottom: 12,
+  },
+  mapsBtnText: { color: "#fff", fontWeight: "700", fontSize: 15 },
   gotoBtn: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 12,

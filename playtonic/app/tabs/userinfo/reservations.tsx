@@ -1,4 +1,5 @@
 import { COLORS } from "@/src/constants/colors";
+import { RESERVATION_BADGE } from "@/src/constants/badges";
 import { formatDate } from "@/src/utils/dateUtils";
 import { UserContext } from "@/src/models/appUserContext";
 import {
@@ -31,13 +32,6 @@ type EnrichedReservation = FSReservation & {
   courtName: string;
 };
 
-// TODO: fix logic so it changes status after fetch
-const STATUS_LABEL: Record<ReservationStatus, string> = {
-  upcoming: "Upcoming",
-  ongoing: "Ongoing",
-  completed: "Completed",
-  cancelled: "Cancelled",
-};
 
 export default function Reservations() {
   const user = useContext(UserContext);
@@ -181,14 +175,6 @@ export default function Reservations() {
         const effectiveStatus = getEffectiveStatus(item);
         const cancelled =
           effectiveStatus === "cancelled" || effectiveStatus === "completed";
-        const badgeStyle =
-          effectiveStatus === "ongoing"
-            ? styles.badgeOngoing
-            : effectiveStatus === "upcoming"
-              ? styles.badgeUpcoming
-              : effectiveStatus === "completed"
-                ? styles.badgeCompleted
-                : styles.badgeCancelled;
         return (
           <Pressable
             style={[styles.card, cancelled && styles.cardCancelled]}
@@ -199,9 +185,9 @@ export default function Reservations() {
                 <Text style={styles.venueName}>{item.venueName}</Text>
                 <Text style={styles.courtName}>{item.courtName}</Text>
               </View>
-              <View style={[styles.badge, badgeStyle]}>
+              <View style={[styles.badge, { backgroundColor: RESERVATION_BADGE[effectiveStatus].color }]}>
                 <Text style={styles.badgeText}>
-                  {STATUS_LABEL[effectiveStatus]}
+                  {RESERVATION_BADGE[effectiveStatus].label}
                 </Text>
               </View>
             </View>
@@ -279,10 +265,6 @@ const styles = StyleSheet.create({
   venueName: { fontSize: 16, fontWeight: "700", color: "#111" },
   courtName: { fontSize: 13, color: "#666", marginTop: 2 },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
-  badgeOngoing: { backgroundColor: "#e6f4ea" },
-  badgeUpcoming: { backgroundColor: "#e8f0fe" },
-  badgeCompleted: { backgroundColor: "#ede7f6" },
-  badgeCancelled: { backgroundColor: "#f5f5f5" },
   badgeText: { fontSize: 12, fontWeight: "600", color: "#444" },
   divider: {
     height: StyleSheet.hairlineWidth,
