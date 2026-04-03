@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   summary: {
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 18,
