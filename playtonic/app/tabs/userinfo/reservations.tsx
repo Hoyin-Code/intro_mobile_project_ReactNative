@@ -32,7 +32,6 @@ type EnrichedReservation = FSReservation & {
   courtName: string;
 };
 
-
 export default function Reservations() {
   const user = useContext(UserContext);
   const [reservations, setReservations] = useState<EnrichedReservation[]>([]);
@@ -185,7 +184,12 @@ export default function Reservations() {
                 <Text style={styles.venueName}>{item.venueName}</Text>
                 <Text style={styles.courtName}>{item.courtName}</Text>
               </View>
-              <View style={[styles.badge, { backgroundColor: RESERVATION_BADGE[effectiveStatus].color }]}>
+              <View
+                style={[
+                  styles.badge,
+                  { backgroundColor: RESERVATION_BADGE[effectiveStatus].color },
+                ]}
+              >
                 <Text style={styles.badgeText}>
                   {RESERVATION_BADGE[effectiveStatus].label}
                 </Text>

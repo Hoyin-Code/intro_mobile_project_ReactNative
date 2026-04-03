@@ -151,7 +151,9 @@ export default function MatchResults() {
     }
   }
   const canView =
-    !!match && (getEffectiveMatchStatus(match) === "ongoing" || getEffectiveMatchStatus(match) === "completed");
+    !!match &&
+    (getEffectiveMatchStatus(match) === "ongoing" ||
+      getEffectiveMatchStatus(match) === "completed");
 
   return (
     <KeyboardAvoidingView

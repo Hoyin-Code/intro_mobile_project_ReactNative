@@ -104,11 +104,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   cardTitle: { fontSize: 15, fontWeight: "700", color: "#111" },
   badge: { borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4 },
   badgeText: { fontSize: 12, fontWeight: "700", color: "#333" },
