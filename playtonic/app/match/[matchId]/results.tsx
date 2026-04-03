@@ -16,9 +16,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import RatingCard from "../components/RatingCard";
-import ScoreCard from "../components/ScoreCard";
-import TeamsCard from "../components/TeamsCard";
+import RatingCard from "./components/RatingCard";
+import ScoreCard from "./components/ScoreCard";
+import TeamsCard from "./components/TeamsCard";
 
 type TeamSlot = "A" | "B" | null;
 
@@ -136,11 +136,13 @@ export default function MatchResults() {
       return alert("Assign players to both teams before submitting.");
     if (results.games.length === 0)
       return alert("Add at least one game score before submitting.");
-    const invalidGame = results.games.find((g) => !isValidGameScore(g.team1, g.team2));
+    const invalidGame = results.games.find(
+      (g) => !isValidGameScore(g.team1, g.team2),
+    );
     if (invalidGame)
       return alert(
         `Invalid score ${invalidGame.team1}–${invalidGame.team2}. ` +
-        "First to 6 wins; if above 6 a 2-point lead is required.",
+          "First to 6 wins; if above 6 a 2-point lead is required.",
       );
     try {
       await submitResults(match, results);
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   submitBtn: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",

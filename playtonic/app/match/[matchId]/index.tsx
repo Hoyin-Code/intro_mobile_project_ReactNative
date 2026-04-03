@@ -20,9 +20,9 @@ import {
   View,
 } from "react-native";
 
-import MatchActionButton from "../components/MatchActionButton";
-import MatchInfoCard from "../components/MatchInfoCard";
-import PlayersCard from "../components/PlayersCard";
+import MatchActionButton from "./components/MatchActionButton";
+import MatchInfoCard from "./components/MatchInfoCard";
+import PlayersCard from "./components/PlayersCard";
 
 import { COLORS } from "@/src/constants/colors";
 import { cancelReservation } from "@/src/services/reservationService";
