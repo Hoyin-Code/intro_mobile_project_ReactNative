@@ -6,8 +6,10 @@ import { getVenues } from "@/src/services/venueService";
 import EmptyState from "@/src/components/EmptyState";
 import MatchCard from "./components/MatchCard";
 import FilterModal, { FilterState } from "./components/FilterModal";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusedData } from "@/src/hooks/useFocusedData";
+import { useRouter } from "expo-router";
 import React, { useCallback, useContext, useState } from "react";
+
 import {
   ActivityIndicator,
   FlatList,
@@ -50,13 +52,10 @@ function isFilterActive(f: FilterState) {
 export default function Games() {
   const router = useRouter();
   const user = useContext(UserContext);
-  const [matches, setMatches] = useState<EnrichedMatch[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
 
-  const load = useCallback(async () => {
+  const loader = useCallback(async (): Promise<EnrichedMatch[]> => {
     const [raw, venues] = await Promise.all([getOpenMatches(), getVenues()]);
     const venueMap = new Map<string, FSVenue>(venues.map((v) => [v.id, v]));
     const enriched: EnrichedMatch[] = raw.map((m) => {
@@ -69,21 +68,11 @@ export default function Games() {
       };
     });
     enriched.sort((a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime));
-    setMatches(enriched);
+    return enriched;
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      load().finally(() => setLoading(false));
-    }, [load]),
-  );
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  }, [load]);
+  const { data, loading, refreshing, onRefresh } = useFocusedData(loader);
+  const matches = data ?? [];
 
   const filtered = matches.filter((m) => {
     if (filter.dates.size > 0) {

@@ -4,8 +4,9 @@ import { FSMatch } from "@/src/models/match.model";
 import { getMatchesByPlayer } from "@/src/services/matchService";
 import { getVenues } from "@/src/services/venueService";
 import { isMatchOngoing } from "@/src/utils/matchUtils";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useContext, useState } from "react";
+import { useFocusedData } from "@/src/hooks/useFocusedData";
+import { router } from "expo-router";
+import { useCallback, useContext } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -22,12 +23,9 @@ type EnrichedMatch = FSMatch & { venueName: string };
 
 export default function MyMatches() {
   const user = useContext(UserContext);
-  const [matches, setMatches] = useState<EnrichedMatch[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const load = useCallback(async () => {
-    if (!user) return;
+  const loader = useCallback(async (): Promise<EnrichedMatch[]> => {
+    if (!user) return [];
     const [raw, venues] = await Promise.all([
       getMatchesByPlayer(user.id),
       getVenues(),
@@ -37,22 +35,14 @@ export default function MyMatches() {
       ...m,
       venueName: venueMap.get(m.venueId)?.name ?? "Unknown Venue",
     }));
-    enriched.sort((a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime));
-    setMatches(enriched);
+    enriched.sort(
+      (a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime),
+    );
+    return enriched;
   }, [user]);
 
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      load().finally(() => setLoading(false));
-    }, [load]),
-  );
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  }, [load]);
+  const { data, loading, refreshing, onRefresh } = useFocusedData(loader);
+  const matches = data ?? [];
 
   if (loading) {
     return (
@@ -75,7 +65,9 @@ export default function MyMatches() {
       data={matches}
       keyExtractor={(m) => m.id}
       contentContainerStyle={styles.list}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       renderItem={({ item: m }) => {
         const ongoing = isMatchOngoing(m);
         const needsResults =
@@ -86,9 +78,13 @@ export default function MyMatches() {
         return (
           <Pressable
             style={styles.card}
-            onPress={() =>
-              router.push({ pathname: "/match/[matchId]/results", params: { matchId: m.id } })
-            }
+            onPress={() => {
+              if (ongoing || m.status === "completed") {
+                router.push({ pathname: "/match/[matchId]/results", params: { matchId: m.id } });
+              } else {
+                router.push({ pathname: "/match/[matchId]", params: { matchId: m.id } });
+              }
+            }}
           >
             <View style={styles.cardHeader}>
               <View style={{ flex: 1 }}>
@@ -115,11 +111,15 @@ export default function MyMatches() {
             </View>
             <View style={styles.infoRow}>
               <Ionicons name="time-outline" size={14} color="#666" />
-              <Text style={styles.infoText}>{m.startTime} – {m.endTime}</Text>
+              <Text style={styles.infoText}>
+                {m.startTime} – {m.endTime}
+              </Text>
             </View>
             <View style={styles.infoRow}>
               <Ionicons name="people-outline" size={14} color="#666" />
-              <Text style={styles.infoText}>{m.players.length} / {m.maxPlayers} players</Text>
+              <Text style={styles.infoText}>
+                {m.players.length} / {m.maxPlayers} players
+              </Text>
             </View>
 
             {needsResults && (
@@ -147,7 +147,11 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
     gap: 6,
   },
-  cardHeader: { flexDirection: "row", alignItems: "flex-start", marginBottom: 4 },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 4,
+  },
   matchName: { fontSize: 16, fontWeight: "700", color: "#111" },
   venueName: { fontSize: 13, color: "#666", marginTop: 2 },
   badges: { flexDirection: "row", gap: 6, flexShrink: 0 },
