@@ -1,6 +1,6 @@
 import { COLORS } from "@/src/constants/colors";
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
-import { getDates } from "@/src/hooks/useVenueBooking";
+import { getDates } from "@/src/utils/dateUtils";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,

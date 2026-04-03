@@ -1,7 +1,7 @@
 import { COLORS } from "@/src/constants/colors";
 import { useCreateMatch } from "@/src/hooks/useCreateMatch";
 import { DAY_NAMES, MONTH_NAMES } from "@/src/constants/dates";
-import { getDates } from "@/src/hooks/useVenueBooking";
+import { getDates } from "@/src/utils/dateUtils";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback } from "react";

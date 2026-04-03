@@ -1,5 +1,4 @@
 import { FSMatch, MatchStatus } from "../models/match.model";
-import { FSReservation, ReservationStatus } from "../models/reservations.model";
 
 export function getEffectiveMatchStatus(match: FSMatch): MatchStatus {
   if (match.cancelled) return "cancelled";
@@ -12,7 +11,6 @@ export function getEffectiveMatchStatus(match: FSMatch): MatchStatus {
   const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), endH, endM).getTime();
   if (now >= end) return "completed";
   if (now >= start) return "ongoing";
-  if (match.players.length >= match.maxPlayers) return "full";
-  return "open";
+  return "upcoming";
 }
 
