@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export function useFocusedData<T>(loader: () => Promise<T | null>): {
   data: T | null;
@@ -11,10 +11,13 @@ export function useFocusedData<T>(loader: () => Promise<T | null>): {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  const loaderRef = useRef(loader);
+  loaderRef.current = loader;
+
   const loadData = useCallback(async () => {
-    const result = await loader();
+    const result = await loaderRef.current();
     setData(result);
-  }, [loader]);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
