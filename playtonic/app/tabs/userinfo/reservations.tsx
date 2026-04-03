@@ -31,7 +31,6 @@ type EnrichedReservation = FSReservation & {
   courtName: string;
 };
 
-
 // TODO: fix logic so it changes status after fetch
 const STATUS_LABEL: Record<ReservationStatus, string> = {
   upcoming: "Upcoming",
@@ -191,7 +190,10 @@ export default function Reservations() {
                 ? styles.badgeCompleted
                 : styles.badgeCancelled;
         return (
-          <View style={[styles.card, cancelled && styles.cardCancelled]}>
+          <Pressable
+            style={[styles.card, cancelled && styles.cardCancelled]}
+            onPress={() => router.push(`/reservation/${item.id}` as any)}
+          >
             <View style={styles.cardHeader}>
               <View style={styles.headerLeft}>
                 <Text style={styles.venueName}>{item.venueName}</Text>
@@ -222,7 +224,10 @@ export default function Reservations() {
                 <TouchableOpacity
                   style={styles.cancelBtn}
                   disabled={cancelling === item.id}
-                  onPress={() => onCancel(item)}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    onCancel(item);
+                  }}
                 >
                   {cancelling === item.id ? (
                     <ActivityIndicator size="small" color="#c00" />
@@ -232,7 +237,7 @@ export default function Reservations() {
                 </TouchableOpacity>
               )}
             </View>
-          </View>
+          </Pressable>
         );
       }}
     />
