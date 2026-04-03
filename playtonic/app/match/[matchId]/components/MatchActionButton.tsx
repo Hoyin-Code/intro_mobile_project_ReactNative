@@ -30,7 +30,7 @@ export default function MatchActionButton({
   onLeaving,
   onCancel,
 }: Props) {
-  const ishost = user?.id == match.hostId;
+  const isHost = user?.id === match.hostId;
 
   if (user && match.players.includes(user.id)) {
     return (
@@ -47,7 +47,7 @@ export default function MatchActionButton({
           <Ionicons name="chatbubble-outline" size={18} color="#fff" />
           <Text style={styles.btnText}>Open Chat</Text>
         </TouchableOpacity>
-        {ishost ? (
+        {isHost ? (
           <TouchableOpacity style={styles.leavebtn} onPress={() => onCancel()}>
             <Ionicons name="exit" size={18} color="#fff" />
             <Text style={styles.btnText}>Cancel Game</Text>

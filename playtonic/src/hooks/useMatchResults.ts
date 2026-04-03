@@ -5,6 +5,7 @@ import { computeRatingDeltas, updateRatings } from "@/src/services/ratingService
 import { getUserById } from "@/src/services/userService";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useState } from "react";
+import { Alert } from "react-native";
 
 type TeamSlot = "A" | "B" | null;
 type GameEntry = { a: string; b: string };
@@ -99,14 +100,14 @@ export function useMatchResults() {
     if (!match) return;
     const results = buildPayload();
     if (results.team1.length < 2 || results.team2.length < 2)
-      return alert("Assign players to both teams before submitting.");
+      return Alert.alert("Error", "Assign players to both teams before submitting.");
     if (results.games.length === 0)
-      return alert("Add at least one game score before submitting.");
+      return Alert.alert("Error", "Add at least one game score before submitting.");
     const invalidGame = results.games.find((g) => !isValidGameScore(g.team1, g.team2));
     if (invalidGame)
-      return alert(
-        `Invalid score ${invalidGame.team1}–${invalidGame.team2}. ` +
-          "First to 6 wins; if above 6 a 2-point lead is required.",
+      return Alert.alert(
+        "Invalid Score",
+        `Invalid score ${invalidGame.team1}–${invalidGame.team2}. First to 6 wins; if above 6 a 2-point lead is required.`,
       );
     try {
       await submitResults(match, results);
@@ -114,7 +115,7 @@ export function useMatchResults() {
       await loadMatch();
     } catch (e) {
       console.error("submitResults error:", e);
-      alert("Could not submit results, try again later.");
+      Alert.alert("Error", "Could not submit results, try again later.");
     }
   };
 

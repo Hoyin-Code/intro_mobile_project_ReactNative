@@ -8,6 +8,6 @@ export interface AppUserContext {
   imageUrl?: string | null;
   skillLevel: number;
   gender: "Male" | "Female";
-  createdAt: unknown;
+  createdAt: number;
 }
 export const UserContext = createContext<AppUserContext | null>(null);

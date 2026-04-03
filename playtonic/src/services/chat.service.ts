@@ -20,9 +20,9 @@ export async function sendMessage(
   matchId: string,
   message: Omit<RTDBMessageData, "createdAt">,
 ): Promise<void> {
-  const data: RTDBMessageData = {
+  const data = {
     ...message,
-    createdAt: serverTimestamp() as unknown as number,
+    createdAt: serverTimestamp(),
   };
   await push(ref(rtdb, `chats/${matchId}/messages`), data);
 }
