@@ -25,6 +25,7 @@ export default function RegisterScreen() {
     email: "",
     displayName: "",
     password: "",
+    confirmPassword: "",
     imageUri: null,
     gender: "Male",
   });
@@ -57,91 +58,99 @@ export default function RegisterScreen() {
   };
 
   return (
-  <KeyboardAvoidingView behavior="padding">
-    <ScrollView keyboardShouldPersistTaps="handled">
-    <View style={styles.container}>
-      <Text style={styles.title}>Create account</Text>
-      <TouchableOpacity
-        style={styles.avatarContainer}
-        onPress={openImageOptions}
-      >
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.avatar} />
-        ) : (
-          <View style={styles.placeholder}>
-            <Ionicons name="camera" size={28} color="#999" />
-            <Text style={styles.placeholderText}>Add Photo</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-      <TextInput
-        value={form.displayName}
-        onChangeText={(v) => setField("displayName", v)}
-        placeholder="Username"
-        autoCapitalize="none"
-        style={styles.input}
-      />
-      <TextInput
-        value={form.email}
-        onChangeText={(v) => setField("email", v)}
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        textContentType="emailAddress"
-        style={styles.input}
-      />
-      <PasswordInput
-        value={form.password}
-        onChangeText={(v) => setField("password", v)}
-        placeholder="Password"
-        textContentType="newPassword"
-      />
-      <PasswordInput
-        value={form.confirmPassword}
-        onChangeText={(v) => setField("confirmPassword", v)}
-        placeholder="Confirm password"
-        textContentType="password"
-      />
-      <View style={styles.genderRow}>
-        {(["Male", "Female"] as const).map((g) => (
+    <KeyboardAvoidingView behavior="padding">
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.container}>
+          <Text style={styles.title}>Create account</Text>
           <TouchableOpacity
-            key={g}
-            style={[styles.genderBtn, form.gender === g && styles.genderBtnActive]}
-            onPress={() => setForm((p) => ({ ...p, gender: g }))}
+            style={styles.avatarContainer}
+            onPress={openImageOptions}
           >
-            <Text style={[styles.genderText, form.gender === g && styles.genderTextActive]}>
-              {g}
-            </Text>
+            {imageUri ? (
+              <Image source={{ uri: imageUri }} style={styles.avatar} />
+            ) : (
+              <View style={styles.placeholder}>
+                <Ionicons name="camera" size={28} color="#999" />
+                <Text style={styles.placeholderText}>Add Photo</Text>
+              </View>
+            )}
           </TouchableOpacity>
-        ))}
-      </View>
+          <TextInput
+            value={form.displayName}
+            onChangeText={(v) => setField("displayName", v)}
+            placeholder="Username"
+            autoCapitalize="none"
+            style={styles.input}
+          />
+          <TextInput
+            value={form.email}
+            onChangeText={(v) => setField("email", v)}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            style={styles.input}
+          />
+          <PasswordInput
+            value={form.password}
+            onChangeText={(v) => setField("password", v)}
+            placeholder="Password"
+            textContentType="newPassword"
+          />
+          <PasswordInput
+            value={form.confirmPassword}
+            onChangeText={(v) => setField("confirmPassword", v)}
+            placeholder="Confirm password"
+            textContentType="password"
+          />
+          <View style={styles.genderRow}>
+            {(["Male", "Female"] as const).map((g) => (
+              <TouchableOpacity
+                key={g}
+                style={[
+                  styles.genderBtn,
+                  form.gender === g && styles.genderBtnActive,
+                ]}
+                onPress={() => setForm((p) => ({ ...p, gender: g }))}
+              >
+                <Text
+                  style={[
+                    styles.genderText,
+                    form.gender === g && styles.genderTextActive,
+                  ]}
+                >
+                  {g}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={handleRegister}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={styles.primaryText}>Register</Text>
-        )}
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.secondary}
-        onPress={() => router.push("/auth/login")}
-        disabled={loading}
-      >
-        <Text style={styles.primaryText}>Go Back</Text>
-      </TouchableOpacity>
-    </View>
-    </ScrollView>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.primaryText}>Register</Text>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.secondary}
+            onPress={() => router.push("/auth/login")}
+            disabled={loading}
+          >
+            <Text style={styles.primaryText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 24, marginTop:50},
+  container: { flex: 1, justifyContent: "center", padding: 24, marginTop: 50 },
   title: { fontSize: 32, fontWeight: "700" },
   subtitle: { fontSize: 14, opacity: 0.7, marginTop: 6, marginBottom: 18 },
 
@@ -182,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     overflow: "hidden",
     marginBottom: 50,
-    marginTop:50,
+    marginTop: 50,
     backgroundColor: "#555",
     margin: "auto",
   },
@@ -210,7 +219,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center",
   },
-  genderBtnActive: { backgroundColor: COLORS.accent, borderColor: COLORS.accent },
+  genderBtnActive: {
+    backgroundColor: COLORS.accent,
+    borderColor: COLORS.accent,
+  },
   genderText: { fontSize: 15, fontWeight: "600", color: "#555" },
   genderTextActive: { color: "#fff" },
 });

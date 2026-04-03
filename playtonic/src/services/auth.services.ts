@@ -8,15 +8,13 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { uploadProfileImage } from "./userService";
 import { AppUserContext } from "../models/appUserContext";
 
-
-
 export type RegisterInput = {
   email: string;
   password: string;
-  confirmPassword?: string;
+  confirmPassword: string;
   displayName: string;
   imageUri?: string | null;
-  gender: "Male" | "Female"
+  gender: "Male" | "Female";
 };
 
 function cleanEmail(email: string) {
@@ -32,17 +30,15 @@ export async function registerUser(
   if (!email.includes("@")) throw new Error("Invalid email address.");
   if (password.length < 6)
     throw new Error("Password must be at least 6 characters.");
-  //TODO: make displayname required or change to first or last name
-  //TODO: fix register logic
-  const cred = await createUserWithEmailAndPassword(auth, email, password);
   const displayName = (input.displayName ?? "").trim();
+  if (!displayName) throw new Error("Display name is required.");
 
-  if (displayName) {
-    await updateProfile(cred.user, { displayName });
-  }
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(cred.user, { displayName });
+
   const userDoc: Omit<AppUserContext, "id"> = {
     email,
-    displayName: displayName || (cred.user.displayName ?? ""),
+    displayName,
     createdAt: serverTimestamp(),
     isActive: true,
     skillLevel: 1.5,
