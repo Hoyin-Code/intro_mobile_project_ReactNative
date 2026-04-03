@@ -83,7 +83,14 @@ export default function MyMatches() {
               if (status === "ongoing" || status === "completed") {
                 router.push({ pathname: "/match/[matchId]/results", params: { matchId: m.id } });
               } else {
-                router.push({ pathname: "/match/[matchId]", params: { matchId: m.id } });
+                router.push({
+                  pathname: "/match/[matchId]",
+                  params: { matchId: m.id },
+                });
+                router.push({
+                  pathname: "/match/[matchId]",
+                  params: { matchId: m.id },
+                });
               }
             }}
           >

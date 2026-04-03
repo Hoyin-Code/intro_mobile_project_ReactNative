@@ -18,42 +18,49 @@ export function useSlotSelection() {
   const [takenSlots, setTakenSlots] = useState<Set<string>>(new Set());
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
-  const [slotMatches, setSlotMatches] = useState<Map<string, SlotMatch>>(new Map());
+  const [slotMatches, setSlotMatches] = useState<Map<string, SlotMatch>>(
+    new Map(),
+  );
 
-  const loadSlots = useCallback(async (court: FSCourt, date: Date, v: FSVenue) => {
-    setSlotsLoading(true);
-    setSelectedSlot(null);
-    const dateTs = date.getTime();
+  const loadSlots = useCallback(
+    async (court: FSCourt, date: Date, v: FSVenue) => {
+      setSlotsLoading(true);
+      setSelectedSlot(null);
+      const dateTs = date.getTime();
 
-    const [existing, venueMatches] = await Promise.all([
-      getReservationsByCourt(court.id, dateTs),
-      getOpenMatchesByVenue(v.id),
-    ]).finally(() => setSlotsLoading(false));
+      const [existing, venueMatches] = await Promise.all([
+        getReservationsByCourt(court.id, dateTs),
+        getOpenMatchesByVenue(v.id),
+      ]).finally(() => setSlotsLoading(false));
 
-    setTakenSlots(new Set<string>(existing.map((r: FSReservation) => r.startTime)));
-    setSlots(generateSlots(v.openTime, v.closeTime, v.slotDurationMinutes));
+      setTakenSlots(
+        new Set<string>(existing.map((r: FSReservation) => r.startTime)),
+      );
+      setSlots(generateSlots(v.openTime, v.closeTime, v.slotDurationMinutes));
 
-    const courtMatches = venueMatches.filter(
-      (m) => m.courtId === court.id && m.date === dateTs,
-    );
-    const allPlayerIds = [...new Set(courtMatches.flatMap((m) => m.players))];
-    const userResults = await Promise.all(allPlayerIds.map(getUserById));
-    const playerMap = new Map<string, AppUserContext>();
-    allPlayerIds.forEach((id, i) => {
-      if (userResults[i]) playerMap.set(id, userResults[i]!);
-    });
-
-    const map = new Map<string, SlotMatch>();
-    for (const match of courtMatches) {
-      map.set(match.startTime, {
-        match,
-        players: match.players
-          .map((id) => playerMap.get(id))
-          .filter(Boolean) as AppUserContext[],
+      const courtMatches = venueMatches.filter(
+        (m) => m.courtId === court.id && m.date === dateTs,
+      );
+      const allPlayerIds = [...new Set(courtMatches.flatMap((m) => m.players))];
+      const userResults = await Promise.all(allPlayerIds.map(getUserById));
+      const playerMap = new Map<string, AppUserContext>();
+      allPlayerIds.forEach((id, i) => {
+        if (userResults[i]) playerMap.set(id, userResults[i]!);
       });
-    }
-    setSlotMatches(map);
-  }, []);
+
+      const map = new Map<string, SlotMatch>();
+      for (const match of courtMatches) {
+        map.set(match.startTime, {
+          match,
+          players: match.players
+            .map((id) => playerMap.get(id))
+            .filter(Boolean) as AppUserContext[],
+        });
+      }
+      setSlotMatches(map);
+    },
+    [],
+  );
 
   const onSelectCourt = useCallback(
     (court: FSCourt) => {

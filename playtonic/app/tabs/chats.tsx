@@ -30,18 +30,28 @@ export default function Chatlist() {
         keyExtractor={(m) => m.id}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.accent]} tintColor={COLORS.accent} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[COLORS.accent]}
+            tintColor={COLORS.accent}
+          />
         }
         renderItem={({ item }) => (
           <ChatCard
             match={item}
             onPress={() =>
-              router.push({ pathname: "/chat/[matchId]", params: { matchId: item.id, matchName: item.matchName } })
+              router.push({
+                pathname: "/chat/[matchId]",
+                params: { matchId: item.id, matchName: item.matchName },
+              })
             }
           />
         )}
         ListEmptyComponent={
-          !loading && !refreshing ? <Text style={styles.empty}>You're not in any matches yet.</Text> : null
+          !loading && !refreshing ? (
+            <Text style={styles.empty}>You're not in any matches yet.</Text>
+          ) : null
         }
       />
     </View>
@@ -50,7 +60,19 @@ export default function Chatlist() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7f7f9" },
-  pageTitle: { fontSize: 22, fontWeight: "800", color: "#111", paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#111",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
   list: { padding: 16, gap: 12 },
-  empty: { textAlign: "center", color: "#aaa", marginTop: 60, fontStyle: "italic" },
+  empty: {
+    textAlign: "center",
+    color: "#aaa",
+    marginTop: 60,
+    fontStyle: "italic",
+  },
 });

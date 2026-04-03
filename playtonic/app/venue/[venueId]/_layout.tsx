@@ -3,13 +3,7 @@ import { FSCourt, FSVenue } from "@/src/models/venue.model";
 import { getCourtsByVenue, getVenueById } from "@/src/services/venueService";
 import { Tabs, useGlobalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { COLORS } from "@/src/constants/colors";
 
@@ -27,7 +21,10 @@ export default function VenueLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!venueId) { setLoading(false); return; }
+    if (!venueId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     getVenueById(venueId)
       .then((v) => {

@@ -72,4 +72,3 @@ export async function updateReservationMatchId(
 ): Promise<void> {
   await updateDoc(doc(reservationsCol(), id), { matchId });
 }
-

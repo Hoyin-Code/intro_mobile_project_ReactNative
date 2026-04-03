@@ -14,7 +14,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
 } from "react-native";
 import RatingCard from "./components/RatingCard";
 import ScoreCard from "./components/ScoreCard";

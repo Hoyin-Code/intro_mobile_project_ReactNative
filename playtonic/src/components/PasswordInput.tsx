@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 type Props = Omit<TextInputProps, "secureTextEntry"> & {
@@ -20,7 +26,10 @@ export default function PasswordInput({ value, onChangeText, ...rest }: Props) {
         style={styles.input}
         {...rest}
       />
-      <TouchableOpacity style={styles.toggle} onPress={() => setHidden((h) => !h)}>
+      <TouchableOpacity
+        style={styles.toggle}
+        onPress={() => setHidden((h) => !h)}
+      >
         <Ionicons name={hidden ? "eye-off" : "eye"} size={22} color="#555" />
       </TouchableOpacity>
     </View>

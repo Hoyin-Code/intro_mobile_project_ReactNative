@@ -39,7 +39,8 @@ export function useVenueBooking() {
   const [booking, setBooking] = useState(false);
 
   const onBook = useCallback(async () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
+      return;
     setBooking(true);
     try {
       await createReservation({
@@ -66,7 +67,8 @@ export function useVenueBooking() {
   }, [user, venue, selectedCourt, selectedDate, selectedSlot, loadSlots]);
 
   const confirm = () => {
-    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot) return;
+    if (!user || !venue || !selectedCourt || !selectedDate || !selectedSlot)
+      return;
     Alert.alert(
       "Are you sure you want to make this booking?",
       `${selectedCourt.name} at ${selectedSlot.startTime} on ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}`,

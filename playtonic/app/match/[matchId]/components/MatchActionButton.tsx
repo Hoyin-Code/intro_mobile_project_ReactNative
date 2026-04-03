@@ -28,7 +28,6 @@ export default function MatchActionButton({
   joining,
   onJoin,
   onLeaving,
-  hostId,
   onCancel,
 }: Props) {
   const ishost = user?.id == match.hostId;

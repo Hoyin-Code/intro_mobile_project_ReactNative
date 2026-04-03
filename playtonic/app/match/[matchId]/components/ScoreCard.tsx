@@ -1,6 +1,12 @@
 import { COLORS } from "@/src/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type Game = { a: string; b: string };
 
@@ -12,7 +18,13 @@ type Props = {
   onRemoveGame: (i: number) => void;
 };
 
-export default function ScoreCard({ games, canSubmit, onUpdateGame, onAddGame, onRemoveGame }: Props) {
+export default function ScoreCard({
+  games,
+  canSubmit,
+  onUpdateGame,
+  onAddGame,
+  onRemoveGame,
+}: Props) {
   const teamAScore = games.reduce((s, g) => s + (parseInt(g.a) || 0), 0);
   const teamBScore = games.reduce((s, g) => s + (parseInt(g.b) || 0), 0);
 
@@ -29,9 +41,13 @@ export default function ScoreCard({ games, canSubmit, onUpdateGame, onAddGame, o
       </View>
 
       <View style={styles.scoreRow}>
-        <Text style={[styles.scoreTeamHeader, { color: "#4e8ef7" }]}>Team A</Text>
+        <Text style={[styles.scoreTeamHeader, { color: "#4e8ef7" }]}>
+          Team A
+        </Text>
         <View style={{ width: 40 }} />
-        <Text style={[styles.scoreTeamHeader, { color: "#e07b54" }]}>Team B</Text>
+        <Text style={[styles.scoreTeamHeader, { color: "#e07b54" }]}>
+          Team B
+        </Text>
         {canSubmit && <View style={{ width: 28 }} />}
       </View>
 
@@ -41,41 +57,58 @@ export default function ScoreCard({ games, canSubmit, onUpdateGame, onAddGame, o
             <TextInput
               style={[styles.scoreInput, { borderColor: "#4e8ef7" }]}
               value={g.a}
-              onChangeText={(v) => onUpdateGame(i, "a", v.replace(/[^0-9]/g, ""))}
+              onChangeText={(v) =>
+                onUpdateGame(i, "a", v.replace(/[^0-9]/g, ""))
+              }
               keyboardType="number-pad"
               maxLength={3}
               placeholder="0"
               placeholderTextColor="#ccc"
             />
           ) : (
-            <Text style={[styles.scoreReadonly, { color: "#4e8ef7" }]}>{g.a || "0"}</Text>
+            <Text style={[styles.scoreReadonly, { color: "#4e8ef7" }]}>
+              {g.a || "0"}
+            </Text>
           )}
           <Text style={styles.gameLabel}>G{i + 1}</Text>
           {canSubmit ? (
             <TextInput
               style={[styles.scoreInput, { borderColor: "#e07b54" }]}
               value={g.b}
-              onChangeText={(v) => onUpdateGame(i, "b", v.replace(/[^0-9]/g, ""))}
+              onChangeText={(v) =>
+                onUpdateGame(i, "b", v.replace(/[^0-9]/g, ""))
+              }
               keyboardType="number-pad"
               maxLength={3}
               placeholder="0"
               placeholderTextColor="#ccc"
             />
           ) : (
-            <Text style={[styles.scoreReadonly, { color: "#e07b54" }]}>{g.b || "0"}</Text>
+            <Text style={[styles.scoreReadonly, { color: "#e07b54" }]}>
+              {g.b || "0"}
+            </Text>
           )}
           {canSubmit && (
-            <TouchableOpacity onPress={() => onRemoveGame(i)} style={{ width: 28, alignItems: "center" }}>
-              {games.length > 1 && <Ionicons name="remove-circle-outline" size={20} color="#ccc" />}
+            <TouchableOpacity
+              onPress={() => onRemoveGame(i)}
+              style={{ width: 28, alignItems: "center" }}
+            >
+              {games.length > 1 && (
+                <Ionicons name="remove-circle-outline" size={20} color="#ccc" />
+              )}
             </TouchableOpacity>
           )}
         </View>
       ))}
 
       <View style={[styles.scoreRow, styles.totalRow]}>
-        <Text style={[styles.totalScore, { color: "#4e8ef7" }]}>{teamAScore}</Text>
+        <Text style={[styles.totalScore, { color: "#4e8ef7" }]}>
+          {teamAScore}
+        </Text>
         <Text style={styles.gameLabel}>Total</Text>
-        <Text style={[styles.totalScore, { color: "#e07b54" }]}>{teamBScore}</Text>
+        <Text style={[styles.totalScore, { color: "#e07b54" }]}>
+          {teamBScore}
+        </Text>
         {canSubmit && <View style={{ width: 28 }} />}
       </View>
     </View>
@@ -94,13 +127,39 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#111", marginBottom: 12 },
-  scoreHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 12,
+  },
+  scoreHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
   addGameBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   addGameLabel: { fontSize: 13, color: COLORS.accent, fontWeight: "600" },
-  scoreRow: { flexDirection: "row", alignItems: "center", marginBottom: 8, gap: 6 },
-  scoreTeamHeader: { flex: 1, textAlign: "center", fontSize: 13, fontWeight: "700" },
-  gameLabel: { width: 40, textAlign: "center", fontSize: 12, color: "#aaa", fontWeight: "600" },
+  scoreRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 6,
+  },
+  scoreTeamHeader: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  gameLabel: {
+    width: 40,
+    textAlign: "center",
+    fontSize: 12,
+    color: "#aaa",
+    fontWeight: "600",
+  },
   scoreInput: {
     flex: 1,
     height: 48,

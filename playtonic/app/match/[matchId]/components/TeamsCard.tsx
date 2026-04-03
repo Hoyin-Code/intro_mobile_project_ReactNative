@@ -11,7 +11,12 @@ type Props = {
   onAssign: (userId: string, team: TeamSlot) => void;
 };
 
-export default function TeamsCard({ players, assignments, canSubmit, onAssign }: Props) {
+export default function TeamsCard({
+  players,
+  assignments,
+  canSubmit,
+  onAssign,
+}: Props) {
   const teamPlayers = (team: "A" | "B") =>
     players.filter((p) => assignments[p.id] === team);
 
@@ -32,19 +37,41 @@ export default function TeamsCard({ players, assignments, canSubmit, onAssign }:
           {players.map((p) => (
             <View key={p.id} style={styles.playerRow}>
               <Avatar uri={p.imageUrl} name={p.displayName} size={36} />
-              <Text style={styles.playerName} numberOfLines={1}>{p.displayName}</Text>
+              <Text style={styles.playerName} numberOfLines={1}>
+                {p.displayName}
+              </Text>
               <View style={styles.teamBtns}>
                 <TouchableOpacity
-                  style={[styles.teamBtn, assignments[p.id] === "A" && styles.teamBtnActiveA]}
+                  style={[
+                    styles.teamBtn,
+                    assignments[p.id] === "A" && styles.teamBtnActiveA,
+                  ]}
                   onPress={() => onAssign(p.id, "A")}
                 >
-                  <Text style={[styles.teamBtnLabel, assignments[p.id] === "A" && styles.teamBtnLabelActive]}>A</Text>
+                  <Text
+                    style={[
+                      styles.teamBtnLabel,
+                      assignments[p.id] === "A" && styles.teamBtnLabelActive,
+                    ]}
+                  >
+                    A
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.teamBtn, assignments[p.id] === "B" && styles.teamBtnActiveB]}
+                  style={[
+                    styles.teamBtn,
+                    assignments[p.id] === "B" && styles.teamBtnActiveB,
+                  ]}
                   onPress={() => onAssign(p.id, "B")}
                 >
-                  <Text style={[styles.teamBtnLabel, assignments[p.id] === "B" && styles.teamBtnLabelActive]}>B</Text>
+                  <Text
+                    style={[
+                      styles.teamBtnLabel,
+                      assignments[p.id] === "B" && styles.teamBtnLabelActive,
+                    ]}
+                  >
+                    B
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -55,18 +82,31 @@ export default function TeamsCard({ players, assignments, canSubmit, onAssign }:
   );
 }
 
-function TeamColumn({ label, color, players }: { label: string; color: string; players: AppUserContext[] }) {
+function TeamColumn({
+  label,
+  color,
+  players,
+}: {
+  label: string;
+  color: string;
+  players: AppUserContext[];
+}) {
   return (
     <View style={styles.teamColumn}>
       <Text style={[styles.teamLabel, { color }]}>{label}</Text>
       {[0, 1].map((slot) => {
         const p = players[slot];
         return (
-          <View key={slot} style={[styles.teamSlot, { borderColor: color + "55" }]}>
+          <View
+            key={slot}
+            style={[styles.teamSlot, { borderColor: color + "55" }]}
+          >
             {p ? (
               <>
                 <Avatar uri={p.imageUrl} name={p.displayName} size={28} />
-                <Text style={styles.teamSlotName} numberOfLines={1}>{p.displayName}</Text>
+                <Text style={styles.teamSlotName} numberOfLines={1}>
+                  {p.displayName}
+                </Text>
               </>
             ) : (
               <Text style={styles.emptySlot}>—</Text>
@@ -90,8 +130,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#111", marginBottom: 12 },
-  teamsRow: { flexDirection: "row", alignItems: "flex-start", marginBottom: 16 },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 12,
+  },
+  teamsRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
   teamColumn: { flex: 1, alignItems: "center", gap: 8 },
   teamLabel: { fontSize: 13, fontWeight: "700", marginBottom: 2 },
   teamSlot: {

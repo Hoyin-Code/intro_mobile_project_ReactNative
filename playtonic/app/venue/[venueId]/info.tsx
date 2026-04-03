@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import {
   ActivityIndicator,
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
