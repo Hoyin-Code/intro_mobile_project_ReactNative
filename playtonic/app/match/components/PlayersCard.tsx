@@ -1,7 +1,7 @@
 import { COLORS } from "@/src/constants/colors";
 import { AppUserContext } from "@/src/models/appUserContext";
-import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Avatar from "@/src/components/Avatar";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   players: AppUserContext[];
@@ -28,15 +28,7 @@ export default function PlayersCard({
             i < players.length - 1 && styles.playerDivider,
           ]}
         >
-          {p.imageUrl ? (
-            <Image source={{ uri: p.imageUrl }} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarInitial}>
-                {p.displayName?.[0]?.toUpperCase() ?? "?"}
-              </Text>
-            </View>
-          )}
+          <Avatar uri={p.imageUrl} name={p.displayName} size={44} />
           <View style={styles.playerInfo}>
             <Text style={styles.playerName}>
               {p.displayName}
@@ -54,9 +46,7 @@ export default function PlayersCard({
           key={`empty-${i}`}
           style={[styles.playerRow, styles.playerDivider]}
         >
-          <View style={[styles.avatarPlaceholder, styles.avatarEmpty]}>
-            <Ionicons name="person-add-outline" size={18} color="#ccc" />
-          </View>
+          <Avatar size={44} empty />
           <Text style={styles.emptySlot}>Open slot</Text>
         </View>
       ))}
@@ -96,22 +86,6 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "#eee",
   },
-  avatar: { width: 44, height: 44, borderRadius: 22 },
-  avatarPlaceholder: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#e8e8e8",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  avatarEmpty: {
-    backgroundColor: "#f5f5f5",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderStyle: "dashed",
-  },
-  avatarInitial: { fontSize: 18, fontWeight: "700", color: "#666" },
   playerInfo: { flex: 1 },
   playerName: { fontSize: 15, fontWeight: "600", color: "#111" },
   hostTag: { fontWeight: "400", color: COLORS.accent },

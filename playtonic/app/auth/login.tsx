@@ -1,5 +1,7 @@
 // src/screens/LoginScreen.tsx
 import React, { useState, useEffect } from "react";
+import { useForm } from "@/src/hooks/useForm";
+import PasswordInput from "@/src/components/PasswordInput";
 import {
   Alert,
   StyleSheet,
@@ -8,29 +10,25 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { Image } from "react-native";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { form, setField } = useForm({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
-    SecureStore.getItemAsync("email").then((v) => v && setEmail(v));
-    SecureStore.getItemAsync("password").then((v) => v && setPassword(v));
+    SecureStore.getItemAsync("email").then((v) => v && setField("email", v));
+    SecureStore.getItemAsync("password").then((v) => v && setField("password", v));
   }, []);
 
   const validate = () => {
-    const e = email.trim();
-    if (!e.includes("@")) return "Enter a valid email.";
-    if (password.length < 6) return "Password must be at least 6 characters.";
+    if (!form.email.trim().includes("@")) return "Enter a valid email.";
+    if (form.password.length < 6) return "Password must be at least 6 characters.";
     return null;
   };
 
@@ -40,9 +38,9 @@ export default function LoginScreen() {
 
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email.trim(), password);
-      await SecureStore.setItemAsync("email", email.trim());
-      await SecureStore.setItemAsync("password", password);
+      await signInWithEmailAndPassword(auth, form.email.trim(), form.password);
+      await SecureStore.setItemAsync("email", form.email.trim());
+      await SecureStore.setItemAsync("password", form.password);
       router.replace("/tabs");
     } catch (e: any) {
       Alert.alert("Login failed", e?.message ?? "Unknown error");
@@ -66,37 +64,20 @@ export default function LoginScreen() {
         <Text style={styles.title}>Login</Text>
 
         <TextInput
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={(v) => setField("email", v)}
           placeholder="Email"
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
           style={styles.input}
         />
-        <>
-          <View>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Password"
-              secureTextEntry={hidden}
-              textContentType="password"
-              style={styles.input}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              style={styles.hidden}
-              onPress={() => setHidden(!hidden)}
-            >
-              <Ionicons
-                name={hidden ? "eye-off" : "eye"}
-                size={22}
-                color="#555"
-              />
-            </TouchableOpacity>
-          </View>
-        </>
+        <PasswordInput
+          value={form.password}
+          onChangeText={(v) => setField("password", v)}
+          placeholder="Password"
+          textContentType="password"
+        />
 
         <TouchableOpacity
           style={styles.button}
@@ -133,11 +114,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 12,
     fontSize: 16,
-  },
-  hidden: {
-    position: "absolute",
-    right: 15,
-    margin: 10,
   },
   button: {
     borderRadius: 10,

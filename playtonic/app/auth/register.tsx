@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useForm } from "@/src/hooks/useForm";
+import PasswordInput from "@/src/components/PasswordInput";
 import { Ionicons } from "@expo/vector-icons";
 import { useImagePicker } from "@/src/hooks/useImagePicker";
 
@@ -19,20 +21,15 @@ import { RegisterInput, registerUser } from "@/src/services/auth.services";
 import { COLORS } from "@/src/constants/colors";
 
 export default function RegisterScreen() {
-  const [form, setForm] = useState<RegisterInput>({
+  const { form, setForm, setField } = useForm<RegisterInput>({
     email: "",
     displayName: "",
     password: "",
     imageUri: null,
-    gender:"Male",
+    gender: "Male",
   });
-  const [hiddenNew, setHiddenNew] = useState(true);
-  const [hiddenConfirm, setHiddenConfirm] = useState(true);
-
   const [loading, setLoading] = useState(false);
   const { imageUri, openImageOptions } = useImagePicker();
-  const setField = (key: keyof RegisterInput, value: string) =>
-    setForm((p) => ({ ...p, [key]: value }));
 
   const validateForm = (): string | null => {
     const email = form.email.trim();
@@ -93,50 +90,18 @@ export default function RegisterScreen() {
         textContentType="emailAddress"
         style={styles.input}
       />
-      <View>
-        <TextInput
-          value={form.password}
-          onChangeText={(v) => setField("password", v)}
-          placeholder="Password"
-          secureTextEntry={hiddenNew}
-          textContentType="newPassword"
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setHiddenNew(!hiddenNew)}
-        >
-          <Ionicons
-            name={hiddenNew ? "eye-off" : "eye"}
-            size={22}
-            color="#555"
-          />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TextInput
-          value={form.confirmPassword}
-          onChangeText={(v) => setField("confirmPassword", v)}
-          placeholder="Confirm password"
-          autoCorrect={false}
-          secureTextEntry={hiddenConfirm}
-          textContentType="password"
-          style={styles.input}
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setHiddenConfirm(!hiddenConfirm)}
-        >
-          <Ionicons
-            name={hiddenConfirm ? "eye-off" : "eye"}
-            size={22}
-            color="#555"
-          />
-        </TouchableOpacity>{" "}
-      </View>
+      <PasswordInput
+        value={form.password}
+        onChangeText={(v) => setField("password", v)}
+        placeholder="Password"
+        textContentType="newPassword"
+      />
+      <PasswordInput
+        value={form.confirmPassword}
+        onChangeText={(v) => setField("confirmPassword", v)}
+        placeholder="Confirm password"
+        textContentType="password"
+      />
       <View style={styles.genderRow}>
         {(["Male", "Female"] as const).map((g) => (
           <TouchableOpacity
@@ -189,12 +154,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 16,
   },
-  button: {
-    position: "absolute",
-    right: 15,
-    margin: 10,
-  },
-
   secondary: {
     backgroundColor: "rgb(62, 78, 110)",
     borderRadius: 10,

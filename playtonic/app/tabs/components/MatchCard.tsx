@@ -3,7 +3,9 @@ import { FSMatch } from "@/src/models/match.model";
 import { getUserById } from "@/src/services/userService";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import Avatar from "@/src/components/Avatar";
 
 type EnrichedMatch = FSMatch & { venueName: string };
 
@@ -110,26 +112,13 @@ export default function MatchCard({ match, onPress }: Props) {
             const player = players[i];
             return (
               <View key={i} style={styles.avatarWrapper}>
-                {player?.imageUrl ? (
-                  <Image
-                    source={{ uri: player.imageUrl }}
-                    style={styles.avatar}
-                  />
-                ) : player ? (
-                  <View style={[styles.avatar, styles.avatarFallback]}>
-                    <Text style={styles.avatarInitial}>
-                      {player.displayName[0]?.toUpperCase()}
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={[styles.avatar, styles.avatarEmpty]}>
-                    <Ionicons
-                      name="person-add-outline"
-                      size={14}
-                      color="#ccc"
-                    />
-                  </View>
-                )}
+                <Avatar
+                  uri={player?.imageUrl}
+                  name={player?.displayName}
+                  size={36}
+                  empty={!player}
+                  bordered
+                />
               </View>
             );
           })}
@@ -197,27 +186,6 @@ const styles = StyleSheet.create({
   },
 
   avatarWrapper: { marginLeft: 3 },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: "#eee",
-  },
-  avatarFallback: {
-    backgroundColor: "#dde8f7",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarEmpty: {
-    backgroundColor: "#f5f5f5",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarInitial: { fontSize: 14, fontWeight: "700", color: "#555" },
   badgeRow: {
     flexDirection: "row",
     flexWrap: "wrap",
